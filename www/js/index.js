@@ -14,7 +14,6 @@ var app = {
     },
 
     populateContacts: function () {
-        app.makeCall();
         var fields = [''];
         navigator.contacts.find(fields,
             function (contacts) {
