@@ -1,4 +1,3 @@
-
 var app = {
 
     initialize: function () {
@@ -15,22 +14,32 @@ var app = {
 
     populateContacts: function () {
         var fields = [''];
+        var options = new ContactFindOptions();
+        options.filter="";
+        options.multiple=true;
+        options.desiredFields=[navigator.contacts.fieldType.displayName,
+            navigator.contacts.fieldType.name,
+            navigator.contacts.fieldType.phoneNumbers];
         navigator.contacts.find(fields,
             function (contacts) {
-                var cleanContacts = app.filterAndSort(contacts);
-                $('.loading').hide();
-                var element = $('#contacts');
+                var cleanContacts = app.filterOnPhoneAndSortByNameAlphabet(contacts);
                 cleanContacts.forEach(function (contact) {
-                    $.Deferred(app.renderCleanContact(contact, element));
+                    $.Deferred(app.processContact(contact));
                 })
-            });
+            }, function(contactError) {
+            context.alert('error finding contacts');
+        }, options);
     },
 
-     makeCall: function () {
-        window.plugins.CallNumber.callNumber(function(){alert('success');}, function(){alert('error');}, 0);
-     },
+    makeCall: function () {
+        window.plugins.CallNumber.callNumber(function () {
+            alert('success');
+        }, function () {
+            alert('error');
+        }, 0);
+    },
 
-    renderCleanContact: function (contact, parentElement) {
+    dedupePhoneNumbers: function (contact) {
         if (contact.phoneNumbers.length > 1) {
             var newNumbers = [];
             contact.phoneNumbers.forEach(function (pnum) {
@@ -42,10 +51,15 @@ var app = {
             });
             contact.phoneNumbers = newNumbers;
         }
-        parentElement.append(render('contactTemplate', contact))
+        return contact;
     },
 
-    filterAndSort: function (contacts) {
+    processContact: function (contact) {
+        contact = this.dedupePhoneNumbers(contact);
+        context.storeAndDisplayIfNew(contact);
+    },
+
+    filterOnPhoneAndSortByNameAlphabet: function (contacts) {
         return contacts.filter(function (contact) {
             return contact.phoneNumbers != null
         }).
@@ -60,17 +74,36 @@ var app = {
     }
 };
 
+var context = {
+    contactsElement: $('#contacts'),
+    errorsElement: $('#errors'),
 
-function render(tmpl_name, tmpl_data) {
-    if (!render.tmpl_cache) {
-        render.tmpl_cache = {};
+    alert: function(error) {
+        context.errorsElement.show();
+        context.errorsElement.append(error);
+    },
+
+    storeAndDisplayIfNew: function(contact) {
+        context.hideContactsLoading();
+        var contactHtml = context.render('contactTemplate', contact);
+        context.contactsElement.append(contactHtml);
+    },
+
+    hideContactsLoading: function() {
+        $('.loading').hide();
+    },
+
+    render: function (tmpl_name, tmpl_data) {
+        if (!context.tmpl_cache) {
+            context.tmpl_cache = {};
+        }
+
+        if (!context.tmpl_cache[tmpl_name]) {
+            var tmpl_string = document.getElementById(tmpl_name).innerHTML;
+
+            context.tmpl_cache[tmpl_name] = Handlebars.compile(tmpl_string);
+        }
+
+        return context.tmpl_cache[tmpl_name](tmpl_data);
     }
-
-    if (!render.tmpl_cache[tmpl_name]) {
-        var tmpl_string = document.getElementById(tmpl_name).innerHTML;
-
-        render.tmpl_cache[tmpl_name] = Handlebars.compile(tmpl_string);
-    }
-
-    return render.tmpl_cache[tmpl_name](tmpl_data);
-}
+};
