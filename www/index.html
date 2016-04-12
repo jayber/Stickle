@@ -28,7 +28,7 @@
                 <div id="errors"></div>
                 <div class="loading">loading contacts...</div>
                 <ion-list>
-                    <ion-item ng-repeat="contact in contacts">
+                    <ion-item ng-repeat="contact in contacts" ng-class="{'disable': !contact.stickler}"  >
                         <div class="contact-list-item">
                             <div class="details">
                                 <div class="name">{{contact.displayName}}</div>
@@ -38,14 +38,17 @@
                             </span>
                                 </p>
                             </div>
-                            <div class="contact-toggle">
+                            <div ng-switch="contact.stickler" class="contact-action">
+                            <div ng-switch-when="true">
                                 <label class="toggle">
-                                    <input type="checkbox">
+                                    <input type="checkbox" ng-disabled="!contact.stickler">
 
                                     <div class="track">
                                         <div class="handle"></div>
                                     </div>
                                 </label>
+                            </div>
+                                <div ng-switch-default class="contact-action icon ion-ios-personadd-outline">&nbsp;</div>
                             </div>
                         </div>
                     </ion-item>

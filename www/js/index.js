@@ -1,34 +1,49 @@
-
 angular.module('stickle', ['ionic'])
 
-    .controller('stickleCtrl', function($scope) {
+    .controller('stickleCtrl', function ($scope) {
         $scope.contacts = [];
-        ionic.Platform.ready(function() {
+        ionic.Platform.ready(function () {
             contactProcessor.populateContacts($scope);
         });
     });
-
+var count = true;
 var contactProcessor = {
+
+    checkContactsStatus: function (model) {
+            model.contacts.forEach(function (thing, index) {
+                thing.stickler = count;
+                count = !count;
+            });
+    },
 
     populateContacts: function (model) {
         var fields = [''];
         var options = new ContactFindOptions();
-        options.filter="";
-        options.multiple=true;
-        options.desiredFields=[navigator.contacts.fieldType.displayName,
+        options.filter = "";
+        options.multiple = true;
+        options.desiredFields = [navigator.contacts.fieldType.displayName,
             navigator.contacts.fieldType.name,
             navigator.contacts.fieldType.phoneNumbers];
         navigator.contacts.find(fields,
-            function(contacts) {contactProcessor.processContacts(contacts,model)},
-            function(contactError) {
+            function (contacts) {
+                contactProcessor.processContacts(contacts, model)
+            },
+            function (contactError) {
                 context.print('error finding contacts');
-        }, options);
+            }, options);
     },
 
     processContacts: function (contacts, model) {
         var cleanContacts = contactProcessor.filterOnPhoneAndSortByNameAlphabet(contacts);
-        cleanContacts.forEach(function (contact) {
-            $.Deferred(function() {contactProcessor.processContact(contact, model)});
+
+        model.$apply(function () {
+            cleanContacts.forEach(function (contact) {
+                contactProcessor.processContact(contact, model);
+            });
+        });
+
+        model.$apply(function () {
+            contactProcessor.checkContactsStatus(model);
         });
     },
 
@@ -66,10 +81,8 @@ var contactProcessor = {
         return contact;
     },
 
-    storeAndDisplayIfNew: function(contact, model) {
-        model.$apply(function(){
-            model.contacts.push(contact);
-        });
+    storeAndDisplayIfNew: function (contact, model) {
+        model.contacts.push(contact);
         context.hideContactsLoading();
     },
 
@@ -86,12 +99,12 @@ var context = {
     contactsElement: $('#contacts'),
     errorsElement: $('#errors'),
 
-    print: function(error) {
+    print: function (error) {
         context.errorsElement.show();
         context.errorsElement.append(error);
     },
 
-    hideContactsLoading: function() {
+    hideContactsLoading: function () {
         $('.loading').hide();
     }
 };

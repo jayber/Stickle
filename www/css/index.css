@@ -44,6 +44,10 @@
 
 }
 
+.disable {
+    background-color: #f8f8f8;
+}
+
 .nothing {
     background-color: #11c1f3;
     background-color: #08b0f3;
@@ -53,7 +57,14 @@
     float: left;
 }
 
-.contact-list-item .contact-toggle {
+.contact-list-item .contact-action.icon {
+    font-size: 30px;
+    margin-right: 5px;
+    color: #a3a3a3;
+}
+
+.contact-list-item .contact-action {
+    margin-top: 2px;
     float: right;
 }
 
