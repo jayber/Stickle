@@ -40,10 +40,6 @@
     background-size: auto;
 }
 
-.contact-list-item {
-
-}
-
 .disable {
     background-color: #f8f8f8;
 }
@@ -61,6 +57,7 @@
     font-size: 30px;
     margin-right: 5px;
     color: #a3a3a3;
+    text-align: center;
 }
 
 .contact-list-item .contact-action {
