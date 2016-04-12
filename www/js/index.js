@@ -6,6 +6,7 @@ angular.module('stickle', ['ionic'])
             contactProcessor.populateContacts($scope);
         });
     });
+
 var count = true;
 var contactProcessor = {
 
