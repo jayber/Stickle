@@ -1,18 +1,1 @@
-{
-    "cordova-plugin-statusbar": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-statusbar@2.1.2"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
-    "mx.ferreyra.callnumber": {
-        "source": {
-            "type": "registry",
-            "id": "call-number@0.0.2"
-        },
-        "is_top_level": true,
-        "variables": {}
-    }
-}
+{}
