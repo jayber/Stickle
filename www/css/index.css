@@ -44,6 +44,11 @@
 
 }
 
+.nothing {
+    background-color: #11c1f3;
+    background-color: #21d1ff;
+}
+
 .contact-list-item .details {
     float: left;
 }
