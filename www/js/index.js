@@ -4,6 +4,7 @@ angular.module('stickle', ['ionic'])
     .controller('stickleCtrl', function($scope) {
         $scope.contacts = [];
         contactProcessor.populateContacts($scope);
+        context.print("controller");
     });
 
 var contactProcessor = {
@@ -28,6 +29,7 @@ var contactProcessor = {
         cleanContacts.forEach(function (contact) {
             $.Deferred(function() {contactProcessor.processContact(contact, model)});
         });
+        context.print("processContacts");
     },
 
     filterOnPhoneAndSortByNameAlphabet: function (contacts) {
