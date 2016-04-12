@@ -23,7 +23,6 @@
   <gap:plugin name="org.apache.cordova.camera"/>
   <gap:plugin name="org.apache.cordova.media-capture"/>
   <gap:plugin name="org.apache.cordova.console"/>
-  <gap:plugin name="org.apache.cordova.contacts"/>
   <gap:plugin name="org.apache.cordova.device"/>
   <gap:plugin name="org.apache.cordova.device-motion"/>
   <gap:plugin name="org.apache.cordova.device-orientation"/>
@@ -65,7 +64,8 @@
   <access origin="*"/>
   <plugin name="cordova-plugin-whitelist" version="1"/>
   <plugin name="call-number" source="npm" version="0.0.2"/>
-  <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
+    <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
+    <plugin name="cordova-plugin-contacts" source="npm"/>
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
   <allow-intent href="tel:*"/>
