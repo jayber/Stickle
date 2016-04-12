@@ -13,7 +13,6 @@ var contactProcessor = {
     populateContacts: function (model) {
         var fields = [''];
         var options = new ContactFindOptions();
-        alert("populateContacts2");
         options.filter="";
         options.multiple=true;
         options.desiredFields=[navigator.contacts.fieldType.displayName,
@@ -31,7 +30,6 @@ var contactProcessor = {
         cleanContacts.forEach(function (contact) {
             $.Deferred(function() {contactProcessor.processContact(contact, model)});
         });
-        context.print("processContacts");
     },
 
     filterOnPhoneAndSortByNameAlphabet: function (contacts) {
