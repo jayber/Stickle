@@ -2,16 +2,7 @@
     "cordova-plugin-contacts": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-contacts@~2.0.1"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
-    "mx.ferreyra.callnumber": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/rohfosho/CordovaCallNumberPlugin.git",
-            "subdir": "."
+            "id": "cordova-plugin-contacts"
         },
         "is_top_level": true,
         "variables": {}
@@ -19,7 +10,15 @@
     "cordova-plugin-statusbar": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-statusbar@~2.1.0"
+            "id": "cordova-plugin-statusbar@2.1.2"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "mx.ferreyra.callnumber": {
+        "source": {
+            "type": "registry",
+            "id": "call-number@0.0.2"
         },
         "is_top_level": true,
         "variables": {}

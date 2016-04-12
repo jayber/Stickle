@@ -2,7 +2,6 @@
 angular.module('stickle', ['ionic'])
 
     .controller('stickleCtrl', function($scope) {
-        alert('controller');
         $scope.contacts = [];
         contactProcessor.populateContacts($scope);
     });
