@@ -21,26 +21,29 @@ var userHandler = {
     phoneNumberKey: "phonenumber",
     validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
 
-    logon: function ($ionicPopup, res, inValid) {
+    logon: function ($ionicPopup, defaultVal, inValid) {
         $ionicPopup.prompt({
             title: 'Phone Number',
             inputType: 'text',
             inputPlaceholder: 'enter mobile phone number',
-            defaultText: res,
+            defaultText: defaultVal,
             subTitle: inValid ? userHandler.validationMessage:null,
             maxLength: 12
         }).then(function (res) {
-            if (res!==undefined) {
+            if (res!==undefined)  {
                 if (res.length < 4) {
                     userHandler.logon($ionicPopup, res, true);
                 } else {
                     window.localStorage.setItem(userHandler.phoneNumberKey, res);
                 }
+            } else if (defaultVal==="") {
+                userHandler.logon($ionicPopup, "", true);
             }
         });
     },
 
     logonIfNecessary: function ($ionicPopup) {
+        window.localStorage.removeItem(userHandler.phoneNumberKey);
         var phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
         if (phoneNumber == undefined || phoneNumber.length < 4) {
             this.logon($ionicPopup, "", false);
