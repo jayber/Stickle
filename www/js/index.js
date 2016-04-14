@@ -1,20 +1,62 @@
 angular.module('stickle', ['ionic'])
-
-    .controller('stickleCtrl', function ($scope) {
+    .controller('stickleCtrl', function ($scope, $ionicPopup) {
         $scope.contacts = [];
         ionic.Platform.ready(function () {
-            contactProcessor.populateContacts($scope);
+            try {
+                contactProcessor.populateContacts($scope);
+                userHandler.logonIfNecessary($ionicPopup, "", null);
+            } catch (err) {
+                context.print(err);
+            }
         });
+        $scope.logon = function () {
+            userHandler.logon($ionicPopup,
+                window.localStorage.getItem(userHandler.phoneNumberKey),
+                false);
+        }
     });
 
+var userHandler = {
+
+    phoneNumberKey: "phonenumber",
+    validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
+
+    logon: function ($ionicPopup, res, inValid) {
+        $ionicPopup.prompt({
+            title: 'Phone Number',
+            inputType: 'text',
+            inputPlaceholder: 'enter mobile phone number',
+            defaultText: res,
+            subTitle: inValid ? userHandler.validationMessage:null,
+            maxLength: 12
+        }).then(function (res) {
+            if (res!==undefined) {
+                if (res.length < 4) {
+                    userHandler.logon($ionicPopup, res, true);
+                } else {
+                    window.localStorage.setItem(userHandler.phoneNumberKey, res);
+                }
+            }
+        });
+    },
+
+    logonIfNecessary: function ($ionicPopup) {
+        var phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
+        if (phoneNumber == undefined || phoneNumber.length < 4) {
+            this.logon($ionicPopup, "", false);
+        }
+    }
+};
+
 var count = true;
+
 var contactProcessor = {
 
     checkContactsStatus: function (model) {
-            model.contacts.forEach(function (thing, index) {
-                thing.stickler = count;
-                count = !count;
-            });
+        model.contacts.forEach(function (thing, index) {
+            thing.stickler = count;
+            count = !count;
+        });
     },
 
     populateContacts: function (model) {

@@ -3,6 +3,10 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
+.bar.deep {
+    background-color: #2d0753;
+}
+
 #errors {
     display: none;
     color: #ff0000;
@@ -41,6 +45,13 @@
     font-size: 30px;
     color: #a3a3a3;
     text-align: center;
+}
+
+.validationMessagePrompt {
+    color: #ff0000;
+    font-size: 14px;
+    padding-top: 20px;
+    display: inline-block;
 }
 
 .contact-list-item .contact-action {

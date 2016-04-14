@@ -11,7 +11,7 @@
   <preference name="prerendered-icon" value="true"/>
   <preference name="stay-in-webview" value="false"/>
   <preference name="ios-statusbarstyle" value="black-opaque"/>
-  <preference name="StatusBarBackgroundColor" value="#099ce1"/>
+  <preference name="StatusBarBackgroundColor" value="#2d0753"/>
   <preference name="detect-data-types" value="true"/>
   <preference name="exit-on-suspend" value="false"/>
   <preference name="show-splash-screen-spinner" value="true"/>
