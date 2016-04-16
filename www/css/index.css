@@ -4,7 +4,10 @@
 }
 
 .bar.deep {
-    background-color: #2d0753;
+    background-color: #c70f73;
+    background-image: none;
+    /*background-color: #2d0753;*/
+    border-bottom: 0;
 }
 
 #errors {
@@ -14,8 +17,13 @@
     font-size: 14px;
 }
 
+html {
+    background-color: #666666;
+    color: ghostwhite;
+}
+
 .loading {
-    color: #444444;
+    color: ghostwhite;
     font-size: 18px;
     text-align: center;
     min-height: 120px;
@@ -36,6 +44,27 @@
     background-color: #099ce1;
 }
 
+.item, .item span {
+    color: ghostwhite;
+}
+
+.item .track {
+    background-color: #888888;
+}
+
+.item .handle {
+    background-color: #aaaaaa;
+}
+
+.item {
+    background-color: transparent;
+    border-color: #888888;
+}
+
+.item.first {
+    border-top: 0;
+}
+
 .contact-list-item .contact-details {
     float: left;
     width:calc(100% - 50px);
@@ -47,13 +76,6 @@
     text-align: center;
 }
 
-.validationMessagePrompt {
-    color: #ff0000;
-    font-size: 14px;
-    padding-top: 20px;
-    display: inline-block;
-}
-
 .contact-list-item .contact-action {
     width: 50px;
     margin-top: 2px;
@@ -62,4 +84,11 @@
 
 .type {
     font-weight: bold;
+}
+
+.validationMessagePrompt {
+    color: #ff0000;
+    font-size: 14px;
+    padding-top: 20px;
+    display: inline-block;
 }

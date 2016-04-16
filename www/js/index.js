@@ -1,18 +1,24 @@
-angular.module('stickle', ['ionic'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup) {
-        $scope.contacts = [];
-        ionic.Platform.ready(function () {
-            try {
-                contactProcessor.populateContacts($scope);
-                userHandler.logonIfNecessary($ionicPopup, "", null);
-            } catch (err) {
-                context.print(err);
+
+angular.module('stickle', ['ionic', 'ngResource'])
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource) {
+        try {
+            $scope.contacts = [{displayName:"test",stickler:false, phoneNumbers:[{type:"mobile",value:"07791879023"}]},{displayName:"test2",stickler:true, phoneNumbers:[{type:"mobile",value:"07791879023"},{type:"home",value:"02035678906"}]}];
+            ionic.Platform.ready(function () {
+                try {
+                    contactsProcessor.populateContacts($scope);
+                    userHandler.logon($ionicPopup, $timeout, $resource);
+                } catch (err) {
+                    context.print(err);
+                }
+
+            });
+            $scope.promptPhone = function () {
+                userHandler.promptPhone($ionicPopup,
+                    userHandler.phoneNumber,
+                    false);
             }
-        });
-        $scope.logon = function () {
-            userHandler.logon($ionicPopup,
-                window.localStorage.getItem(userHandler.phoneNumberKey),
-                false);
+        } catch (err) {
+            context.print(err);
         }
     });
 
@@ -21,129 +27,59 @@ var userHandler = {
     phoneNumberKey: "phonenumber",
     validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
 
-    logon: function ($ionicPopup, defaultVal, inValid) {
-        $ionicPopup.prompt({
+    promptPhone: function ($ionicPopup, defaultVal, inValid) {
+        return $ionicPopup.prompt({
             title: 'Phone Number',
-            inputType: 'text',
+            inputType: 'tel',
             inputPlaceholder: 'enter mobile phone number',
             defaultText: defaultVal,
-            subTitle: inValid ? userHandler.validationMessage:null,
+            subTitle: inValid ? userHandler.validationMessage : null,
             maxLength: 12
         }).then(function (res) {
-            if (res!==undefined)  {
+            if (res !== undefined) {
                 if (res.length < 4) {
-                    userHandler.logon($ionicPopup, res, true);
+                    userHandler.promptPhone($ionicPopup, res, true);
                 } else {
+                    userHandler.phoneNumber = res;
                     window.localStorage.setItem(userHandler.phoneNumberKey, res);
                 }
-            } else if (defaultVal==="") {
-                userHandler.logon($ionicPopup, "", true);
+            } else if (defaultVal === "") {
+                userHandler.promptPhone($ionicPopup, "", true);
             }
         });
     },
 
-    logonIfNecessary: function ($ionicPopup) {
-        window.localStorage.removeItem(userHandler.phoneNumberKey);
-        var phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
-        if (phoneNumber == undefined || phoneNumber.length < 4) {
-            this.logon($ionicPopup, "", false);
+    logon: function ($ionicPopup, $timeout, $resource) {
+        var promise = $timeout();
+        userHandler.phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
+        if (userHandler.phoneNumber == undefined || userHandler.phoneNumber.length < 4) {
+            promise = this.promptPhone($ionicPopup, "", false);
         }
-    }
-};
-
-var count = true;
-
-var contactProcessor = {
-
-    checkContactsStatus: function (model) {
-        model.contacts.forEach(function (thing, index) {
-            thing.stickler = count;
-            count = !count;
+        promise.then(function () {
+            try {
+                // userHandler.registerOnServer($resource);
+            } catch (err) {
+                context.print(err);
+            }
         });
     },
 
-    populateContacts: function (model) {
-        var fields = [''];
-        var options = new ContactFindOptions();
-        options.filter = "";
-        options.multiple = true;
-        options.desiredFields = [navigator.contacts.fieldType.displayName,
-            navigator.contacts.fieldType.name,
-            navigator.contacts.fieldType.phoneNumbers];
-        navigator.contacts.find(fields,
-            function (contacts) {
-                contactProcessor.processContacts(contacts, model)
-            },
-            function (contactError) {
-                context.print('error finding contacts');
-            }, options);
-    },
-
-    processContacts: function (contacts, model) {
-        var cleanContacts = contactProcessor.filterOnPhoneAndSortByNameAlphabet(contacts);
-
-        model.$apply(function () {
-            cleanContacts.forEach(function (contact) {
-                contactProcessor.processContact(contact, model);
-            });
-        });
-
-        model.$apply(function () {
-            contactProcessor.checkContactsStatus(model);
-        });
-    },
-
-    filterOnPhoneAndSortByNameAlphabet: function (contacts) {
-        return contacts.filter(function (contact) {
-            return contact.phoneNumbers != null
-        }).
-            sort(function (a, b) {
-                if (a.displayName < b.displayName)
-                    return -1;
-                else if (a.displayName > b.displayName)
-                    return 1;
-                else
-                    return 0;
-            });
-    },
-
-    processContact: function (contact, model) {
-        contact = contactProcessor.dedupePhoneNumbers(contact);
-        contactProcessor.storeAndDisplayIfNew(contact, model);
-    },
-
-    dedupePhoneNumbers: function (contact) {
-        if (contact.phoneNumbers.length > 1) {
-            var newNumbers = [];
-            contact.phoneNumbers.forEach(function (pnum) {
-                if (!newNumbers.some(function (currentValue) {
-                        return pnum.value == currentValue.value && pnum.type == currentValue.type;
-                    })) {
-                    newNumbers.push(pnum);
-                }
-            });
-            contact.phoneNumbers = newNumbers;
-        }
-        return contact;
-    },
-
-    storeAndDisplayIfNew: function (contact, model) {
-        model.contacts.push(contact);
-        context.hideContactsLoading();
-    },
-
-    makeCall: function () {
-        window.plugins.CallNumber.callNumber(function () {
-            alert('success');
-        }, function () {
-            alert('error');
-        }, 0);
+    registerOnServer: function ($resource) {
+        var User = $resource('http://:server/user/:phoneNum', {server: context.serverUrl, phoneNum:userHandler.phoneNumber});
+        User.save({phoneNum:userHandler.phoneNumber},function (res) {
+            context.print("sent num: " + res);
+        }, context.errorReportFunc);
     }
 };
 
 var context = {
+    serverUrl: "192.168.0.3:3002",
     contactsElement: $('#contacts'),
     errorsElement: $('#errors'),
+
+    errorReportFunc: function (err) {
+        context.print(err);
+    },
 
     print: function (error) {
         context.errorsElement.show();
