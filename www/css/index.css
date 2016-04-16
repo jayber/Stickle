@@ -4,7 +4,9 @@
 }
 
 .bar.deep {
-    background-color: #b96fb9;
+    /*background-color: #b96fb9;*/
+    /*background-color: #a14114;*/
+    background-color: #c65018;
     /*background-color: #db7613;*/
     /*background-color: #ba0e6b;*/
     /*background-color: #2d0753;*/
@@ -20,7 +22,7 @@
 }
 
 html {
-    background-color: #666666;
+    background-color: #555555;
     color: ghostwhite;
 }
 
