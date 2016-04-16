@@ -84,9 +84,5 @@ var context = {
     print: function (error) {
         context.errorsElement.show();
         context.errorsElement.append(error);
-    },
-
-    hideContactsLoading: function () {
-        // $('.loading').hide();
     }
 };

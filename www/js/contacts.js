@@ -78,7 +78,6 @@ var contactsProcessor = {
 
     storeAndDisplayIfNew: function (contact, model) {
         model.contacts.push(contact);
-        context.hideContactsLoading();
     },
 
     makeCall: function () {

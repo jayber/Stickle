@@ -4,9 +4,11 @@
 }
 
 .bar.deep {
-    background-color: #ba0e6b;
-    background-image: none;
+    background-color: #b96fb9;
+    /*background-color: #db7613;*/
+    /*background-color: #ba0e6b;*/
     /*background-color: #2d0753;*/
+    background-image: none;
     border-bottom: 0;
 }
 
