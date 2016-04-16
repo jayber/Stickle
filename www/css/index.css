@@ -4,7 +4,7 @@
 }
 
 .bar.deep {
-    background-color: #c70f73;
+    background-color: #ba0e6b;
     background-image: none;
     /*background-color: #2d0753;*/
     border-bottom: 0;
@@ -35,13 +35,17 @@ html {
     background-size: auto;
 }
 
+.hidden {
+    display: none;
+}
+
 .disable {
     background-color: #f8f8f8;
 }
 
 .nothing {
-    background-color: #11c1f3;
-    background-color: #099ce1;
+    background-color: #ba0e6b;
+    background-color: #e11181;
 }
 
 .item, .item span {

@@ -27,7 +27,7 @@
 <ion-content>
     <main>
         <div id="errors"></div>
-        <div class="loading">loading contacts...</div>
+        <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
         <ion-list>
             <ion-item ng-repeat="contact in contacts" ng-class="{'disable': !contact.stickler,'first':$first}">
                 <div class="contact-list-item">

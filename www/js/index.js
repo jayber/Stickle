@@ -87,6 +87,6 @@ var context = {
     },
 
     hideContactsLoading: function () {
-        $('.loading').hide();
+        // $('.loading').hide();
     }
 };
