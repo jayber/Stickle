@@ -28,15 +28,15 @@ html {
 
 .loading {
     color: ghostwhite;
-    font-size: 18px;
+    font-size: 20px;
     text-align: center;
     min-height: 120px;
-    padding-top: 15px;
+    padding-top: 20px;
 
-    background-image: url('../img/spinner.gif');
+    /*background-image: url('../img/spinner.gif');
     background-position: center bottom;
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: auto;*/
 }
 
 .hidden {

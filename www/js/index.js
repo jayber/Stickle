@@ -1,11 +1,17 @@
 
 angular.module('stickle', ['ionic', 'ngResource'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource) {
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $http) {
         try {
-            $scope.contacts = [{displayName:"test",stickler:false, phoneNumbers:[{type:"mobile",value:"07791879023"}]},{displayName:"test2",stickler:true, phoneNumbers:[{type:"mobile",value:"07791879023"},{type:"home",value:"02035678906"}]}];
+            // $scope.contacts = [{displayName:"test",stickler:false, phoneNumbers:[{type:"mobile",value:"07791879023"}]},{displayName:"test2",stickler:true, phoneNumbers:[{type:"mobile",value:"07791879023"},{type:"home",value:"02035678906"}]}];
+            $scope.contacts = [];
             ionic.Platform.ready(function () {
                 try {
-                    contactsProcessor.populateContacts($scope);
+                    try {
+                        contactsProcessor.populateContacts($scope);
+                    } catch (err) {
+                        context.print(err);
+                    }
+                    
                     userHandler.logon($ionicPopup, $timeout, $resource);
                 } catch (err) {
                     context.print(err);
@@ -16,6 +22,7 @@ angular.module('stickle', ['ionic', 'ngResource'])
                 userHandler.promptPhone($ionicPopup,
                     userHandler.phoneNumber,
                     false);
+                userHandler.registerOnServer($resource);
             }
         } catch (err) {
             context.print(err);
@@ -24,6 +31,8 @@ angular.module('stickle', ['ionic', 'ngResource'])
 
 var userHandler = {
 
+    phoneNumberRegisteredKey: "registered",
+    phoneNumberRegistered: false,
     phoneNumberKey: "phonenumber",
     validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
 
@@ -42,6 +51,7 @@ var userHandler = {
                 } else {
                     userHandler.phoneNumber = res;
                     window.localStorage.setItem(userHandler.phoneNumberKey, res);
+                    window.localStorage.setItem(userHandler.phoneNumberRegisteredKey, "false");
                 }
             } else if (defaultVal === "") {
                 userHandler.promptPhone($ionicPopup, "", true);
@@ -52,37 +62,46 @@ var userHandler = {
     logon: function ($ionicPopup, $timeout, $resource) {
         var promise = $timeout();
         userHandler.phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
-        if (userHandler.phoneNumber == undefined || userHandler.phoneNumber.length < 4) {
+        if (userHandler.phoneNumber == null || userHandler.phoneNumber.length < 4) {
             promise = this.promptPhone($ionicPopup, "", false);
         }
-        promise.then(function () {
-            try {
-                // userHandler.registerOnServer($resource);
-            } catch (err) {
-                context.print(err);
-            }
-        });
+
+        userHandler.phoneNumberRegistered = window.localStorage.getItem(userHandler.phoneNumberRegisteredKey)=="true";
+        if (!userHandler.phoneNumberRegistered) {
+            promise.then(function () {
+                try {
+                    userHandler.registerOnServer($resource);
+                } catch (err) {
+                    context.print(err);
+                }
+            });
+        }
     },
 
     registerOnServer: function ($resource) {
-        var User = $resource('http://:server/user/:phoneNum', {server: context.serverUrl, phoneNum:userHandler.phoneNumber});
-        User.save({phoneNum:userHandler.phoneNumber},function (res) {
-            context.print("sent num: " + res);
+        var User = $resource('http://:server/user/:phoneNum', {
+            server: context.serverUrl,
+            phoneNum: userHandler.phoneNumber
+        });
+        User.save({phoneNum: userHandler.phoneNumber}, function (res) {
+            window.localStorage.setItem(userHandler.phoneNumberRegisteredKey, "true");
+            userHandler.phoneNumberRegistered = true;
+            context.print("registered!");
         }, context.errorReportFunc);
     }
 };
 
 var context = {
-    serverUrl: "192.168.0.3:3002",
+    serverUrl: "192.168.0.4:9000",
     contactsElement: $('#contacts'),
     errorsElement: $('#errors'),
 
     errorReportFunc: function (err) {
-        context.print(err);
+        context.print("Error:" + err.status + " - " + err.statusText +"<br>"+err.data);
     },
 
     print: function (error) {
         context.errorsElement.show();
-        context.errorsElement.append(error);
+        context.errorsElement.append("<div>"+error+"</div>");
     }
 };
