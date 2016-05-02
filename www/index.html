@@ -16,6 +16,9 @@
     <script type="text/javascript">
         var log = log4javascript.getDefaultLogger();
         log.removeAllAppenders();
+
+        log.setLevel(log4javascript.Level.DEBUG);
+
         var appender = new log4javascript.InPageAppender("errors");
         appender.setHeight("100px");
         appender.setShowCommandLine(false);
@@ -83,6 +86,7 @@
 <script type="text/javascript" src="js/contacts.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/polyFilla.js"></script>
 
 </body>
 </html>
