@@ -1,4 +1,8 @@
 function polyFillMobileAPIs() {
+    
+    ContactFindOptions = function () {
+    };
+    
     if (navigator.contacts === undefined) {
         navigator.contacts = {
             fieldType: {displayName: "displayName", name: "name", phoneNumbers: "phoneNumbers"},
@@ -12,9 +16,9 @@ function polyFillMobileAPIs() {
                     stickler: true,
                     phoneNumbers: [{type: "mobile", value: "08991872567"}, {type: "home", value: "02035678906"}]
                 }, {
-                    displayName: "() Test",
+                    displayName: "(mobile) Test",
                     stickler: true,
-                    phoneNumbers: [{type: "mobile", value: "23456"}]
+                    phoneNumbers: [{type: "mobile", value: "1111"}]
                 }])
             }
         };

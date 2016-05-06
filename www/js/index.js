@@ -1,12 +1,29 @@
-angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval) {
+log.removeAllAppenders();
+var appender = new log4javascript.InPageAppender("errors");
+appender.setHeight("100px");
+appender.setShowCommandLine(false);
+log.addAppender(appender);
+appender.addEventListener("load", function () {
+    // Find appender's iframe element
+    var iframes = document.getElementsByTagName("iframe");
+    for (var i = 0, len = iframes.length; i < len; ++i) {
+        if (iframes[i].id.indexOf("_InPageAppender_") > -1) {
+            var iframeDoc = iframes[i].contentDocument || iframes[i].contentWindow.document;
+            iframeDoc.getElementById("switchesContainer").style.display = "none";
+            iframeDoc.getElementById("commandLine").style.display = "none";
+        }
+    }
+});
+
+angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngCookies'])
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $cookies) {
         try {
             ionic.Platform.ready(function () {
                 try {
                     polyFillMobileAPIs();
-                    contactsProcessor.populateContacts($scope, $resource);
-                    userHandler.logon($ionicPopup, $timeout, $resource);
-                    context.startCheckingMessages($scope, $websocket, $interval, $timeout);
+                    contactsHandler.populateContacts($scope, $resource);
+                    userHandler.logon($ionicPopup, $timeout, $resource, $cookies);
+                    context.startSockets($scope, $websocket, $interval, $timeout);
                 } catch (err) {
                     log.error("Error", err);
                 }
@@ -14,7 +31,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
 
             $scope.onToggle = userHandler.stickle;
 
-            $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource);
+            $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource, $cookies);
 
         } catch (err) {
             log.error("Error", err);
@@ -46,38 +63,71 @@ var context = {
         });
     },
 
-    startCheckingMessages: function (model, $websocket, $interval, $timeout) {
+    authenticate: function () {
+        if (context.ws.$ready()) {
+            log.debug("authenticating");
+            context.ws.$emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
+        }
+    },
+
+    startSockets: function (model, $websocket, $interval, $timeout) {
         context.ws = $websocket.$new({
-            url: 'ws://' + context.serverUrl + "/api/ws",
-            reconnect: true
+            url: 'ws://' + context.serverUrl + "/api/ws"
         });
 
         var promise;
         context.ws.$on("$open", function () {
-            $timeout(function () {
-                context.checkStatuses(model)
-            }, 2000);
-            promise = $interval(function () {
-                context.checkStatuses(model)
-            }, 60 * 60 * 1000);
+
+            context.authenticate();
+
+            context.ws.$on("authenticated", function () {
+
+                log.debug("authenticated");
+
+                $timeout(function () {
+                    context.checkStatuses(model)
+                }, 2000);
+                promise = $interval(function () {
+                    context.checkStatuses(model)
+                }, 60 * 60 * 1000);
+
+
+                context.ws.$on("stickled", function (data) {
+                    log.debug("stickled: " + JSON.stringify(data));
+                    model.$apply(function () {
+                        if (data.status === "open") {
+                            model.stickles[data.from] = model.contactsMap[data.from];
+                            model.contactsMap[data.from].hidden = true;
+                        } else {
+                            delete model.stickles[data.from];                            
+                            model.contactsMap[data.from].hidden = false;
+
+                        }
+                    });
+                });
+
+                context.ws.$on("contactStatus", function (data) {
+                    log.trace("check status: " + data.status);
+                    if (data.status === "registered") {
+                        model.$apply(function () {
+                            try {
+                                model.contactsMap[data.phoneNum].stickler = true;
+                            } catch (err) {
+                                log.error("Error", err);
+                            }
+                        });
+                    }
+                });
+            });
         });
 
         context.ws.$on("$close", function () {
+            context.ws.$un("stickled");
+            context.ws.$un("contactStatus");
+            context.ws.$un("authenticated");
             $interval.cancel(promise);
         });
 
-        context.ws.$on("contactStatus", function (data) {
-            log.trace("check status: " + data.status);
-            if (data.status === "registered") {
-                model.$apply(function () {
-                    try {
-                        model.contactsMap[data.phoneNum].stickler = true;
-                    } catch (err) {
-                        log.error("Error", err);
-                    }
-                });
-            }
-        });
     },
 
     errorReportFunc: function (err) {

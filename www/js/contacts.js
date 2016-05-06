@@ -1,4 +1,4 @@
-var contactsProcessor = {
+var contactsHandler = {
 
     populateContacts: function (model, $resource) {
         var fields = [''];
@@ -12,7 +12,8 @@ var contactsProcessor = {
             function (contacts) {
                 model.contacts = [];
                 model.contactsMap = {};
-                contactsProcessor.processContacts(contacts, model, $resource)
+                model.stickles = {};
+                contactsHandler.processContacts(contacts, model, $resource)
             },
             function (err) {
                 log.error("Error", err);
@@ -20,11 +21,11 @@ var contactsProcessor = {
     },
 
     processContacts: function (contacts, model, $resource) {
-        var cleanContacts = contactsProcessor.filterOnPhoneAndSortByNameAlphabet(contacts);
+        var cleanContacts = contactsHandler.filterOnPhoneAndSortByNameAlphabet(contacts);
 
         model.$apply(function () {
             cleanContacts.forEach(function (contact) {
-                contactsProcessor.processContact(contact, model);
+                contactsHandler.processContact(contact, model);
             });
         });
     },
@@ -43,9 +44,9 @@ var contactsProcessor = {
     },
 
     processContact: function (contact, model) {
-        contact = contactsProcessor.dedupePhoneNumbers(contact);
+        contact = contactsHandler.dedupePhoneNumbers(contact);
         contact.stickler = false;
-        contactsProcessor.storeAndDisplayIfNew(contact, model);
+        contactsHandler.storeAndDisplayIfNew(contact, model);
     },
 
     dedupePhoneNumbers: function (contact) {
@@ -94,7 +95,7 @@ var userHandler = {
         }
     },
     
-    phonePrompter: function ($ionicPopup, $resource) {
+    phonePrompter: function ($ionicPopup, $resource, $cookies) {
         return function () {
             userHandler.promptPhone($ionicPopup,
                 userHandler.phoneNumber,
@@ -102,7 +103,7 @@ var userHandler = {
                 function (input) {
                     try {
                         log.debug("Input: " + input);
-                        userHandler.registerOnServer($resource);
+                        userHandler.registerOnServer($resource, $cookies);
                     } catch (err) {
                         log.error("Error", err);
                     }
@@ -138,7 +139,7 @@ var userHandler = {
         });
     },
 
-    logon: function ($ionicPopup, $timeout, $resource) {
+    logon: function ($ionicPopup, $timeout, $resource, $cookies) {
         var promise = $timeout();
         userHandler.phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
         if (userHandler.phoneNumber == null || userHandler.phoneNumber.length < 4) {
@@ -149,7 +150,7 @@ var userHandler = {
         if (!userHandler.phoneNumberRegistered) {
             promise.then(function () {
                 try {
-                    userHandler.registerOnServer($resource);
+                    userHandler.registerOnServer($resource, $cookies);
                 } catch (err) {
                     log.error("Error", err);
                 }
@@ -157,7 +158,7 @@ var userHandler = {
         }
     },
 
-    registerOnServer: function ($resource) {
+    registerOnServer: function ($resource, $cookies) {
         var User = $resource('http://:server/api/user/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
@@ -167,7 +168,7 @@ var userHandler = {
             window.localStorage.setItem(userHandler.phoneNumberRegisteredKey, "true");
             window.localStorage.setItem(userHandler.userIdKey, res.userId);
             userHandler.phoneNumberRegistered = true;
-            userHandler.userId = res;
+            userHandler.userId = res.userId;
             log.debug("registered!");
         }, context.errorReportFunc);
     }

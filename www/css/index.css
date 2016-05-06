@@ -25,11 +25,6 @@ html {
     text-align: center;
     min-height: 120px;
     padding-top: 20px;
-
-    /*background-image: url('../img/spinner.gif');
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    background-size: auto;*/
 }
 
 .hidden {
@@ -41,8 +36,26 @@ html {
     background-color: #9b0c59;
 }
 
+.contact-list .list{
+    z-index: 1;
+}
+
+.stickle-list .list{
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 100);
+}
+
+.list {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 .item, .item span {
     color: ghostwhite;
+}
+
+.item.stickle-item, .item.stickle-item span {
+    color: #777777;
 }
 
 .item .track {
@@ -94,4 +107,24 @@ html {
     font-size: 14px;
     padding-top: 20px;
     display: inline-block;
+}
+
+.stickle-item{
+     -webkit-animation: slideUp ease-in 1;
+     animation: slideUp ease-in 1;
+     -webkit-animation-fill-mode: forwards;
+     animation-fill-mode: forwards;
+     -webkit-animation-duration: 750ms;
+     animation-duration: 750ms;
+    background-color: #F9D72F;
+    border-top: 1px solid #f0cc2e;
+ }
+
+@-webkit-keyframes slideUp {
+    0% {
+        -webkit-transform: translate3d(0,100%,0);
+    }
+    100% {
+        -webkit-transform: translate3d(0,0,0);
+    }
 }

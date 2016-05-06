@@ -15,26 +15,8 @@
     <script type="text/javascript" src="js/log4javascript.js"></script>
     <script type="text/javascript">
         var log = log4javascript.getDefaultLogger();
-        log.removeAllAppenders();
-
         log.setLevel(log4javascript.Level.DEBUG);
 
-        var appender = new log4javascript.InPageAppender("errors");
-        appender.setHeight("100px");
-        appender.setShowCommandLine(false);
-        log.addAppender(appender);
-
-        appender.addEventListener("load", function() {
-            // Find appender's iframe element
-            var iframes = document.getElementsByTagName("iframe");
-            for (var i = 0, len = iframes.length; i < len; ++i) {
-                if (iframes[i].id.indexOf("_InPageAppender_") > -1) {
-                    var iframeDoc = iframes[i].contentDocument || iframes[i].contentWindow.document;
-                    iframeDoc.getElementById("switchesContainer").style.display = "none";
-                    iframeDoc.getElementById("commandLine").style.display = "none";
-                }
-            }
-        });
     </script>
     <script src="js/jquery-1.9.0.min.js"></script>
     <script src="js/ionic.bundle.js"></script>
@@ -52,8 +34,22 @@
     <main>
         <div id="errors"></div>
         <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
-        <ion-list>
-            <ion-item ng-repeat="contact in contacts" ng-class="{'disable': !contact.stickler,'first':$first}">
+        <ion-list class="stickle-list">
+            <ion-item ng-repeat="contact in stickles" class="stickle-item">
+                <div class="contact-list-item">
+                    <div class="contact-details">
+                        <div class="name">{{contact.displayName}}</div>
+                        <p>
+                            <span ng-repeat="num in contact.phoneNumbers">
+                            <span class="type">{{num.type}}:</span> {{num.value}}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+        <ion-list class="contact-list">
+            <ion-item ng-repeat="contact in contacts" ng-class="{'disable':!contact.stickler,'first':$first,'hidden':contact.hidden}">
                 <div class="contact-list-item">
                     <div class="contact-details">
                         <div class="name">{{contact.displayName}}</div>
@@ -82,6 +78,7 @@
 </ion-content>
 
 <script src="js/angular/angular-resource.js"></script>
+<script src="node_modules/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/ng-websocket/ng-websocket.js"></script>
 <script type="text/javascript" src="js/contacts.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
