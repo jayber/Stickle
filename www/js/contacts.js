@@ -95,7 +95,7 @@ var userHandler = {
         }
     },
     
-    phonePrompter: function ($ionicPopup, $resource, $cookies) {
+    phonePrompter: function ($ionicPopup, $resource) {
         return function () {
             userHandler.promptPhone($ionicPopup,
                 userHandler.phoneNumber,
@@ -103,7 +103,7 @@ var userHandler = {
                 function (input) {
                     try {
                         log.debug("Input: " + input);
-                        userHandler.registerOnServer($resource, $cookies);
+                        userHandler.registerOnServer($resource);
                     } catch (err) {
                         log.error("Error", err);
                     }
@@ -139,7 +139,7 @@ var userHandler = {
         });
     },
 
-    logon: function ($ionicPopup, $timeout, $resource, $cookies) {
+    logon: function ($ionicPopup, $timeout, $resource) {
         var promise = $timeout();
         userHandler.phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
         if (userHandler.phoneNumber == null || userHandler.phoneNumber.length < 4) {
@@ -150,7 +150,7 @@ var userHandler = {
         if (!userHandler.phoneNumberRegistered) {
             promise.then(function () {
                 try {
-                    userHandler.registerOnServer($resource, $cookies);
+                    userHandler.registerOnServer($resource);
                 } catch (err) {
                     log.error("Error", err);
                 }
@@ -158,7 +158,7 @@ var userHandler = {
         }
     },
 
-    registerOnServer: function ($resource, $cookies) {
+    registerOnServer: function ($resource) {
         var User = $resource('http://:server/api/user/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"

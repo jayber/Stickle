@@ -15,14 +15,14 @@ appender.addEventListener("load", function () {
     }
 });
 
-angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngCookies'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $cookies) {
+angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval) {
         try {
             ionic.Platform.ready(function () {
                 try {
                     polyFillMobileAPIs();
                     contactsHandler.populateContacts($scope, $resource);
-                    userHandler.logon($ionicPopup, $timeout, $resource, $cookies);
+                    userHandler.logon($ionicPopup, $timeout, $resource);
                     context.startSockets($scope, $websocket, $interval, $timeout);
                 } catch (err) {
                     log.error("Error", err);
@@ -31,7 +31,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngCookies'])
 
             $scope.onToggle = userHandler.stickle;
 
-            $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource, $cookies);
+            $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource);
 
         } catch (err) {
             log.error("Error", err);
