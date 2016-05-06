@@ -38,6 +38,11 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
                 context.startSockets($scope, $websocket, $interval, $timeout);
             }, false);
 
+            document.addEventListener("pause", function () {
+                log.debug("paused");
+                context.unbindSockets($interval);
+            }, false);
+
         } catch (err) {
             log.error("Error", err);
         }
@@ -75,12 +80,20 @@ var context = {
         }
     },
 
+    unbindSockets: function ($interval) {
+        context.ws.$un("stickled");
+        context.ws.$un("contactStatus");
+        context.ws.$un("authenticated");
+        context.ws.$un("$open");
+        context.ws.$un("$closed");
+        $interval.cancel(context.checkStatusPromise);
+    },
+
     startSockets: function (model, $websocket, $interval, $timeout) {
         context.ws = $websocket.$new({
             url: 'ws://' + context.serverUrl + "/api/ws"
         });
 
-        var checkStatusPromise;
         context.ws.$on("$open", function () {
 
             context.authenticate();
@@ -92,7 +105,7 @@ var context = {
                 $timeout(function () {
                     context.checkStatuses(model)
                 }, 2000);
-                checkStatusPromise = $interval(function () {
+                context.checkStatusPromise = $interval(function () {
                     context.checkStatuses(model)
                 }, 60 * 60 * 1000);
 
@@ -127,10 +140,7 @@ var context = {
         });
 
         context.ws.$on("$close", function () {
-            context.ws.$un("stickled");
-            context.ws.$un("contactStatus");
-            context.ws.$un("authenticated");
-            $interval.cancel(checkStatusPromise);
+            this.unbindSockets($interval);
         });
 
     },
