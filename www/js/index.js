@@ -33,6 +33,11 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
 
             $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource);
 
+            document.addEventListener("resume", function () {
+                log.debug("resuming");
+                context.startSockets($scope, $websocket, $interval, $timeout);
+            }, false);
+
         } catch (err) {
             log.error("Error", err);
         }
@@ -75,7 +80,7 @@ var context = {
             url: 'ws://' + context.serverUrl + "/api/ws"
         });
 
-        var promise;
+        var checkStatusPromise;
         context.ws.$on("$open", function () {
 
             context.authenticate();
@@ -87,7 +92,7 @@ var context = {
                 $timeout(function () {
                     context.checkStatuses(model)
                 }, 2000);
-                promise = $interval(function () {
+                checkStatusPromise = $interval(function () {
                     context.checkStatuses(model)
                 }, 60 * 60 * 1000);
 
@@ -125,7 +130,7 @@ var context = {
             context.ws.$un("stickled");
             context.ws.$un("contactStatus");
             context.ws.$un("authenticated");
-            $interval.cancel(promise);
+            $interval.cancel(checkStatusPromise);
         });
 
     },

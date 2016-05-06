@@ -16,9 +16,13 @@ function polyFillMobileAPIs() {
                     stickler: true,
                     phoneNumbers: [{type: "mobile", value: "08991872567"}, {type: "home", value: "02035678906"}]
                 }, {
-                    displayName: "(mobile) Test",
+                    displayName: "(mobile) Test Dev",
                     stickler: true,
                     phoneNumbers: [{type: "mobile", value: "1111"}]
+                }, {
+                    displayName: "(mobile) Test App",
+                    stickler: true,
+                    phoneNumbers: [{type: "mobile", value: "5555"}]
                 }])
             }
         };
