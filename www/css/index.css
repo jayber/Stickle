@@ -15,16 +15,21 @@
 }
 
 html {
-    background-color: #555555;
     color: ghostwhite;
 }
 
+.main{
+    background-color: #555555;
+}
+
 .loading {
+    /*background-color: #555555;*/
     color: ghostwhite;
     font-size: 20px;
     text-align: center;
     min-height: 120px;
     padding-top: 20px;
+    height: 100%;
 }
 
 .hidden {
@@ -68,6 +73,7 @@ html {
 
 .item {
     background-color: transparent;
+    /*background-color: #555555;*/
     border-color: #888888;
 }
 

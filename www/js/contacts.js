@@ -86,15 +86,6 @@ var userHandler = {
     phoneNumberKey: "phonenumber",
     validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
     
-    stickle: function (contact) {
-        log.trace("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
-        if (contact.stickled) {
-            context.stickleOn(userHandler.phoneNumber, contact.phoneNumbers[0].value);
-        } else {
-            context.stickleOff(userHandler.phoneNumber, contact.phoneNumbers[0].value);
-        }
-    },
-    
     phonePrompter: function ($ionicPopup, $resource) {
         return function () {
             userHandler.promptPhone($ionicPopup,

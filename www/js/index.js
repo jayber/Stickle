@@ -29,13 +29,13 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
                 }
             });
 
-            $scope.onToggle = userHandler.stickle;
+            $scope.onToggle = context.stickleHandler;
 
             $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource);
 
             document.addEventListener("resume", function () {
                 log.debug("resuming");
-                context.startSockets($scope, $websocket, $interval, $timeout);
+                context.ws.$open();
             }, false);
 
             document.addEventListener("pause", function () {
@@ -51,20 +51,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
 var context = {
     serverUrl: "192.168.0.4",
 
-    stickle: function (event, from, to) {
-        log.trace(event, from, to);
-        if (context.ws.$ready()) {
-            log.trace("ws ready");
-            context.ws.$emit(event, {from: from, to: to});
-        }
-    },
-
-    stickleOn: function (from, to) {
-        context.stickle("stickleOn", from, to);
-    },
-
-    stickleOff: function (from, to) {
-        context.stickle("stickleOff", from, to);
+    stickleHandler: function (contact) {
+        log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
+        context.ws.$emit("stickle", {from: userHandler.phoneNumber, to: contact.phoneNumbers[0].value, status: contact.stickled ? "open" : "closed"});
     },
 
     checkStatuses: function (model) {
@@ -81,19 +70,21 @@ var context = {
     },
 
     unbindSockets: function ($interval) {
-        log.debug("UNbinding to socket");
-        context.ws.$un("stickled");
-        context.ws.$un("contactStatus");
-        context.ws.$un("authenticated");
-        context.ws.$un("$open");
-        context.ws.$un("$closed");
+        context.ws.$close();
         $interval.cancel(context.checkStatusPromise);
-        context.socketBound = false;
     },
 
     startSockets: function (model, $websocket, $interval, $timeout) {
+        const url = 'ws://' + context.serverUrl + "/api/ws";
+
         context.ws = $websocket.$new({
-            url: 'ws://' + context.serverUrl + "/api/ws"
+            url: url
+        });
+
+        context.ws.$on("$open", function () {
+            context.checkStatusPromise = $interval(function () {
+                context.checkStatuses(model)
+            }, 60 * 60 * 1000);
         });
 
         context.ws.$on("$open", function () {
@@ -109,9 +100,6 @@ var context = {
                 $timeout(function () {
                     context.checkStatuses(model)
                 }, 2000);
-                context.checkStatusPromise = $interval(function () {
-                    context.checkStatuses(model)
-                }, 60 * 60 * 1000);
 
 
                 context.ws.$on("stickled", function (data) {
@@ -142,10 +130,6 @@ var context = {
                 });
                 context.socketBound = true;
             }
-        });
-
-        context.ws.$on("$close", function () {
-            this.unbindSockets($interval);
         });
 
     },
