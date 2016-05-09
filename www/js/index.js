@@ -81,12 +81,14 @@ var context = {
     },
 
     unbindSockets: function ($interval) {
+        log.debug("UNbinding to socket");
         context.ws.$un("stickled");
         context.ws.$un("contactStatus");
         context.ws.$un("authenticated");
         context.ws.$un("$open");
         context.ws.$un("$closed");
         $interval.cancel(context.checkStatusPromise);
+        context.socketBound = false;
     },
 
     startSockets: function (model, $websocket, $interval, $timeout) {
@@ -95,12 +97,14 @@ var context = {
         });
 
         context.ws.$on("$open", function () {
-
             context.authenticate();
+        });
 
-            context.ws.$on("authenticated", function () {
+        context.ws.$on("authenticated", function () {
+            log.debug("authenticated");
 
-                log.debug("authenticated");
+            if (!context.socketBound) {
+                log.debug("binding to socket");
 
                 $timeout(function () {
                     context.checkStatuses(model)
@@ -117,7 +121,7 @@ var context = {
                             model.stickles[data.from] = model.contactsMap[data.from];
                             model.contactsMap[data.from].hidden = true;
                         } else {
-                            delete model.stickles[data.from];                            
+                            delete model.stickles[data.from];
                             model.contactsMap[data.from].hidden = false;
 
                         }
@@ -136,7 +140,8 @@ var context = {
                         });
                     }
                 });
-            });
+                context.socketBound = true;
+            }
         });
 
         context.ws.$on("$close", function () {
