@@ -88,26 +88,36 @@
             <h1 class="title">Settings</h1>
         </ion-header-bar>
         <ion-content scroll="false">
-            <form ng-submit="validateAndRegister()">
-                <div class="padding">
+            <div class="padding">
+                <form ng-submit="validateAndRegister(detailsForm)" class="css-form" novalidate name="detailsForm">
                     <div class="list">
                         <label class="item item-input">
-                            <input type="text" placeholder="Your display name" ng-model="details.displayName">
+                            <input type="text" placeholder="Your display name" ng-model="details.displayName"
+                                   name="displayName" required>
                         </label>
+                        <div ng-show="(detailsForm.$submitted || detailsForm.displayName.$touched) && detailsForm.displayName.$error.required"
+                             class="validationMsg">Enter your name.
+                        </div>
+
                         <label class="item item-input">
-                            <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber">
+                            <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber"
+                                   name="phoneNumber" required minlength="4">
                         </label>
+                        <div ng-show="(detailsForm.$submitted || detailsForm.phoneNumber.$touched) && (detailsForm.phoneNumber.$error.required || detailsForm.phoneNumber.$error.minlength)"
+                             class="validationMsg">Enter a valid phone number
+                        </div>
+
                     </div>
                     <button type="submit" class="button button-block button-positive">Save</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </ion-content>
     </ion-side-menu>
 </ion-side-menus>
 
 <script src="js/angular/angular-resource.js"></script>
-<script src="node_modules/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/ng-websocket/ng-websocket.js"></script>
+<script src="node_modules/angular-animate/angular-animate.js"></script>
 <script type="text/javascript" src="js/contacts.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript" src="cordova.js"></script>

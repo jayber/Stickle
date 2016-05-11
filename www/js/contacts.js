@@ -80,86 +80,18 @@ var contactsHandler = {
 
 var userHandler = {
 
-    phoneNumberRegisteredKey: "registered",
+    displayNameKey: "displayName",
     userIdKey: "userId",
-    phoneNumberRegistered: false,
     phoneNumberKey: "phonenumber",
-    validationMessage: "<span class='validationMessagePrompt'>enter valid phone number</span>",
-    
-    phonePrompter: function ($ionicPopup, $resource) {
-        return function () {
-            userHandler.promptPhone($ionicPopup,
-                userHandler.phoneNumber,
-                false,
-                function (input) {
-                    try {
-                        log.debug("Input: " + input);
-                        userHandler.registerOnServer($resource);
-                    } catch (err) {
-                        log.error("Error", err);
-                    }
-                })
-        };
-    },
 
-    promptPhone: function ($ionicPopup, defaultVal, inValid, registerCallback) {
-        return $ionicPopup.prompt({
-            title: 'Phone Number',
-            inputType: 'tel',
-            inputPlaceholder: 'enter mobile phone number',
-            defaultText: defaultVal,
-            subTitle: inValid ? userHandler.validationMessage : null,
-            maxLength: 12
-        }).then(function (input) {
-            if (input !== undefined) {
-                if (input.length < 4) {
-                    userHandler.promptPhone($ionicPopup, input, true);
-                } else {
-                    if (input !== userHandler.phoneNumber) {
-                        userHandler.phoneNumber = input;
-                        window.localStorage.setItem(userHandler.phoneNumberKey, input);
-                        window.localStorage.setItem(userHandler.phoneNumberRegisteredKey, "false");
-                        if (registerCallback !== undefined) {
-                            registerCallback(input);
-                        }
-                    }
-                }
-            } else if (defaultVal === "") {
-                userHandler.promptPhone($ionicPopup, "", true);
-            }
-        });
-    },
-
-    logon: function ($ionicPopup, $timeout, $resource) {
-        var promise = $timeout();
-        userHandler.phoneNumber = window.localStorage.getItem(userHandler.phoneNumberKey);
-        if (userHandler.phoneNumber == null || userHandler.phoneNumber.length < 4) {
-            promise = this.promptPhone($ionicPopup, "", false);
-        }
-
-        userHandler.phoneNumberRegistered = window.localStorage.getItem(userHandler.phoneNumberRegisteredKey) == "true";
-        if (!userHandler.phoneNumberRegistered) {
-            promise.then(function () {
-                try {
-                    userHandler.registerOnServer($resource);
-                } catch (err) {
-                    log.error("Error", err);
-                }
-            });
-        }
-    },
-
-    registerOnServer: function ($resource) {
+    registerOnServer: function ($resource, phoneNumber, displayName) {
         var User = $resource('http://:server/api/user/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to register");
-        User.save({phoneNum: userHandler.phoneNumber}, function (res) {
-            window.localStorage.setItem(userHandler.phoneNumberRegisteredKey, "true");
+        User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
             window.localStorage.setItem(userHandler.userIdKey, res.userId);
-            userHandler.phoneNumberRegistered = true;
-            userHandler.userId = res.userId;
             log.debug("registered!");
         }, context.errorReportFunc);
     }

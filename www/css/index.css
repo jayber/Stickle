@@ -1,15 +1,10 @@
 
 * {
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
 .bar.deep {
-    /*background-color: #b96fb9;*/
-    /*background-color: #a14114;*/
     background-color: #c65018;
-    /*background-color: #db7613;*/
-    /*background-color: #ba0e6b;*/
-    /*background-color: #2d0753;*/
     background-image: none;
     border-bottom: 0;
 }
@@ -18,12 +13,11 @@ html {
     color: ghostwhite;
 }
 
-.main{
+.main {
     background-color: #555555;
 }
 
 .loading {
-    /*background-color: #555555;*/
     color: ghostwhite;
     font-size: 20px;
     text-align: center;
@@ -41,11 +35,11 @@ html {
     background-color: #9b0c59;
 }
 
-.contact-list .list{
+.contact-list .list {
     z-index: 1;
 }
 
-.stickle-list .list{
+.stickle-list .list {
     z-index: 100;
     background-color: rgba(255, 255, 255, 100);
 }
@@ -73,7 +67,6 @@ html {
 
 .item {
     background-color: transparent;
-    /*background-color: #555555;*/
     border-color: #888888;
 }
 
@@ -89,7 +82,7 @@ html {
 
 .contact-list-item .contact-details {
     float: left;
-    width:calc(100% - 50px);
+    width: calc(100% - 50px);
 }
 
 .contact-list-item .contact-action .icon {
@@ -115,22 +108,41 @@ html {
     display: inline-block;
 }
 
-.stickle-item{
-     -webkit-animation: slideUp ease-in 1;
-     animation: slideUp ease-in 1;
-     -webkit-animation-fill-mode: forwards;
-     animation-fill-mode: forwards;
-     -webkit-animation-duration: 750ms;
-     animation-duration: 750ms;
+.stickle-item {
+    -webkit-animation: slideUp ease-in 1;
+    animation: slideUp ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 750ms;
+    animation-duration: 750ms;
     background-color: #F9D72F;
     border-top: 1px solid #f0cc2e;
- }
+}
+
+.msgContainer {
+
+}
+
+.validationMsg {
+    display: block;
+    padding: 2px;
+    text-align: center;
+    color: #FA787E;
+    -webkit-transition: all linear 0.5s;
+    transition: all linear 0.5s;
+    opacity: 1;
+}
+
+.validationMsg.ng-hide {
+    opacity: 0;
+    display: block!important;
+}
 
 @-webkit-keyframes slideUp {
     0% {
-        -webkit-transform: translate3d(0,100%,0);
+        -webkit-transform: translate3d(0, 100%, 0);
     }
     100% {
-        -webkit-transform: translate3d(0,0,0);
+        -webkit-transform: translate3d(0, 0, 0);
     }
 }

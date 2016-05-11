@@ -15,23 +15,30 @@ appender.addEventListener("load", function () {
     }
 });
 
-angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval) {
+angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
         try {
             ionic.Platform.ready(function () {
                 try {
                     polyFillMobileAPIs();
                     contactsHandler.populateContacts($scope, $resource);
-                    userHandler.logon($ionicPopup, $timeout, $resource);
+                    context.checkDetails($ionicSideMenuDelegate);
                     context.startSockets($scope, $websocket, $interval, $timeout);
                 } catch (err) {
                     log.error("Error", err);
                 }
             });
 
-            $scope.onToggle = context.stickleHandler;
+            $scope.details = {
+                displayName: window.localStorage.getItem(userHandler.displayNameKey),
+                phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
+            };
 
-            $scope.promptPhone = userHandler.phonePrompter($ionicPopup, $resource);
+            $scope.validateAndRegister = function (form) {
+                context.validateAndRegister(form, $ionicSideMenuDelegate, $scope, $resource);
+            };
+
+            $scope.onToggle = context.stickleHandler;
 
             document.addEventListener("resume", function () {
                 log.debug("resuming");
@@ -51,9 +58,39 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket'])
 var context = {
     serverUrl: "192.168.0.4",
 
+    checkDetails: function ($ionicSideMenuDelegate) {
+        const userId = window.localStorage.getItem(userHandler.userIdKey);
+        if ((userId===undefined) || userId==="") {
+            $ionicSideMenuDelegate.toggleLeft(true);
+        }
+    },
+
+    validateAndRegister: function (form, $ionicSideMenuDelegate, $scope, $resource) {
+        log.debug("validateAndRegister");
+        if (form.$valid) {
+            log.debug("valid");
+            window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
+            window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
+
+            userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName);
+
+            context.ws.$open();
+
+            $ionicSideMenuDelegate.toggleLeft(false);
+        }
+        if (form.$invalid) {
+            log.debug("invalid");
+            $ionicSideMenuDelegate.toggleLeft(true);
+        }
+    },
+
     stickleHandler: function (contact) {
         log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
-        context.ws.$emit("stickle", {from: userHandler.phoneNumber, to: contact.phoneNumbers[0].value, status: contact.stickled ? "open" : "closed"});
+        context.ws.$emit("stickle", {
+            from: userHandler.phoneNumber,
+            to: contact.phoneNumbers[0].value,
+            status: contact.stickled ? "open" : "closed"
+        });
     },
 
     checkStatuses: function (model) {
