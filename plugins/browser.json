@@ -9,9 +9,6 @@
     "installed_plugins": {
         "mx.ferreyra.callnumber": {
             "PACKAGE_NAME": "com.ergle.stickle"
-        },
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.ergle.stickle"
         }
     },
     "dependent_plugins": {}

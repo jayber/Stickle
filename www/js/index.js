@@ -15,6 +15,8 @@ appender.addEventListener("load", function () {
     }
 });
 
+document.addEventListener("touchstart", function(){}, true);
+
 angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
         try {
@@ -22,7 +24,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                 try {
                     polyFillMobileAPIs();
                     contactsHandler.populateContacts($scope, $resource);
-                    context.checkDetails($ionicSideMenuDelegate);
+                    context.checkDetails($scope, $ionicSideMenuDelegate);
                     context.startSockets($scope, $websocket, $interval, $timeout);
                 } catch (err) {
                     log.error("Error", err);
@@ -36,6 +38,16 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
 
             $scope.validateAndRegister = function (form) {
                 context.validateAndRegister(form, $ionicSideMenuDelegate, $scope, $resource);
+            };
+
+            $scope.acceptStickle = context.stickleResponseHandler("accepted");
+
+            $scope.unAcceptStickle = context.stickleResponseHandler("un-accepted");
+
+            $scope.rejectStickle = function(contact) {
+                context.stickleResponseHandler("rejected")(contact);
+                delete $scope.stickles[contact.phoneNumbers[0].value];
+                contact.hidden = false;
             };
 
             $scope.onToggle = context.stickleHandler;
@@ -56,27 +68,33 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     });
 
 var context = {
-    serverUrl: "192.168.0.4",
+    serverUrl: "192.168.0.3",
 
-    checkDetails: function ($ionicSideMenuDelegate) {
+    checkDetails: function ($scope, $ionicSideMenuDelegate) {
         const userId = window.localStorage.getItem(userHandler.userIdKey);
-        if ((userId===undefined) || userId==="") {
+        if ((userId===null) || userId==="") {
+            $scope.generalError = "Enter your name and telephone number to get started";
             $ionicSideMenuDelegate.toggleLeft(true);
         }
     },
 
     validateAndRegister: function (form, $ionicSideMenuDelegate, $scope, $resource) {
         log.debug("validateAndRegister");
+        $scope.generalError = null;
         if (form.$valid) {
             log.debug("valid");
             window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
             window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
 
-            userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName);
+            var promise = userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName);
 
-            context.ws.$open();
-
-            $ionicSideMenuDelegate.toggleLeft(false);
+            promise.then(function () {
+                $ionicSideMenuDelegate.toggleLeft(false);
+                context.ws.$close();
+                context.ws.$open();
+            }, function (result) {
+                $scope.generalError = result.data;
+            });
         }
         if (form.$invalid) {
             log.debug("invalid");
@@ -84,13 +102,24 @@ var context = {
         }
     },
 
+    stickleResponseHandler: function(status) {
+        return function (contact) {
+            log.debug(status+": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
+            context.ws.$emit("stickle-response", {
+                origin: contact.phoneNumbers[0].value,
+                status: status
+            });
+            contact.stickleStatus = status;
+        }
+    },
+
     stickleHandler: function (contact) {
         log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
         context.ws.$emit("stickle", {
-            from: userHandler.phoneNumber,
             to: contact.phoneNumbers[0].value,
             status: contact.stickled ? "open" : "closed"
         });
+        contact.accepted = false;
     },
 
     checkStatuses: function (model) {
@@ -142,13 +171,25 @@ var context = {
                 context.ws.$on("stickled", function (data) {
                     log.debug("stickled: " + JSON.stringify(data));
                     model.$apply(function () {
+                        var contact = model.contactsMap[data.from];
                         if (data.status === "open") {
-                            model.stickles[data.from] = model.contactsMap[data.from];
-                            model.contactsMap[data.from].hidden = true;
+                            if (contact == null) {
+                                contact = {phoneNumbers: [{type: "mobile", value: data.from}], displayName: data.displayName}
+                            } else {
+                                contact.hidden = true;
+                            }
+                            contact.stickleStatus = data.status;
+                            model.stickles[data.from] = contact;
+                        } else if (data.status === "accepted") {
+                            contact.accepted = true;
+                        } else if (data.status === "un-accepted") {
+                            contact.accepted = false;
+                        } else if (data.status === "rejected") {
+                            contact.accepted = false;
+                            contact.stickled = false;
                         } else {
                             delete model.stickles[data.from];
-                            model.contactsMap[data.from].hidden = false;
-
+                            contact.hidden = false;
                         }
                     });
                 });
@@ -164,6 +205,10 @@ var context = {
                             }
                         });
                     }
+                });
+
+                context.ws.$on("state", function (data) {
+                    log.debug("state: " + data.status + ", from: " + data.from + ", to: " + data.to + ", created: " + data.createdDate);
                 });
                 context.socketBound = true;
             }

@@ -30,11 +30,6 @@ html {
     display: none;
 }
 
-.nothing {
-    background-color: #ba0e6b;
-    background-color: #9b0c59;
-}
-
 .contact-list .list {
     z-index: 1;
 }
@@ -47,6 +42,12 @@ html {
 .list {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+.item {
+    padding: 4px;
+    background-color: transparent;
+    border-color: #888888;
 }
 
 .item, .item span {
@@ -65,11 +66,6 @@ html {
     background-color: #aaaaaa;
 }
 
-.item {
-    background-color: transparent;
-    border-color: #888888;
-}
-
 .item.disable, .item.disable span {
     background-color: #888888;
     color: #bbbbbb;
@@ -80,21 +76,62 @@ html {
     border-top: 0;
 }
 
-.contact-list-item .contact-details {
+.contact-details {
     float: left;
-    width: calc(100% - 50px);
+    width: calc(100% - 140px);
+    padding: 12px 0 12px 12px;
 }
 
-.contact-list-item .contact-action .icon {
-    font-size: 30px;
+.contact-actions .icon.regular-action {
     color: #e3e3e3;
+    padding: 5px 20px 0 0;
+}
+
+.contact-actions .icon, .stickle-actions .icon {
+    font-size: 30px;
     text-align: center;
 }
 
-.contact-list-item .contact-action {
-    width: 50px;
-    margin-top: 2px;
+.stickle-actions, .contact-actions {
+    width: 140px;
     float: right;
+}
+
+.regular-action {
+    float: right;
+    margin: 10px 10px 0 0;
+}
+
+.stickle-actions .icon, .call {
+    background-color: #ffffff;
+    border-radius: 100%;
+    display: inline-block;
+    border: 2px solid;
+    width: 62px;
+    height: 62px;
+}
+
+.stickle-actions .accept, .call {
+    border-color: #4cd964;
+    color: #4cd964;
+    margin-right: 4px;
+}
+
+.stickle-actions .unaccept {
+    border-color: #fe9c03;
+    color: #fe9c03;
+    margin-right: 4px;
+}
+
+.stickle-actions .reject {
+    border-color: #6c9add;
+    color: #6c9add;
+}
+
+.stickle-actions :active, .call:active, .stickle-actions :focus {
+    border-color: #777777;
+    color: #777777;
+    background-color: #cccccc;
 }
 
 .type {
@@ -115,12 +152,16 @@ html {
     animation-fill-mode: forwards;
     -webkit-animation-duration: 750ms;
     animation-duration: 750ms;
+}
+
+.stickle-item.open, .stickle-item.un-accepted {
     background-color: #F9D72F;
     border-top: 1px solid #f0cc2e;
 }
 
-.msgContainer {
-
+.stickle-item.accepted {
+    background-color: #80ff95;
+    border-top: 1px solid #7bee8e;
 }
 
 .validationMsg {

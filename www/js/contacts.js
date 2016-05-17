@@ -90,9 +90,10 @@ var userHandler = {
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to register");
-        User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
+        return User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
             window.localStorage.setItem(userHandler.userIdKey, res.userId);
+            window.localStorage.setItem(userHandler.phoneNumberKey, phoneNumber);
             log.debug("registered!");
-        }, context.errorReportFunc);
+        }, context.errorReportFunc).$promise;
     }
 };
