@@ -1,6 +1,9 @@
 var contactsHandler = {
 
     populateContacts: function (model, $resource) {
+        model.contacts = [];
+        model.contactsMap = {};
+        model.stickles = {};
         var fields = [''];
         var options = new ContactFindOptions();
         options.filter = "";
@@ -10,10 +13,8 @@ var contactsHandler = {
             navigator.contacts.fieldType.phoneNumbers];
         navigator.contacts.find(fields,
             function (contacts) {
-                model.contacts = [];
-                model.contactsMap = {};
-                model.stickles = {};
-                contactsHandler.processContacts(contacts, model, $resource)
+                contactsHandler.processContacts(contacts, model, $resource);
+                contactsDeferred.resolve();
             },
             function (err) {
                 log.error("Error", err);

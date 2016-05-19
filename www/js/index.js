@@ -15,7 +15,10 @@ appender.addEventListener("load", function () {
     }
 });
 
-document.addEventListener("touchstart", function(){}, true);
+document.addEventListener("touchstart", function () {
+}, true);
+
+contactsDeferred = jQuery.Deferred();
 
 angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
@@ -25,7 +28,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                     polyFillMobileAPIs();
                     contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
-                    context.startSockets($scope, $websocket, $interval, $timeout);
+                    contactsDeferred.done(function() {
+                        context.startSockets($scope, $websocket, $interval, $timeout);
+                    });
                 } catch (err) {
                     log.error("Error", err);
                 }
@@ -44,7 +49,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
 
             $scope.unAcceptStickle = context.stickleResponseHandler("un-accepted");
 
-            $scope.rejectStickle = function(contact) {
+            $scope.rejectStickle = function (contact) {
                 context.stickleResponseHandler("rejected")(contact);
                 delete $scope.stickles[contact.phoneNumbers[0].value];
                 contact.hidden = false;
@@ -72,7 +77,7 @@ var context = {
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
         const userId = window.localStorage.getItem(userHandler.userIdKey);
-        if ((userId===null) || userId==="") {
+        if ((userId === null) || userId === "") {
             $scope.generalError = "Enter your name and telephone number to get started";
             $ionicSideMenuDelegate.toggleLeft(true);
         }
@@ -102,9 +107,9 @@ var context = {
         }
     },
 
-    stickleResponseHandler: function(status) {
+    stickleResponseHandler: function (status) {
         return function (contact) {
-            log.debug(status+": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
+            log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
             context.ws.$emit("stickle-response", {
                 origin: contact.phoneNumbers[0].value,
                 status: status
@@ -123,8 +128,8 @@ var context = {
     },
 
     checkStatuses: function (model) {
-        model.contacts.forEach(function (thing, index) {
-            context.ws.$emit("checkContactStatus", {phoneNum: thing.phoneNumbers[0].value});
+        model.contacts.forEach(function (contact, index) {
+            context.ws.$emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].value});
         });
     },
 
@@ -138,6 +143,19 @@ var context = {
     unbindSockets: function ($interval) {
         context.ws.$close();
         $interval.cancel(context.checkStatusPromise);
+    },
+
+    createNewStickle: function (contact, data, model) {
+        if (contact == null) {
+            contact = {
+                phoneNumbers: [{type: "mobile", value: data.from}],
+                displayName: data.displayName
+            }
+        } else {
+            contact.hidden = true;
+        }
+        contact.stickleStatus = data.status;
+        model.stickles[data.from] = contact;
     },
 
     startSockets: function (model, $websocket, $interval, $timeout) {
@@ -173,13 +191,7 @@ var context = {
                     model.$apply(function () {
                         var contact = model.contactsMap[data.from];
                         if (data.status === "open") {
-                            if (contact == null) {
-                                contact = {phoneNumbers: [{type: "mobile", value: data.from}], displayName: data.displayName}
-                            } else {
-                                contact.hidden = true;
-                            }
-                            contact.stickleStatus = data.status;
-                            model.stickles[data.from] = contact;
+                            contact = context.createNewStickle(contact, data, model);
                         } else if (data.status === "accepted") {
                             contact.accepted = true;
                         } else if (data.status === "un-accepted") {
@@ -208,7 +220,24 @@ var context = {
                 });
 
                 context.ws.$on("state", function (data) {
-                    log.debug("state: " + data.status + ", from: " + data.from + ", to: " + data.to + ", created: " + data.createdDate);
+                    log.debug("state: " + data.state + ", originator: " + data.originator + ", recipient: " + data.recipient + ", created: " + data.createdDate + ", name: " + data.originatorDisplayName);
+                    model.$apply(function () {
+                        try {
+                            if (data.originator === window.localStorage.getItem(userHandler.phoneNumberKey)) {
+                                var contact = model.contactsMap[data.recipient];
+                                contact.stickled = true;
+                                if (data.state === "accepted") {
+                                    contact.accepted = true;
+                                }
+                            } else {
+                                var contact = model.contactsMap[data.originator];
+                                context.createNewStickle(contact,{from: data.originator, displayName: data.originatorDisplayName, status: data.state},model)
+                            }
+                        } catch (err) {
+                            log.error("Error", err);
+                        }
+
+                    });
                 });
                 context.socketBound = true;
             }
