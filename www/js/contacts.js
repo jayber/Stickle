@@ -1,6 +1,7 @@
 var contactsHandler = {
 
     populateContacts: function (model, $resource) {
+        var contactsDeferred = jQuery.Deferred();
         model.contacts = [];
         model.contactsMap = {};
         model.stickles = {};
@@ -19,6 +20,7 @@ var contactsHandler = {
             function (err) {
                 log.error("Error", err);
             }, options);
+        return contactsDeferred;
     },
 
     processContacts: function (contacts, model, $resource) {

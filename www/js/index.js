@@ -18,7 +18,6 @@ appender.addEventListener("load", function () {
 document.addEventListener("touchstart", function () {
 }, true);
 
-contactsDeferred = jQuery.Deferred();
 
 angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
@@ -26,7 +25,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
             ionic.Platform.ready(function () {
                 try {
                     polyFillMobileAPIs();
-                    contactsHandler.populateContacts($scope, $resource);
+                    var contactsDeferred = contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsDeferred.done(function() {
                         context.startSockets($scope, $websocket, $interval, $timeout);
@@ -73,7 +72,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     });
 
 var context = {
-    serverUrl: "192.168.0.3",
+    serverUrl: "192.168.0.5",
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
         const userId = window.localStorage.getItem(userHandler.userIdKey);
