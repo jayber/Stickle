@@ -18,9 +18,19 @@ appender.addEventListener("load", function () {
 document.addEventListener("touchstart", function () {
 }, true);
 
+document.addEventListener("resume", function () {
+    log.debug("resuming");
+    context.ws.$open();
+}, false);
+
+document.addEventListener("pause", function () {
+    log.debug("paused");
+    context.unbindSockets($interval);
+}, false);
+
 
 angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $timeout, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
         try {
             ionic.Platform.ready(function () {
                 try {
@@ -28,7 +38,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                     var contactsDeferred = contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsDeferred.done(function() {
-                        context.startSockets($scope, $websocket, $interval, $timeout);
+                        context.startSockets($scope, $websocket, $interval);
                     });
                 } catch (err) {
                     log.error("Error", err);
@@ -55,16 +65,6 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
             };
 
             $scope.onToggle = context.stickleHandler;
-
-            document.addEventListener("resume", function () {
-                log.debug("resuming");
-                context.ws.$open();
-            }, false);
-
-            document.addEventListener("pause", function () {
-                log.debug("paused");
-                context.unbindSockets($interval);
-            }, false);
 
         } catch (err) {
             log.error("Error", err);
@@ -157,7 +157,7 @@ var context = {
         model.stickles[data.from] = contact;
     },
 
-    startSockets: function (model, $websocket, $interval, $timeout) {
+    startSockets: function (model, $websocket, $interval) {
         const url = 'ws://' + context.serverUrl + "/api/ws";
 
         context.ws = $websocket.$new({
@@ -179,11 +179,6 @@ var context = {
 
             if (!context.socketBound) {
                 log.debug("binding to socket");
-
-                $timeout(function () {
-                    context.checkStatuses(model)
-                }, 2000);
-
 
                 context.ws.$on("stickled", function (data) {
                     log.debug("stickled: " + JSON.stringify(data));
@@ -235,13 +230,12 @@ var context = {
                         } catch (err) {
                             log.error("Error", err);
                         }
-
                     });
                 });
+                context.checkStatuses(model);
                 context.socketBound = true;
             }
         });
-
     },
 
     errorReportFunc: function (err) {
