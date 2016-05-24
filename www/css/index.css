@@ -50,11 +50,11 @@ html {
     border-color: #888888;
 }
 
-.item, .item span {
+.item, .item span, .item.inbound.accepted, .item.inbound.accepted span {
     color: ghostwhite;
 }
 
-.item.stickle-item, .item.stickle-item span {
+.item.inbound, .item.inbound span {
     color: #777777;
 }
 
@@ -112,14 +112,14 @@ html {
 }
 
 .stickle-actions .accept, .call {
-    border-color: #4cd964;
-    color: #4cd964;
+    border-color: #4CD964;
+    color: #4CD964;
     margin-right: 4px;
 }
 
 .stickle-actions .unaccept {
-    border-color: #fe9c03;
-    color: #fe9c03;
+    border-color: #ff661e;
+    color: #ff661e;
     margin-right: 4px;
 }
 
@@ -145,7 +145,7 @@ html {
     display: inline-block;
 }
 
-.stickle-item {
+.stickle-list .item {
     -webkit-animation: slideUp ease-in 1;
     animation: slideUp ease-in 1;
     -webkit-animation-fill-mode: forwards;
@@ -154,14 +154,19 @@ html {
     animation-duration: 750ms;
 }
 
-.stickle-item.open, .stickle-item.un-accepted {
+.item{
+    background-color: #555555;
+    border-top: 1px solid #888888;
+}
+
+.inbound.open, .inbound.un-accepted {
     background-color: #F9D72F;
     border-top: 1px solid #f0cc2e;
 }
 
-.stickle-item.accepted {
-    background-color: #80ff95;
-    border-top: 1px solid #7bee8e;
+.inbound.accepted {
+    background-color: #4CD964;
+    border-top: 1px solid #44c259;
 }
 
 .validationMsg {

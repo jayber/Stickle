@@ -15,6 +15,40 @@
 </head>
 <body ng-app="stickle" ng-controller="stickleCtrl" ng-cloak>
 
+<script type="text/ng-template" id="/row.html">
+    <div class="contact-list-item" ng-switch="contact.inbound">
+        <div class="contact-details">
+            <div class="name">{{contact.displayName}}</div>
+            <p>
+                <span ng-repeat="num in contact.phoneNumbers">
+                <span class="type">{{num.type}}:</span> {{num.value}}
+                </span>
+            </p>
+        </div>
+        <div ng-switch-when="true" class="stickle-actions">
+            <button ng-if="contact.stickleStatus=='open' || contact.stickleStatus=='un-accepted'"
+                    class="accept icon ion-ios-telephone" ng-click="acceptStickle(contact)"></button>
+            <button ng-if="contact.stickleStatus=='accepted'" class="unaccept icon ion-ios-telephone"
+                    ng-click="unAcceptStickle(contact)"></button>
+            <button class="reject icon ion-trash-b" ng-click="rejectStickle(contact)"></button>
+        </div>
+        <div ng-switch-default ng-switch="contact.stickler" class="contact-actions">
+            <button ng-if="contact.stickled && (contact.stickleStatus=='accepted')" class="call icon ion-ios-telephone"
+                    ng-click="call(contact)"></button>
+            <label ng-switch-when="true" class="toggle regular-action">
+                <input type="checkbox" ng-disabled="!contact.stickler" ng-change="onToggle(contact)"
+                       ng-model="contact.stickled">
+
+                <div class="track">
+                    <div class="handle"></div>
+                </div>
+            </label>
+
+            <div ng-switch-default class="icon ion-ios-personadd-outline regular-action"></div>
+        </div>
+    </div>
+</script>
+
 <ion-side-menus>
     <ion-side-menu-content>
 
@@ -30,47 +64,18 @@
             <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
 
             <ion-list class="stickle-list">
-                <ion-item ng-repeat="contact in stickles" class="stickle-item" ng-class="contact.stickleStatus">
-                    <div class="contact-list-item" >
-                        <div class="contact-details">
-                            <div class="name">{{contact.displayName}}</div>
-                            <p>
-                            <span ng-repeat="num in contact.phoneNumbers">
-                            <span class="type">{{num.type}}:</span> {{num.value}}
-                            </span>
-                            </p>
-                        </div>
-                        <div class="stickle-actions">
-                            <button ng-if="contact.stickleStatus=='open' || contact.stickleStatus=='un-accepted'" class="accept icon ion-ios-telephone" ng-click="acceptStickle(contact)"></button>
-                            <button ng-if="contact.stickleStatus=='accepted'" class="unaccept icon ion-ios-telephone" ng-click="unAcceptStickle(contact)"></button>
-                            <button class="reject icon ion-trash-b" ng-click="rejectStickle(contact)"></button>
-                        </div>
-                    </div>
+                <ion-item ng-repeat="contact in stickles" ng-class="[{'inbound':contact.inbound}, contact.stickleStatus]">
+
+                    <ng-include src="'/row.html'"></ng-include>
+
                 </ion-item>
             </ion-list>
 
             <ion-list class="contact-list">
-                <ion-item collection-repeat="contact in contacts" ng-class="{'disable':!contact.stickler,'first':$first,'hidden':contact.hidden}">
-                    <div class="contact-list-item">
-                        <div class="contact-details">
-                            <div class="name">{{contact.displayName}}</div>
-                            <p>
-                            <span ng-repeat="num in contact.phoneNumbers">
-                            <span class="type">{{num.type}}:</span> {{num.value}}
-                            </span>
-                            </p>
-                        </div>
-                        <div ng-switch="contact.stickler" class="contact-actions">
-                            <button ng-if="contact.stickled && contact.accepted" class="call icon ion-ios-telephone" ng-click="call(contact)"></button>
-                            <label ng-switch-when="true" class="toggle regular-action">
-                                <input type="checkbox" ng-disabled="!contact.stickler" ng-change="onToggle(contacts[$index])" ng-model="contacts[$index].stickled">
-                                <div class="track">
-                                    <div class="handle"></div>
-                                </div>
-                            </label>
-                            <div ng-switch-default class="icon ion-ios-personadd-outline regular-action"></div>
-                        </div>
-                    </div>
+                <ion-item collection-repeat="contact in contacts | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
+
+                    <ng-include src="'/row.html'"></ng-include>
+
                 </ion-item>
             </ion-list>
         </ion-content>
