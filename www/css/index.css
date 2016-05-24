@@ -152,9 +152,7 @@ html {
     animation-fill-mode: forwards;
     -webkit-animation-duration: 750ms;
     animation-duration: 750ms;
-}
 
-.item{
     background-color: #555555;
     border-top: 1px solid #888888;
 }
