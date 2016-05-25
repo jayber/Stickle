@@ -157,10 +157,14 @@ var context = {
         model.contacts.forEach(function (contact, index) {
             socketHandler.ws.$emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].value});
         });
+    },
 
-        model.stickles.forEach(function (contact, index) {
-            socketHandler.ws.$emit("checkStickleStatus", {phoneNum: contact.phoneNumbers[0].value});
-        });
+    checkStickleStates: function(model) {
+        log.debug("checking stickle states");
+        for (var key in model.stickles) {
+            log.debug("check-state: " + JSON.stringify(model.stickles[key]));
+            socketHandler.ws.$emit("check-state", {phoneNum: model.stickles[key].phoneNumbers[0].value, inbound: model.stickles[key].inbound});
+        }
     },
 
     authenticate: function () {
@@ -194,6 +198,7 @@ var socketHandler = {
     },
 
     bindSocketEvents: function (model) {
+
         socketHandler.ws.$on("stickled", function (data) {
             socketHandler.logAndApply("stickled", function () {
                 var contact = context.getOrCreateContact(model, data.from, data.displayName);
@@ -261,6 +266,8 @@ var socketHandler = {
 
                 socketHandler.socketBound = true;
             }
+
+            context.checkStickleStates(model);
         });
     },
 
