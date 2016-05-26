@@ -72,12 +72,12 @@ var contactsHandler = {
         model.contactsMap[contact.phoneNumbers[0].value] = contact;
     },
 
-    makeCall: function () {
+    makeCall: function (contact) {
         window.plugins.CallNumber.callNumber(function () {
-            alert('success');
+            log.debug('successfully called '+ contact.phoneNumbers[0].value);
         }, function () {
-            alert('error');
-        }, 0);
+            log.error('error calling ' + contact.phoneNumbers[0].value);
+        }, contact.phoneNumbers[0].value);
     }
 };
 

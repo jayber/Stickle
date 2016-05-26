@@ -58,7 +58,11 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
 
             $scope.rejectStickle = context.stickleResponseHandler("rejected", $scope);
 
+            $scope.call = contactsHandler.makeCall;
+
             $scope.onToggle = context.stickleHandler($scope);
+
+            $scope.showLog = context.showLog;
 
         } catch (err) {
             log.error("Error", err);
@@ -67,6 +71,10 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
 
 var context = {
     serverUrl: "192.168.0.5",
+
+    showLog: function(debug) {
+        $("#errors").toggleClass('hidden');
+    },
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
         const userId = window.localStorage.getItem(userHandler.userIdKey);
@@ -117,6 +125,13 @@ var context = {
 
     setStatusAndDisplay: function (contact, status, model, inbound) {
         var key = (inbound ? "in" : "out") + contact.phoneNumbers[0].value;
+
+        if (inbound) {
+            var existingContact = model.stickles[key];
+            if (existingContact!=null) {
+                contact = existingContact;
+            }
+        }
 
         if (status === "rejected" || status === "closed") {
             contact.stickleStatus = null;
@@ -177,10 +192,12 @@ var context = {
     getOrCreateContact: function (model, key, displayName) {
         var contact = model.contactsMap[key];
         if (contact == null) {
+        if (contact == null) {
             contact = {
                 phoneNumbers: [{type: "mobile", value: key}],
                 displayName: displayName
             }
+        }
         }
         return contact;
     },

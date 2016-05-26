@@ -44,13 +44,13 @@ html {
     padding-bottom: 0;
 }
 
-.item {
+.list .item {
     padding: 4px;
     background-color: transparent;
     border-color: #888888;
 }
 
-.item, .item span, .item.inbound.accepted, .item.inbound.accepted span {
+.list .item, .list .item span {
     color: ghostwhite;
 }
 
@@ -66,48 +66,49 @@ html {
     background-color: #aaaaaa;
 }
 
-.item.disable, .item.disable span {
+.list .item.disable, .list .item.disable span {
     background-color: #888888;
     color: #bbbbbb;
     border-color: #666666;
 }
 
-.item.first {
+.list .item.first {
     border-top: 0;
 }
 
 .contact-details {
     float: left;
-    width: calc(100% - 140px);
+    width: calc(100% - 164px);
     padding: 12px 0 12px 12px;
 }
 
-.contact-actions .icon.regular-action {
+.contact-actions .action.regular-action {
     color: #e3e3e3;
     padding: 5px 20px 0 0;
 }
 
-.contact-actions .icon, .stickle-actions .icon {
-    font-size: 30px;
-    text-align: center;
-}
-
 .stickle-actions, .contact-actions {
-    width: 140px;
+    width: 164px;
     float: right;
 }
 
 .regular-action {
     float: right;
-    margin: 10px 10px 0 0;
+    margin: 10px 3px 0 0;
 }
 
-.stickle-actions .icon, .call {
+.contact-actions .icon, .stickle-actions .action {
+    font-size: 14pt;
+    text-align: center;
+}
+
+.stickle-actions .action, .call {
     background-color: #ffffff;
-    border-radius: 100%;
-    display: inline-block;
+    border-radius: 5px;
+    display: block;
+    float: right;
     border: 2px solid;
-    width: 62px;
+    width: 86px;
     height: 62px;
 }
 
@@ -123,9 +124,14 @@ html {
     margin-right: 4px;
 }
 
+.contact-actions .icon, .stickle-actions .icon {
+    font-size: 30px;
+}
+
 .stickle-actions .reject {
     border-color: #6c9add;
     color: #6c9add;
+    width: 62px;
 }
 
 .stickle-actions :active, .call:active, .stickle-actions :focus {
@@ -157,14 +163,20 @@ html {
     border-top: 1px solid #888888;
 }
 
+.inbound.open, .inbound.un-accepted, .inbound.accepted {
+    background-color: #ffffff;
+    border-width: 3px;
+    border-top-width: 7px;
+    border-bottom-width: 7px;
+    border-radius: 5px;
+}
+
 .inbound.open, .inbound.un-accepted {
-    background-color: #F9D72F;
-    border-top: 1px solid #f0cc2e;
+    border-color: #F9D72F;
 }
 
 .inbound.accepted {
-    background-color: #4CD964;
-    border-top: 1px solid #44c259;
+    border-color: #4CD964;
 }
 
 .validationMsg {
