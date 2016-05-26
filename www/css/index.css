@@ -168,7 +168,6 @@ html {
     border-width: 3px;
     border-top-width: 7px;
     border-bottom-width: 7px;
-    border-radius: 5px;
 }
 
 .inbound.open, .inbound.un-accepted {

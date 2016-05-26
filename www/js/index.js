@@ -15,25 +15,27 @@ appender.addEventListener("load", function () {
     }
 });
 
-document.addEventListener("touchstart", function () {
-}, true);
+function addEventListeners() {
+    document.addEventListener("touchstart", function () {
+    }, true);
 
-document.addEventListener("resume", function () {
-    log.debug("resuming");
-    socketHandler.ws.$open();
-}, false);
+    document.addEventListener("resume", function () {
+        log.debug("resuming");
+        socketHandler.ws.$open();
+    }, false);
 
-document.addEventListener("pause", function () {
-    log.debug("paused");
-    socketHandler.unbindSockets($interval);
-}, false);
-
+    document.addEventListener("pause", function () {
+        log.debug("paused");
+        socketHandler.unbindSockets($interval);
+    }, false);
+}
 
 angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $websocket, $interval, $ionicSideMenuDelegate) {
         try {
             ionic.Platform.ready(function () {
                 try {
+                    addEventListeners();
                     polyFillMobileAPIs();
                     var contactsDeferred = contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
@@ -63,6 +65,8 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
             $scope.onToggle = context.stickleHandler($scope);
 
             $scope.showLog = context.showLog;
+            $scope.debugOn = window.localStorage.getItem("debug")=="true";
+            context.showLog($scope.debugOn);
 
         } catch (err) {
             log.error("Error", err);
@@ -73,7 +77,8 @@ var context = {
     serverUrl: "192.168.0.5",
 
     showLog: function(debug) {
-        $("#errors").toggleClass('hidden');
+        $("#errors").toggleClass('hidden', !debug);
+        window.localStorage.setItem("debug",debug);
     },
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
