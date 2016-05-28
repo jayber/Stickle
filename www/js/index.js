@@ -37,9 +37,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                 try {
                     addEventListeners();
                     polyFillMobileAPIs();
-                    var contactsDeferred = contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
-                    contactsDeferred.done(function () {
+                    contactsDeferred = contactsHandler.populateContacts($scope, $resource)
+                    .done(function () {
                         socketHandler.startSockets($scope, $websocket, $interval, $ionicSideMenuDelegate);
                     });
                 } catch (err) {
