@@ -40,7 +40,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                     var contactsDeferred = contactsHandler.populateContacts($scope, $resource);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsDeferred.done(function () {
-                        socketHandler.startSockets($scope, $websocket, $interval);
+                        socketHandler.startSockets($scope, $websocket, $interval, $ionicSideMenuDelegate);
                     });
                 } catch (err) {
                     log.error("Error - ionic.Platform.ready", err);
@@ -74,7 +74,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
     });
 
 var context = {
-    serverUrl: "192.168.0.5",
+    serverUrl: "192.168.0.4",
 
     showLog: function(debug) {
         $("#errors").toggleClass('hidden', !debug);
@@ -221,6 +221,7 @@ var socketHandler = {
 
     bindSocketEvents: function (model) {
 
+        //are these 3 all just one type of event, i.e. state?
         socketHandler.ws.$on("stickled", function (data) {
             socketHandler.logAndApply("stickled", function () {
                 var contact = context.getOrCreateContact(model, data.from, data.displayName);
@@ -232,14 +233,6 @@ var socketHandler = {
             socketHandler.logAndApply("stickle-responded", function () {
                 var contact = model.contactsMap[data.from];
                 context.setStatusAndDisplay(contact, data.status, model, false);
-            }, model, data);
-        });
-
-        socketHandler.ws.$on("contactStatus", function (data) {
-            socketHandler.logAndApply("contactStatus", function () {
-                if (data.status === "registered") {
-                    model.contactsMap[data.phoneNum].stickler = true;
-                }
             }, model, data);
         });
 
@@ -256,9 +249,17 @@ var socketHandler = {
                 context.setStatusAndDisplay(contact, data.state, model, inbound);
             }, model, data);
         });
+
+        socketHandler.ws.$on("contactStatus", function (data) {
+            socketHandler.logAndApply("contactStatus", function () {
+                if (data.status === "registered") {
+                    model.contactsMap[data.phoneNum].stickler = true;
+                }
+            }, model, data);
+        });
     },
 
-    startSockets: function (model, $websocket, $interval) {
+    startSockets: function (model, $websocket, $interval, $ionicSideMenuDelegate) {
 
         const url = 'ws://' + context.serverUrl + "/api/ws";
 
@@ -273,24 +274,34 @@ var socketHandler = {
         });
 
         socketHandler.ws.$on("$open", function () {
-            context.authenticate();
-        });
-
-        socketHandler.ws.$on("authenticated", function () {
-            log.debug("authenticated");
 
             if (!socketHandler.socketBound) {
                 log.debug("binding to socket");
 
                 socketHandler.bindSocketEvents(model);
 
-                context.checkStatuses(model);
-
                 socketHandler.socketBound = true;
             }
 
+            context.authenticate();
+        });
+
+        socketHandler.ws.$on("authenticated", function () {
+            log.debug("authenticated");
+
+            context.checkStatuses(model);
+
             context.checkStickleStates(model);
         });
+
+        socketHandler.ws.$on("authentication-failed", function () {
+            log.debug("authentication-failed");
+
+            model.generalError = "Authentication failed, please register again.";
+            $ionicSideMenuDelegate.toggleLeft(true);
+        });
+
+
     },
 
     logAndApply: function (msg, func, model, data) {

@@ -103,8 +103,8 @@ html {
 }
 
 .stickle-actions .action, .call {
-    background-color: #ffffff;
-    border-radius: 5px;
+    background-color: transparent;
+    border-radius: 3px;
     display: block;
     float: right;
     border: 2px solid;
