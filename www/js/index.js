@@ -21,7 +21,11 @@ function addEventListeners() {
 
     document.addEventListener("resume", function () {
         log.debug("resuming");
-        socketHandler.ws.$open();
+        try {
+            socketHandler.ws.$open();
+        } catch (err) {
+            log.error("Error - ", err, err.stack);
+        }
     }, false);
 
     document.addEventListener("pause", function () {
@@ -281,6 +285,7 @@ var socketHandler = {
         });
 
         socketHandler.ws.$on("$open", function () {
+            //must be this way round otherwise events can be fired before their handlers are registered.
 
             socketHandler.bindSocketEvents(model);
 
