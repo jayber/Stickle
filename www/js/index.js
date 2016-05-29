@@ -22,7 +22,7 @@ function addEventListeners() {
     document.addEventListener("resume", function () {
         log.debug("resuming");
         try {
-            socketHandler.ws.$open();
+            socketHandler.init();
         } catch (err) {
             log.error("Error - ", err, err.stack);
         }
@@ -270,13 +270,23 @@ var socketHandler = {
         }
     },
 
-    startSockets: function (model, $websocket, $interval, $ionicSideMenuDelegate) {
+    getUrl: function() {
+        return 'ws://' + context.serverUrl + "/api/ws";
+    },
 
-        const url = 'ws://' + context.serverUrl + "/api/ws";
+    init: function () {
+        var url = socketHandler.getUrl();
 
-        socketHandler.ws = $websocket.$new({
+        socketHandler.ws = socketHandler.lawebs.$new({
             url: url
         });
+    },
+
+    startSockets: function (model, $websocket, $interval, $ionicSideMenuDelegate) {
+
+        socketHandler.lawebs = $websocket;
+
+        socketHandler.init();
 
         socketHandler.ws.$on("$open", function () {
             context.checkStatusPromise = $interval(function () {
