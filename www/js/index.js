@@ -39,9 +39,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                     polyFillMobileAPIs();
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsDeferred = contactsHandler.populateContacts($scope, $resource)
-                    .done(function () {
-                        socketHandler.startSockets($scope, $websocket, $interval, $ionicSideMenuDelegate);
-                    });
+                        .done(function () {
+                            socketHandler.startSockets($scope, $websocket, $interval, $ionicSideMenuDelegate);
+                        });
                 } catch (err) {
                     log.error("Error - ionic.Platform.ready", err);
                 }
@@ -65,7 +65,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
             $scope.onToggle = context.stickleHandler($scope);
 
             $scope.showLog = context.showLog;
-            $scope.debugOn = window.localStorage.getItem("debug")=="true";
+            $scope.debugOn = window.localStorage.getItem("debug") == "true";
             context.showLog($scope.debugOn);
 
         } catch (err) {
@@ -76,9 +76,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
 var context = {
     serverUrl: "192.168.0.4",
 
-    showLog: function(debug) {
+    showLog: function (debug) {
         $("#errors").toggleClass('hidden', !debug);
-        window.localStorage.setItem("debug",debug);
+        window.localStorage.setItem("debug", debug);
     },
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
@@ -133,7 +133,7 @@ var context = {
 
         if (inbound) {
             var existingContact = model.stickles[key];
-            if (existingContact!=null) {
+            if (existingContact != null) {
                 contact = existingContact;
             }
         }
@@ -179,30 +179,31 @@ var context = {
         });
     },
 
-    checkStickleStates: function(model) {
+    checkStickleStates: function (model) {
         log.debug("checking stickle states");
         for (var key in model.stickles) {
             log.debug("check-state: " + JSON.stringify(model.stickles[key]));
-            socketHandler.ws.$emit("check-state", {phoneNum: model.stickles[key].phoneNumbers[0].value, inbound: model.stickles[key].inbound});
+            socketHandler.ws.$emit("check-state", {
+                phoneNum: model.stickles[key].phoneNumbers[0].value,
+                inbound: model.stickles[key].inbound
+            });
         }
     },
 
     authenticate: function () {
-        if (socketHandler.ws.$ready()) {
-            log.debug("authenticating");
-            socketHandler.ws.$emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
-        }
+        log.debug("authenticating");
+        socketHandler.ws.$emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
     },
 
     getOrCreateContact: function (model, key, displayName) {
         var contact = model.contactsMap[key];
         if (contact == null) {
-        if (contact == null) {
-            contact = {
-                phoneNumbers: [{type: "mobile", value: key}],
-                displayName: displayName
+            if (contact == null) {
+                contact = {
+                    phoneNumbers: [{type: "mobile", value: key}],
+                    displayName: displayName
+                }
             }
-        }
         }
         return contact;
     },
@@ -221,42 +222,48 @@ var socketHandler = {
 
     bindSocketEvents: function (model) {
 
-        //are these 3 all just one type of event, i.e. state?
-        socketHandler.ws.$on("stickled", function (data) {
-            socketHandler.logAndApply("stickled", function () {
-                var contact = context.getOrCreateContact(model, data.from, data.displayName);
-                context.setStatusAndDisplay(contact, data.status, model, true);
-            }, model, data);
-        });
+        if (!socketHandler.socketBound) {
+            log.debug("binding to socket");
 
-        socketHandler.ws.$on("stickle-responded", function (data) {
-            socketHandler.logAndApply("stickle-responded", function () {
-                var contact = model.contactsMap[data.from];
-                context.setStatusAndDisplay(contact, data.status, model, false);
-            }, model, data);
-        });
+            //are these 3 all just one type of event, i.e. state?
+            socketHandler.ws.$on("stickled", function (data) {
+                socketHandler.logAndApply("stickled", function () {
+                    var contact = context.getOrCreateContact(model, data.from, data.displayName);
+                    context.setStatusAndDisplay(contact, data.status, model, true);
+                }, model, data);
+            });
 
-        socketHandler.ws.$on("state", function (data) {
-            socketHandler.logAndApply("state", function () {
-                var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
-                var contact;
-                if (inbound) {
-                    contact = context.getOrCreateContact(model, data.originator, data.originatorDisplayName);
-                } else {
-                    contact = model.contactsMap[data.recipient];
-                    contact.stickled = true;
-                }
-                context.setStatusAndDisplay(contact, data.state, model, inbound);
-            }, model, data);
-        });
+            socketHandler.ws.$on("stickle-responded", function (data) {
+                socketHandler.logAndApply("stickle-responded", function () {
+                    var contact = model.contactsMap[data.from];
+                    context.setStatusAndDisplay(contact, data.status, model, false);
+                }, model, data);
+            });
 
-        socketHandler.ws.$on("contactStatus", function (data) {
-            socketHandler.logAndApply("contactStatus", function () {
-                if (data.status === "registered") {
-                    model.contactsMap[data.phoneNum].stickler = true;
-                }
-            }, model, data);
-        });
+            socketHandler.ws.$on("state", function (data) {
+                socketHandler.logAndApply("state", function () {
+                    var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
+                    var contact;
+                    if (inbound) {
+                        contact = context.getOrCreateContact(model, data.originator, data.originatorDisplayName);
+                    } else {
+                        contact = model.contactsMap[data.recipient];
+                        contact.stickled = true;
+                    }
+                    context.setStatusAndDisplay(contact, data.state, model, inbound);
+                }, model, data);
+            });
+
+            socketHandler.ws.$on("contactStatus", function (data) {
+                socketHandler.logAndApply("contactStatus", function () {
+                    if (data.status === "registered") {
+                        model.contactsMap[data.phoneNum].stickler = true;
+                    }
+                }, model, data);
+            });
+
+            socketHandler.socketBound = true;
+        }
     },
 
     startSockets: function (model, $websocket, $interval, $ionicSideMenuDelegate) {
@@ -275,13 +282,7 @@ var socketHandler = {
 
         socketHandler.ws.$on("$open", function () {
 
-            if (!socketHandler.socketBound) {
-                log.debug("binding to socket");
-
-                socketHandler.bindSocketEvents(model);
-
-                socketHandler.socketBound = true;
-            }
+            socketHandler.bindSocketEvents(model);
 
             context.authenticate();
         });
