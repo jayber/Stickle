@@ -16,7 +16,7 @@
 <body ng-app="stickle" ng-controller="stickleCtrl" ng-cloak>
 
 <script type="text/ng-template" id="/row.html">
-    <div class="contact-list-item" ng-switch="contact.inbound">
+    <div class="contact-list-item" ng-switch="contact.inbound==true">
         <div class="contact-details">
             <div class="name">{{contact.displayName}}</div>
             <p>
@@ -44,6 +44,47 @@
             <div ng-switch-default class="action icon ion-ios-personadd-outline regular-action"></div>
         </div>
     </div>
+</script>
+
+<script id="feedback.html" type="text/ng-template">
+
+    <div class="modal">
+
+        <!-- Modal header bar -->
+        <ion-header-bar class="bar-secondary">
+            <h1 class="title">Feedback</h1>
+            <button class="button button-clear button-positive" ng-click="feedbackClose()">Cancel</button>
+        </ion-header-bar>
+
+        <!-- Modal content area -->
+        <ion-content>
+
+            <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
+                <div class="list">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
+                    </label>
+                    <label class="item item-input">
+                        <textarea placeholder="Your feedback.
+
+Say what you like and don't like.
+
+If you had and error, say what were you doing, what you expected to happen and what happened instead."    
+                                  ng-model="feedback.content" name="feedbackBody" required></textarea>
+                    </label>
+
+                    <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
+                         class="validationMsg">Enter your feedback
+                    </div>
+                </div>
+
+                <button type="submit" class="button button-block button-positive">Send feedback</button>
+            </form>
+
+        </ion-content>
+
+    </div>
+
 </script>
 
 <ion-side-menus>
@@ -112,6 +153,11 @@
             <div class="padding">
                 <ion-checkbox ng-model="debugOn" ng-change="showLog(debugOn)" menu-close>Show log</ion-checkbox>
             </div>
+
+            <div class="padding">
+                <button class="button button-outline button-block button-stable" ng-click="feedbackOpen()" menu-close>Send feedback ></button>
+            </div>
+
         </ion-content>
     </ion-side-menu>
 </ion-side-menus>
@@ -121,16 +167,14 @@
 <script type="text/javascript">
     var log = log4javascript.getDefaultLogger();
     log.setLevel(log4javascript.Level.TRACE);
-
 </script>
 <script src="js/jquery-1.9.0.min.js"></script>
 <script src="js/ionic.bundle.js"></script>
 <script src="js/angular/angular-resource.js"></script>
-<script src="bower_components/ng-websocket/ng-websocket.js"></script>
 <script src="node_modules/angular-animate/angular-animate.js"></script>
 <script type="text/javascript" src="js/contacts.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/polyFilla.js"></script>
 
-</body
+</body>

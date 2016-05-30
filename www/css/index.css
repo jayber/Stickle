@@ -201,3 +201,7 @@ html {
         -webkit-transform: translate3d(0, 0, 0);
     }
 }
+
+textarea {
+    min-height: 150px;
+}
