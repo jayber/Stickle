@@ -54,6 +54,7 @@
 
     <div class="modal">
 
+        <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
         <!-- Modal header bar -->
         <ion-header-bar class="bar-secondary">
             <h1 class="title">Feedback</h1>
@@ -63,17 +64,16 @@
         <!-- Modal content area -->
         <ion-content>
 
-            <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
                 <div class="list">
                     <label class="item item-input">
                         <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
                     </label>
                     <label class="item item-input">
-                        <textarea placeholder="Your feedback.
+                        <textarea placeholder="Your feedback here.
 
 Say what you like and don't like.
 
-If you had and error, say what were you doing, what you expected to happen and what happened instead."
+To report an error, say what were you doing, what you expected to happen and what did happened."
                                   ng-model="feedback.content" name="feedbackBody" required></textarea>
                     </label>
 
@@ -86,9 +86,9 @@ If you had and error, say what were you doing, what you expected to happen and w
                     <button type="submit" class="button button-block button-positive">Send feedback</button>
                 </div>
 
-            </form>
 
         </ion-content>
+        </form>
 
     </div>
 

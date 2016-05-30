@@ -36,7 +36,7 @@ html {
 
 .stickle-list .list {
     z-index: 100;
-    background-color: rgba(255, 255, 255, 100);
+    background-color: rgb(221, 89, 27);
 }
 
 .list {
@@ -112,15 +112,24 @@ html {
     height: 62px;
 }
 
+.call {
+    color: #4CD964;
+}
+
 .stickle-actions .accept, .call {
     border-color: #4CD964;
-    color: #4CD964;
     margin-right: 4px;
+}
+
+.stickle-actions .accept {
+    background-color: #4CD964;
+    color: #ffffff;
 }
 
 .stickle-actions .unaccept {
     border-color: #ff661e;
-    color: #ff661e;
+    background-color: #ff661e;
+    color: #ffffff;
     margin-right: 4px;
 }
 
@@ -168,14 +177,15 @@ html {
     border-width: 3px;
     border-top-width: 7px;
     border-bottom-width: 7px;
+    border-color: #ffffff;
 }
 
 .inbound.open, .inbound.un-accepted {
-    border-color: #F9D72F;
+    background-color: #ffef78;
 }
 
 .inbound.accepted {
-    border-color: #4CD964;
+    background-color: #98eba5;
 }
 
 .validationMsg {

@@ -45,12 +45,13 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
 var setupHandler = {
     setUpFeedback: function ($scope, $ionicModal) {
         $scope.feedbackOpen = function () {
-            $scope.feedbackModal.show();
-            $scope.feedback = {};
+            $scope.feedbackModal.show().then(function (modal) {
+                $scope.feedback = {};
+            });
         };
-
         $scope.sendFeedback = function (feedbackForm) {
             log.debug("sendFeedback");
+            theform = feedbackForm;
             if (feedbackForm.$valid) {
                 log.debug("valid");
                 socketHandler.ws.emit("feedback", {
@@ -60,9 +61,10 @@ var setupHandler = {
                     phoneNumber: $scope.details.phoneNumber,
                     userId: window.localStorage.getItem(userHandler.userIdKey)
                 });
+                $scope.feedbackModal.hide();
+
                 feedbackForm.$setPristine();
                 feedbackForm.$setUntouched();
-                $scope.feedbackModal.hide();
             }
         };
         $scope.feedbackClose = function () {
@@ -104,14 +106,13 @@ var setupHandler = {
                 window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
                 window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
 
-                var promise = userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName);
-
-                promise.then(function () {
-                    $ionicSideMenuDelegate.toggleLeft(false);
-                    socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate)
-                }, function (result) {
-                    $scope.generalError = result.data;
-                });
+                userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName)
+                    .then(function () {
+                        $ionicSideMenuDelegate.toggleLeft(false);
+                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate)
+                    }, function (result) {
+                        $scope.generalError = result.data;
+                    });
             }
             if (form.$invalid) {
                 log.debug("invalid");
