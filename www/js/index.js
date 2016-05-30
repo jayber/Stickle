@@ -15,14 +15,14 @@ appender.addEventListener("load", function () {
     }
 });
 
-function addEventListeners() {
+function addEventListeners(model, $interval, $ionicSideMenuDelegate) {
     document.addEventListener("touchstart", function () {
     }, true);
 
     document.addEventListener("resume", function () {
         log.debug("resuming");
         try {
-            socketHandler.init();
+            socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate);
         } catch (err) {
             log.error("Error - ", err, err.stack);
         }
@@ -30,7 +30,7 @@ function addEventListeners() {
 
     document.addEventListener("pause", function () {
         log.debug("paused");
-        socketHandler.unbindSockets($interval);
+        socketHandler.ws.close();
     }, false);
 }
 
@@ -39,12 +39,12 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
         try {
             ionic.Platform.ready(function () {
                 try {
-                    addEventListeners();
+                    addEventListeners($scope, $interval, $ionicSideMenuDelegate);
                     polyFillMobileAPIs();
                     context.checkDetails($scope, $ionicSideMenuDelegate);
-                    contactsDeferred = contactsHandler.populateContacts($scope, $resource)
+                    contactsHandler.populateContacts($scope, $resource)
                         .done(function () {
-                            socketHandler.startSockets($scope, $websocket, $interval, $ionicSideMenuDelegate);
+                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
                         });
                 } catch (err) {
                     log.error("Error - ionic.Platform.ready", err);
@@ -56,7 +56,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngWebsocket', 'ngAnimate'])
                 phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
             };
 
-            $scope.validateAndRegister = context.validateAndRegisterHandler($ionicSideMenuDelegate, $scope, $resource);
+            $scope.validateAndRegister = context.validationAndRegistrationHandler($ionicSideMenuDelegate, $scope, $resource);
 
             $scope.acceptStickle = context.stickleResponseHandler("accepted", $scope);
 
@@ -93,7 +93,7 @@ var context = {
         }
     },
 
-    validateAndRegisterHandler: function ($ionicSideMenuDelegate, $scope, $resource) {
+    validationAndRegistrationHandler: function ($ionicSideMenuDelegate, $scope, $resource) {
         return function (form) {
             log.debug("validateAndRegister");
             $scope.generalError = null;
@@ -157,7 +157,7 @@ var context = {
     stickleResponseHandler: function (status, model) {
         return function (contact) {
             log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
-            socketHandler.ws.$emit("stickle-response", {
+            socketHandler.ws.emit("stickle-response", {
                 origin: contact.phoneNumbers[0].value,
                 status: status
             });
@@ -169,7 +169,7 @@ var context = {
         return function (contact) {
             log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
             var status = contact.stickled ? "open" : "closed";
-            socketHandler.ws.$emit("stickle", {
+            socketHandler.ws.emit("stickle", {
                 to: contact.phoneNumbers[0].value,
                 status: status
             });
@@ -179,7 +179,7 @@ var context = {
 
     checkStatuses: function (model) {
         model.contacts.forEach(function (contact, index) {
-            socketHandler.ws.$emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].value});
+            socketHandler.ws.emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].value});
         });
     },
 
@@ -187,7 +187,7 @@ var context = {
         log.debug("checking stickle states");
         for (var key in model.stickles) {
             log.debug("check-state: " + JSON.stringify(model.stickles[key]));
-            socketHandler.ws.$emit("check-state", {
+            socketHandler.ws.emit("check-state", {
                 phoneNum: model.stickles[key].phoneNumbers[0].value,
                 inbound: model.stickles[key].inbound
             });
@@ -196,7 +196,7 @@ var context = {
 
     authenticate: function () {
         log.debug("authenticating");
-        socketHandler.ws.$emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
+        socketHandler.ws.emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
     },
 
     getOrCreateContact: function (model, key, displayName) {
@@ -219,105 +219,12 @@ var context = {
 
 var socketHandler = {
 
-    unbindSockets: function ($interval) {
-        socketHandler.ws.$close();
-        $interval.cancel(context.checkStatusPromise);
-    },
-
-    bindSocketEvents: function (model) {
-
-        if (!socketHandler.socketBound) {
-            log.debug("binding to socket");
-
-            //are these 3 all just one type of event, i.e. state?
-            socketHandler.ws.$on("stickled", function (data) {
-                socketHandler.logAndApply("stickled", function () {
-                    var contact = context.getOrCreateContact(model, data.from, data.displayName);
-                    context.setStatusAndDisplay(contact, data.status, model, true);
-                }, model, data);
-            });
-
-            socketHandler.ws.$on("stickle-responded", function (data) {
-                socketHandler.logAndApply("stickle-responded", function () {
-                    var contact = model.contactsMap[data.from];
-                    context.setStatusAndDisplay(contact, data.status, model, false);
-                }, model, data);
-            });
-
-            socketHandler.ws.$on("state", function (data) {
-                socketHandler.logAndApply("state", function () {
-                    var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
-                    var contact;
-                    if (inbound) {
-                        contact = context.getOrCreateContact(model, data.originator, data.originatorDisplayName);
-                    } else {
-                        contact = model.contactsMap[data.recipient];
-                        contact.stickled = true;
-                    }
-                    context.setStatusAndDisplay(contact, data.state, model, inbound);
-                }, model, data);
-            });
-
-            socketHandler.ws.$on("contactStatus", function (data) {
-                socketHandler.logAndApply("contactStatus", function () {
-                    if (data.status === "registered") {
-                        model.contactsMap[data.phoneNum].stickler = true;
-                    }
-                }, model, data);
-            });
-
-            socketHandler.socketBound = true;
-        }
-    },
-
-    getUrl: function() {
+    getUrl: function () {
         return 'ws://' + context.serverUrl + "/api/ws";
     },
 
-    init: function () {
-        var url = socketHandler.getUrl();
-
-        socketHandler.ws = socketHandler.lawebs.$new({
-            url: url
-        });
-    },
-
-    startSockets: function (model, $websocket, $interval, $ionicSideMenuDelegate) {
-
-        socketHandler.lawebs = $websocket;
-
-        socketHandler.init();
-
-        socketHandler.ws.$on("$open", function () {
-            context.checkStatusPromise = $interval(function () {
-                context.checkStatuses(model)
-            }, 60 * 60 * 1000);
-        });
-
-        socketHandler.ws.$on("$open", function () {
-            //must be this way round otherwise events can be fired before their handlers are registered.
-
-            socketHandler.bindSocketEvents(model);
-
-            context.authenticate();
-        });
-
-        socketHandler.ws.$on("authenticated", function () {
-            log.debug("authenticated");
-
-            context.checkStatuses(model);
-
-            context.checkStickleStates(model);
-        });
-
-        socketHandler.ws.$on("authentication-failed", function () {
-            log.debug("authentication-failed");
-
-            model.generalError = "Authentication failed, please register again.";
-            $ionicSideMenuDelegate.toggleLeft(true);
-        });
-
-
+    startSockets: function (model, $interval, $ionicSideMenuDelegate) {
+        socketHandler.ws = new StickleWebSocket(socketHandler.getUrl(), model, $ionicSideMenuDelegate, $interval);
     },
 
     logAndApply: function (msg, func, model, data) {
@@ -331,3 +238,94 @@ var socketHandler = {
         });
     }
 };
+
+function StickleWebSocket(url, model, $ionicSideMenuDelegate, $interval) {
+    this.url = url;
+    this.ws = new WebSocket(url);
+
+    this.ws.onopen = function () {
+        log.debug("ws open!");
+        context.checkStatusPromise = $interval(function () {
+            context.checkStatuses(model)
+        }, 60 * 60 * 1000);
+
+        context.authenticate();
+    };
+
+    this.emit = function(event, data) {
+        var output = JSON.stringify({"event": event, "data": data});
+        log.trace("ws emitting! " + output);
+        this.ws.send(output);
+    };
+
+    this.close = function() {
+        this.ws.close();
+
+        this.ws.onclose = function() {
+            log.debug("ws closed - leaving");
+            $interval.cancel(context.checkStatusPromise);
+        };
+    };
+
+    this.ws.onclose = function() {
+        log.debug("ws closed! - trying to reopen");
+        setTimeout(function(){ socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate)}, 5000);
+    };
+
+    this.ws.onerror = function(error) {
+        log.error("ws errored!", error);
+    };
+
+    this.ws.onmessage = function (event) {
+        var msg = JSON.parse(event.data);
+        var data = msg.data;
+
+        switch (msg.event) { //first 3 events really just the same thing?
+            case "stickled":
+                socketHandler.logAndApply("stickled", function () {
+                    var contact = context.getOrCreateContact(model, data.from, data.displayName);
+                    context.setStatusAndDisplay(contact, data.status, model, true);
+                }, model, data);
+                break;
+            case "stickle-responded":
+                socketHandler.logAndApply("stickle-responded", function () {
+                    var contact = model.contactsMap[data.from];
+                    context.setStatusAndDisplay(contact, data.status, model, false);
+                }, model, data);
+                break;
+            case "state":
+                socketHandler.logAndApply("state", function () {
+                    var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
+                    var contact;
+                    if (inbound) {
+                        contact = context.getOrCreateContact(model, data.originator, data.originatorDisplayName);
+                    } else {
+                        contact = model.contactsMap[data.recipient];
+                        contact.stickled = true;
+                    }
+                    context.setStatusAndDisplay(contact, data.state, model, inbound);
+                }, model, data);
+                break;
+            case "contactStatus":
+                socketHandler.logAndApply("contactStatus", function () {
+                    if (data.status === "registered") {
+                        model.contactsMap[data.phoneNum].stickler = true;
+                    }
+                }, model, data);
+                break;
+            case "authenticated":
+                log.debug("authenticated");
+
+                context.checkStatuses(model);
+
+                context.checkStickleStates(model);
+                break;
+            case "authentication-failed":
+                log.debug("authentication-failed");
+
+                model.generalError = "Authentication failed, please register again.";
+                $ionicSideMenuDelegate.toggleLeft(true);
+                break;
+        }
+    }
+}
