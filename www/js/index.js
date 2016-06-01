@@ -36,7 +36,8 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             setupHandler.setUpActions($scope);
             setupHandler.setUpShowDebug($scope);
             setupHandler.setUpFeedback($scope, $ionicModal);
-            setupHandler.setUpPopover($scope, $ionicPopover)
+            setupHandler.setUpPopover($scope, $ionicPopover);
+            setupHandler.setUpFilter($scope);
 
         } catch (err) {
             log.error("Error", err);
@@ -44,6 +45,19 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     });
 
 var setupHandler = {
+
+    setUpFilter: function($scope) {
+        $scope.contactFilter = {value: ""};
+        $scope.toggleFilter = setupHandler.toggleFilter($scope);
+    },
+
+    toggleFilter: function ($scope) {
+        return function () {
+            $scope.showFilter = !$scope.showFilter;
+            $scope.contactFilter.value = "";
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+    },
 
     setUpFeedback: function ($scope, $ionicModal) {
         $scope.feedbackOpen = function () {
@@ -57,13 +71,13 @@ var setupHandler = {
             if (feedbackForm.$valid) {
                 log.debug("valid");
                 socketHandler.ws.emit("feedback", {
-                    title: $scope.feedback.title==undefined?+"":$scope.feedback.title+"",
-                    content: $scope.feedback.content+"",
-                    displayName: $scope.details.displayName+"",
-                    phoneNumber: $scope.details.phoneNumber+"",
-                    userId: window.localStorage.getItem(userHandler.userIdKey)+""
+                    title: $scope.feedback.title == undefined ? "" : $scope.feedback.title + "",
+                    content: $scope.feedback.content + "",
+                    displayName: $scope.details.displayName + "",
+                    phoneNumber: $scope.details.phoneNumber + "",
+                    userId: window.localStorage.getItem(userHandler.userIdKey) + ""
                 });
-                $scope.feedbackModal.hide().then(setupHandler.showPopover($scope, "Feedback was sent."));
+                $scope.feedbackModal.hide().then(setupHandler.showPopover($scope, "Feedback successfully sent."));
 
                 feedbackForm.$setPristine();
                 feedbackForm.$setUntouched();
@@ -80,22 +94,23 @@ var setupHandler = {
         });
     },
 
-    setUpPopover: function($scope, $ionicPopover) {
+    setUpPopover: function ($scope, $ionicPopover) {
         $ionicPopover.fromTemplateUrl('popover.html', {
             scope: $scope
-        }).then(function(popover) {
+        }).then(function (popover) {
             $scope.popover = popover;
         });
     },
 
-    showPopover: function($scope, msg) {
-            log.trace("popover?");
-            $scope.popoverMsg = msg;
-            $scope.popover.show($(".main"));
-            setTimeout(function(){
+    showPopover: function ($scope, msg) {
+        log.trace("popover?");
+        $scope.popoverMsg = msg;
+        $scope.popover.show($(".main")).then(function () {
+            setTimeout(function () {
                 $scope.popover.hide();
                 log.trace("popover gone?");
             }, 2000)
+        });
     },
 
     setUpShowDebug: function ($scope) {

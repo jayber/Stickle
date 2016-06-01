@@ -233,3 +233,26 @@ textarea {
     font-size: 14px;
     color: #dedee4;
 }
+
+.filter {
+    width: 100%;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.filter input {
+    background-color: transparent;
+    border-bottom: 1px solid #cccccc;
+    width: 80%;
+    color: ghostwhite;
+    text-decoration: none;
+}
+
+.filter button, .filter input {
+    display: inline;
+    font-size: 18px;
+}
+
+.filter input:focus {
+    text-decoration: none;
+}

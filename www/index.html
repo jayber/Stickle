@@ -111,6 +111,12 @@ To report an error, say what were you doing, what you expected to happen and wha
         </ion-header-bar>
 
         <ion-content class="main" overflow-scroll="true">
+            <ion-refresher on-refresh="toggleFilter()">
+            </ion-refresher>
+            <div class="filter" ng-class="{'hidden':!showFilter}">
+                <input type="text" placeholder="Name to filter on" ng-model="contactFilter.value">
+                <button class="icon ion-search button button-clear" ng-click="toggleFilter()"></button>
+            </div>
             <div id="errors" class="hidden"></div>
             <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
 
@@ -123,7 +129,7 @@ To report an error, say what were you doing, what you expected to happen and wha
             </ion-list>
 
             <ion-list class="contact-list">
-                <ion-item collection-repeat="contact in contacts | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
+                <ion-item collection-repeat="contact in contacts | filter:{displayName: contactFilter.value} | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
 
                     <ng-include src="'/row.html'"></ng-include>
 
