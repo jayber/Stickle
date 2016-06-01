@@ -27,4 +27,10 @@ function polyFillMobileAPIs() {
             }
         };
     }
+
+    if (window.plugins === undefined) {
+        window.plugins = { CallNumber: {callNumber: function(success, failure, number) {
+            success();
+        }}}
+    }
 }
