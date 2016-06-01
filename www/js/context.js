@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "192.168.0.4",
+    serverUrl: "52.51.67.89",
 
     completeStickle: function(contact, model) {
         var status = "completed";
