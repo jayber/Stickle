@@ -37,13 +37,16 @@ var context = {
         if (model.stickles[key] == null) {
             model.stickles[key] = contact;
             contact.hidden = true;
+            navigator.notification.beep(1);
         }
     },
 
     removeFromTop: function (contact, model, key) {
-        delete model.stickles[key];
-        contact.hidden = false;
-
+        if (model.stickles[key] != null) {
+            delete model.stickles[key];
+            contact.hidden = false;
+            navigator.notification.beep(1);
+        }
     },
 
     setStatusAndDisplay: function (contact, status, model, inbound) {
@@ -67,7 +70,6 @@ var context = {
             context.moveToTop(contact, model, key);
         }
 
-        navigator.notification.beep(1);
     },
 
     stickleResponseHandler: function (status, model) {
