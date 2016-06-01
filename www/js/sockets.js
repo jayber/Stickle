@@ -37,6 +37,9 @@ var socketHandler = {
     },
 
     startSockets: function (model, $interval, $ionicSideMenuDelegate) {
+        if (socketHandler.ws != undefined) {
+            socketHandler.ws.close();
+        }
         socketHandler.ws = new socketHandler.StickleWebSocket(socketHandler.getUrl(), model, $ionicSideMenuDelegate, $interval);
     },
 
@@ -75,7 +78,7 @@ var socketHandler = {
         };
 
         this.ws.onerror = function (error) {
-            log.error("ws errored!", error);
+            log.error("ws errored!");
         };
 
         this.ws.onmessage = function (event) {
