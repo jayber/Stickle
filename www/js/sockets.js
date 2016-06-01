@@ -4,7 +4,7 @@ var socketHandler = {
     },
 
     logAndApply: function (msg, func, model, data) {
-        log.debug(msg + ": " + JSON.stringify(data));
+        log.trace(msg + ": " + JSON.stringify(data));
         model.$apply(function () {
             try {
                 func();
