@@ -66,6 +66,8 @@ var context = {
             contact.stickleStatus = status;
             context.moveToTop(contact, model, key);
         }
+
+        navigator.notification.beep(1);
     },
 
     stickleResponseHandler: function (status, model) {
