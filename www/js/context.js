@@ -4,7 +4,7 @@ var context = {
     completeStickle: function(contact, model) {
         var status = "completed";
         socketHandler.ws.emit("stickle", {
-            origin: contact.phoneNumbers[0].value,
+            to: contact.phoneNumbers[0].value,
             status: status
         });
         context.setStatusAndDisplay(contact, status, model, false);
