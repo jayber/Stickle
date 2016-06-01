@@ -71,11 +71,16 @@ var context = {
     stickleResponseHandler: function (status, model) {
         return function (contact) {
             log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
-            socketHandler.ws.emit("stickle-response", {
-                origin: contact.phoneNumbers[0].value,
-                status: status
-            });
-            context.setStatusAndDisplay(contact, status, model, true);
+            try {
+                socketHandler.ws.emit("stickle-response", {
+                    origin: contact.phoneNumbers[0].value,
+                    status: status
+                });
+                setupHandler.showPopover(model, "Sent response: " + status + " to \"" + contact.displayName + "\".");
+                context.setStatusAndDisplay(contact, status, model, true);
+            } catch (err) {
+                setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
+            }
         }
     },
 
@@ -83,10 +88,16 @@ var context = {
         return function (contact) {
             log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
             var status = contact.stickled ? "open" : "closed";
-            socketHandler.ws.emit("stickle", {
-                to: contact.phoneNumbers[0].value,
-                status: status
-            });
+            try {
+                socketHandler.ws.emit("stickle", {
+                    to: contact.phoneNumbers[0].value,
+                    status: status
+                });
+                setupHandler.showPopover(model, "\"" + contact.displayName + "\" successfully " + (contact.stickled ? "stickled" : "un-stickled") + ".");
+            } catch (err) {
+                setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                status = contact.stickled ? "closed" : "open";
+            }
             context.setStatusAndDisplay(contact, status, model, false);
         }
     },

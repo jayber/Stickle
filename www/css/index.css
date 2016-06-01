@@ -36,7 +36,7 @@ html {
 
 .stickle-list .list {
     z-index: 100;
-    background-color: rgb(221, 89, 27);
+    background-color: rgb(236, 95, 29);
 }
 
 .list {
@@ -214,4 +214,22 @@ html {
 
 textarea {
     min-height: 150px;
+}
+
+.popover .bar-header {
+    border-radius: 20px;
+    top: -3px;
+  }
+
+.popover {
+    border-radius: 20px;
+    height: 35px;
+    width: 90%;
+    background-color: #555555;
+}
+
+.popover .bar-header .title {
+    text-align: center;
+    font-size: 14px;
+    color: #dedee4;
 }

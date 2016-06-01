@@ -16,7 +16,7 @@ appender.addEventListener("load", function () {
 });
 
 angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
-    .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal) {
+    .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal, $ionicPopover) {
         try {
             ionic.Platform.ready(function () {
                 try {
@@ -36,6 +36,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             setupHandler.setUpActions($scope);
             setupHandler.setUpShowDebug($scope);
             setupHandler.setUpFeedback($scope, $ionicModal);
+            setupHandler.setUpPopover($scope, $ionicPopover)
 
         } catch (err) {
             log.error("Error", err);
@@ -43,6 +44,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     });
 
 var setupHandler = {
+
     setUpFeedback: function ($scope, $ionicModal) {
         $scope.feedbackOpen = function () {
             $scope.feedbackModal.show().then(function (modal) {
@@ -55,13 +57,13 @@ var setupHandler = {
             if (feedbackForm.$valid) {
                 log.debug("valid");
                 socketHandler.ws.emit("feedback", {
-                    title: $scope.feedback.title,
-                    content: $scope.feedback.content,
-                    displayName: $scope.details.displayName,
-                    phoneNumber: $scope.details.phoneNumber,
-                    userId: window.localStorage.getItem(userHandler.userIdKey)
+                    title: $scope.feedback.title==undefined?+"":$scope.feedback.title+"",
+                    content: $scope.feedback.content+"",
+                    displayName: $scope.details.displayName+"",
+                    phoneNumber: $scope.details.phoneNumber+"",
+                    userId: window.localStorage.getItem(userHandler.userIdKey)+""
                 });
-                $scope.feedbackModal.hide();
+                $scope.feedbackModal.hide().then(setupHandler.showPopover($scope, "Feedback was sent."));
 
                 feedbackForm.$setPristine();
                 feedbackForm.$setUntouched();
@@ -76,6 +78,24 @@ var setupHandler = {
             scope: $scope,
             animation: 'slide-in-up'
         });
+    },
+
+    setUpPopover: function($scope, $ionicPopover) {
+        $ionicPopover.fromTemplateUrl('popover.html', {
+            scope: $scope
+        }).then(function(popover) {
+            $scope.popover = popover;
+        });
+    },
+
+    showPopover: function($scope, msg) {
+            log.trace("popover?");
+            $scope.popoverMsg = msg;
+            $scope.popover.show($(".main"));
+            setTimeout(function(){
+                $scope.popover.hide();
+                log.trace("popover gone?");
+            }, 2000)
     },
 
     setUpShowDebug: function ($scope) {
@@ -109,7 +129,8 @@ var setupHandler = {
                 userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName)
                     .then(function () {
                         $ionicSideMenuDelegate.toggleLeft(false);
-                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate)
+                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                        setupHandler.showPopover($scope, "Successfully registered.");
                     }, function (result) {
                         $scope.generalError = result.data;
                     });
