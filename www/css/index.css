@@ -181,11 +181,11 @@ html {
 }
 
 .inbound.open, .inbound.un-accepted {
-    background-color: #ffef78;
+    background-color: #f8e896;
 }
 
 .inbound.accepted {
-    background-color: #98eba5;
+    background-color: #caeaf0;
 }
 
 .validationMsg {

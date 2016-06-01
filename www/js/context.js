@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "192.168.0.4",
 
     completeStickle: function(contact, model) {
         var status = "completed";
@@ -97,7 +97,7 @@ var context = {
                     origin: contact.phoneNumbers[0].value,
                     status: status
                 });
-                setupHandler.showPopover(model, "Sent response: " + status + " to \"" + contact.displayName + "\".");
+                setupHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
                 context.setStatusAndDisplay(contact, status, model, true);
             } catch (err) {
                 setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
@@ -114,7 +114,7 @@ var context = {
                     to: contact.phoneNumbers[0].value,
                     status: status
                 });
-                setupHandler.showPopover(model, "\"" + contact.displayName + "\" successfully " + (contact.stickled ? "stickled" : "un-stickled") + ".");
+                setupHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
             } catch (err) {
                 setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
                 status = contact.stickled ? "closed" : "open";
