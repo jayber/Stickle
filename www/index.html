@@ -172,6 +172,10 @@ To report an error, say what were you doing, what you expected to happen and wha
             </div>
 
             <div class="padding">
+                <ion-checkbox ng-model="sounds.off" ng-change="turnSoundsOff(sounds.off)" menu-close>Turn sounds off?</ion-checkbox>
+            </div>
+
+            <div class="padding">
                 <ion-checkbox ng-model="debugOn" ng-change="showLog(debugOn)" menu-close>Show log</ion-checkbox>
             </div>
 

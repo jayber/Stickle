@@ -87,6 +87,7 @@ var socketHandler = {
                     socketHandler.logAndApply("stickled", function () {
                         var contact = context.getOrCreateContact(model, data.from, data.displayName);
                         context.setStatusAndDisplay(contact, data.status, model, true);
+                            context.playSound(model);
                     }, model, data);
                     break;
                 case "stickle-responded":
@@ -94,6 +95,7 @@ var socketHandler = {
                         var contact = model.contactsMap[data.from];
                         context.setStatusAndDisplay(contact, data.status, model, false);
                     }, model, data);
+                    context.playSound(model);
                     break;
                 case "state":
                     socketHandler.logAndApply("state", function () {
@@ -106,6 +108,9 @@ var socketHandler = {
                             contact.stickled = true;
                         }
                         context.setStatusAndDisplay(contact, data.state, model, inbound);
+                        if (inbound || data.state == "accepted") {
+                            context.playSound(model);
+                        }
                     }, model, data);
                     break;
                 case "contactStatus":

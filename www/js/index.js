@@ -21,6 +21,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             ionic.Platform.ready(function () {
                 try {
                     polyFillMobileAPIs();
+                    setupHandler.setUpTurnSoundsOff($scope);
                     context.addEventListeners($scope, $interval, $ionicSideMenuDelegate);
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsHandler.populateContacts($scope, $resource)
@@ -45,6 +46,21 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     });
 
 var setupHandler = {
+
+    setUpTurnSoundsOff: function(model) {
+        model.sounds = {off: window.localStorage.getItem("soundsOff") == "true"};
+        model.turnSoundsOff = function (off) {
+            if (off) {
+                log.debug("turning sounds off");
+                window.localStorage.setItem("soundsOff",true);
+                setTimeout(function() { setupHandler.showPopover(model, "Sounds off.");}, 100);
+            } else {
+                log.debug("turning sounds on");
+                window.localStorage.setItem("soundsOff",false);
+                setTimeout(function() { setupHandler.showPopover(model, "Sounds on.");}, 100);
+            }
+        }
+    },
 
     setUpFilter: function($scope) {
         $scope.contactFilter = {value: ""};

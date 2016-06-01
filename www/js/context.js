@@ -1,7 +1,7 @@
 var context = {
     serverUrl: "192.168.0.4",
 
-    completeStickle: function(contact) {
+    completeStickle: function(contact, model) {
         var status = "completed";
         socketHandler.ws.emit("stickle", {
             origin: contact.phoneNumbers[0].value,
@@ -42,13 +42,20 @@ var context = {
         }
     },
 
+    playSound: function (model) {
+        if (!(model.sounds.off || model.sounds.timeout)) {
+            model.sounds.timeout = true;
+            setTimeout(function () {
+                model.sounds.timeout = false;
+            }, 5000);
+            navigator.notification.beep(1);
+        }
+    },
+
     moveToTop: function (contact, model, key) {
         if (model.stickles[key] == null) {
             model.stickles[key] = contact;
             contact.hidden = true;
-            if (contact.inbound) {
-                navigator.notification.beep(1);
-            }
         }
     },
 
@@ -56,9 +63,6 @@ var context = {
         if (model.stickles[key] != null) {
             delete model.stickles[key];
             contact.hidden = false;
-            if (contact.inbound) {
-                navigator.notification.beep(1);
-            }
         }
     },
 
