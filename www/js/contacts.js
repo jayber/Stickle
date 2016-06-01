@@ -72,12 +72,15 @@ var contactsHandler = {
         model.contactsMap[contact.phoneNumbers[0].value] = contact;
     },
 
-    makeCall: function (contact) {
-        window.plugins.CallNumber.callNumber(function () {
-            log.debug('successfully called '+ contact.phoneNumbers[0].value);
-        }, function () {
-            log.error('error calling ' + contact.phoneNumbers[0].value);
-        }, contact.phoneNumbers[0].value);
+    makeCall: function (model) {
+        return function (contact) {
+            window.plugins.CallNumber.callNumber(function () {
+                log.debug('successfully called ' + contact.phoneNumbers[0].value);
+                context.completeStickle(contact, model);
+            }, function () {
+                log.error('error calling ' + contact.phoneNumbers[0].value);
+            }, contact.phoneNumbers[0].value);
+        }
     }
 };
 

@@ -1,6 +1,15 @@
 var context = {
     serverUrl: "192.168.0.4",
 
+    completeStickle: function(contact) {
+        var status = "completed";
+        socketHandler.ws.emit("stickle", {
+            origin: contact.phoneNumbers[0].value,
+            status: status
+        });
+        context.setStatusAndDisplay(contact, status, model, false);
+    },
+
     addEventListeners: function (model, $interval, $ionicSideMenuDelegate) {
         document.addEventListener("touchstart", function () {
         }, true);
@@ -37,7 +46,9 @@ var context = {
         if (model.stickles[key] == null) {
             model.stickles[key] = contact;
             contact.hidden = true;
-            navigator.notification.beep(1);
+            if (contact.inbound) {
+                navigator.notification.beep(1);
+            }
         }
     },
 
@@ -45,7 +56,9 @@ var context = {
         if (model.stickles[key] != null) {
             delete model.stickles[key];
             contact.hidden = false;
-            navigator.notification.beep(1);
+            if (contact.inbound) {
+                navigator.notification.beep(1);
+            }
         }
     },
 
@@ -59,7 +72,7 @@ var context = {
             }
         }
 
-        if (status === "rejected" || status === "closed") {
+        if (status === "rejected" || status === "closed" || status === "completed") {
             contact.stickleStatus = null;
             contact.inbound = false;
             contact.stickled = false;

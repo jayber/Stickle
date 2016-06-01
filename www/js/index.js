@@ -123,7 +123,7 @@ var setupHandler = {
         $scope.acceptStickle = context.stickleResponseHandler("accepted", $scope);
         $scope.unAcceptStickle = context.stickleResponseHandler("un-accepted", $scope);
         $scope.rejectStickle = context.stickleResponseHandler("rejected", $scope);
-        $scope.call = contactsHandler.makeCall;
+        $scope.call = contactsHandler.makeCall($scope);
         $scope.onToggle = context.stickleHandler($scope);
     },
 
