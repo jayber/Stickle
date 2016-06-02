@@ -8,7 +8,7 @@ appender.addEventListener("load", function () {
     var iframes = document.getElementsByTagName("iframe");
     for (var i = 0, len = iframes.length; i < len; ++i) {
         if (iframes[i].id.indexOf("_InPageAppender_") > -1) {
-            var iframeDoc = iframes[i].contentDocument || iframes[i].contentWindow.document;
+            iframeDoc = iframes[i].contentDocument || iframes[i].contentWindow.document;
             iframeDoc.getElementById("switchesContainer").style.display = "none";
             iframeDoc.getElementById("commandLine").style.display = "none";
         }
@@ -26,7 +26,11 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
                     context.checkDetails($scope, $ionicSideMenuDelegate);
                     contactsHandler.populateContacts($scope, $resource)
                         .done(function () {
-                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                            try {
+                                socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                            } catch (err) {
+                                log.error("Error - ", err, err.stack);
+                            }
                         });
                 } catch (err) {
                     log.error("Error - ionic.Platform.ready", err);
@@ -36,7 +40,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             setupHandler.setUpDetailsAndRegistration($scope, $ionicSideMenuDelegate, $resource, $interval);
             setupHandler.setUpActions($scope);
             setupHandler.setUpShowDebug($scope);
-            setupHandler.setUpFeedback($scope, $ionicModal);
+            setupHandler.setUpFeedback($scope, $ionicModal, $resource);
             setupHandler.setUpPopover($scope, $ionicPopover);
             setupHandler.setUpFilter($scope);
 
@@ -47,22 +51,26 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
 
 var setupHandler = {
 
-    setUpTurnSoundsOff: function(model) {
+    setUpTurnSoundsOff: function (model) {
         model.sounds = {off: window.localStorage.getItem("soundsOff") == "true"};
         model.turnSoundsOff = function (off) {
             if (off) {
                 log.debug("turning sounds off");
-                window.localStorage.setItem("soundsOff",true);
-                setTimeout(function() { setupHandler.showPopover(model, "Sounds off.");}, 100);
+                window.localStorage.setItem("soundsOff", true);
+                setTimeout(function () {
+                    setupHandler.showPopover(model, "Sounds off.");
+                }, 100);
             } else {
                 log.debug("turning sounds on");
-                window.localStorage.setItem("soundsOff",false);
-                setTimeout(function() { setupHandler.showPopover(model, "Sounds on.");}, 100);
+                window.localStorage.setItem("soundsOff", false);
+                setTimeout(function () {
+                    setupHandler.showPopover(model, "Sounds on.");
+                }, 100);
             }
         }
     },
 
-    setUpFilter: function($scope) {
+    setUpFilter: function ($scope) {
         $scope.contactFilter = {value: ""};
         $scope.toggleFilter = setupHandler.toggleFilter($scope);
     },
@@ -75,7 +83,7 @@ var setupHandler = {
         }
     },
 
-    setUpFeedback: function ($scope, $ionicModal) {
+    setUpFeedback: function ($scope, $ionicModal, $resource) {
         $scope.feedbackOpen = function () {
             $scope.feedbackModal.show().then(function (modal) {
                 $scope.feedback = {};
@@ -83,20 +91,43 @@ var setupHandler = {
         };
         $scope.sendFeedback = function (feedbackForm) {
             log.debug("sendFeedback");
-            theform = feedbackForm;
             if (feedbackForm.$valid) {
                 log.debug("valid");
-                socketHandler.ws.emit("feedback", {
+                var Feedback = $resource('http://:server/api/feedback/', {
+                    server: context.serverUrl
+                });
+                log.debug("sending feedback");
+                var output = "";
+
+                if ($scope.feedback.attachLog) {
+                    $("#log", iframeDoc).find("span").each(function () {
+                        output = output + $(this).text();
+                    });
+                }
+                Feedback.save({
                     title: $scope.feedback.title == undefined ? "" : $scope.feedback.title + "",
                     content: $scope.feedback.content + "",
                     displayName: $scope.details.displayName + "",
                     phoneNumber: $scope.details.phoneNumber + "",
-                    userId: window.localStorage.getItem(userHandler.userIdKey) + ""
-                });
-                $scope.feedbackModal.hide().then(setupHandler.showPopover($scope, "Feedback successfully sent."));
+                    userId: window.localStorage.getItem(userHandler.userIdKey) + "",
+                    log: output,
+                    browserInfo: {
+                        websockets: typeof WebSocket === "function",
+                        browserEngine: navigator.product,
+                        userAgent: navigator.userAgent,
+                        browserLanguage: navigator.language,
+                        browserOnline: navigator.onLine,
+                        browserPlatform: navigator.platform,
+                        sizeScreenW: screen.width,
+                        sizeScreenH: screen.height
+                    }
+                }, function (res) {
+                    $scope.feedbackModal.hide().then(setupHandler.showPopover($scope, "Feedback successfully sent."));
+                    feedbackForm.$setPristine();
+                    feedbackForm.$setUntouched();
+                    log.debug("feedback saved!");
+                }, context.errorReportFunc);
 
-                feedbackForm.$setPristine();
-                feedbackForm.$setUntouched();
             }
         };
         $scope.feedbackClose = function () {
@@ -159,9 +190,13 @@ var setupHandler = {
 
                 userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName)
                     .then(function () {
-                        $ionicSideMenuDelegate.toggleLeft(false);
-                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                        setupHandler.showPopover($scope, "Successfully registered.");
+                        try {
+                            $ionicSideMenuDelegate.toggleLeft(false);
+                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                            setupHandler.showPopover($scope, "Successfully registered.");
+                        } catch (err) {
+                            log.error("Error - ", err, err.stack);
+                        }
                     }, function (result) {
                         $scope.generalError = result.data;
                     });

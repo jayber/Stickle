@@ -9,7 +9,7 @@ var socketHandler = {
             try {
                 func();
             } catch (err) {
-                log.error("Error", err);
+                log.error("Error", err.stack);
             }
         });
     },
@@ -73,7 +73,11 @@ var socketHandler = {
         this.ws.onclose = function () {
             log.debug("ws closed! - trying to reopen");
             setTimeout(function () {
-                socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate)
+                try {
+                    socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate)
+                } catch (err) {
+                    log.error("Error - ", err, err.stack);
+                }
             }, 5000);
         };
 
@@ -90,7 +94,7 @@ var socketHandler = {
                     socketHandler.logAndApply("stickled", function () {
                         var contact = context.getOrCreateContact(model, data.from, data.displayName);
                         context.setStatusAndDisplay(contact, data.status, model, true);
-                            context.playSound(model);
+                        context.playSound(model);
                     }, model, data);
                     break;
                 case "stickle-responded":

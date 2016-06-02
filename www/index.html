@@ -54,7 +54,6 @@
 
     <div class="modal">
 
-        <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
         <!-- Modal header bar -->
         <ion-header-bar class="bar-secondary">
             <h1 class="title">Feedback</h1>
@@ -64,31 +63,33 @@
         <!-- Modal content area -->
         <ion-content>
 
-                <div class="list">
-                    <label class="item item-input">
-                        <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
-                    </label>
-                    <label class="item item-input">
+            <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
+                <label class="item item-input">
+                    <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
+                </label>
+                <label class="item item-input">
                         <textarea placeholder="Your feedback here.
 
 Say what you like and don't like.
 
 To report an error, say what were you doing, what you expected to happen and what did happened."
                                   ng-model="feedback.content" name="feedbackBody" required></textarea>
-                    </label>
+                </label>
 
-                    <div class="padding">
-                        <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
-                             class="validationMsg">Enter your feedback
-                        </div>
+                <div class="padding">
+                    <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
+                         class="validationMsg">Enter your feedback
                     </div>
-
-                    <button type="submit" class="button button-block button-positive">Send feedback</button>
+                </div>
+                <div class="padding">
+                    <ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>
                 </div>
 
+                <button type="submit" class="button button-block button-positive">Send feedback</button>
 
+
+            </form>
         </ion-content>
-        </form>
 
     </div>
 
@@ -115,7 +116,7 @@ To report an error, say what were you doing, what you expected to happen and wha
             </ion-refresher>
             <div class="filter" ng-class="{'hidden':!showFilter}">
                 <input type="text" placeholder="Name to filter on" ng-model="contactFilter.value">
-                <button class="icon ion-search button button-clear" ng-click="toggleFilter()"></button>
+                <button class="icon ion-close-round button button-clear" ng-click="toggleFilter()"></button>
             </div>
             <div id="errors" class="hidden"></div>
             <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
@@ -172,7 +173,8 @@ To report an error, say what were you doing, what you expected to happen and wha
             </div>
 
             <div class="padding">
-                <ion-checkbox ng-model="sounds.off" ng-change="turnSoundsOff(sounds.off)" menu-close>Turn sounds off?</ion-checkbox>
+                <ion-checkbox ng-model="sounds.off" ng-change="turnSoundsOff(sounds.off)" menu-close>Turn sounds off?
+                </ion-checkbox>
             </div>
 
             <div class="padding">
