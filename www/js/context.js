@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "192.168.0.4",
 
     completeStickle: function(contact, model) {
         var status = "completed";
@@ -27,11 +27,6 @@ var context = {
             log.debug("paused");
             socketHandler.ws.close();
         }, false);
-    },
-
-    showLog: function (debug) {
-        $("#errors").toggleClass('hidden', !debug);
-        window.localStorage.setItem("debug", debug);
     },
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {

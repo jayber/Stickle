@@ -13,95 +13,9 @@
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <title>Stickle</title>
 </head>
+
 <body ng-app="stickle" ng-controller="stickleCtrl" ng-cloak>
 
-<script type="text/ng-template" id="/row.html">
-    <div class="contact-list-item" ng-switch="contact.inbound==true">
-        <div class="contact-details">
-            <div class="name">{{contact.displayName}}</div>
-            <p>
-                <span ng-repeat="num in contact.phoneNumbers">
-                <span class="type">{{num.type}}:</span> {{num.value}}
-                </span>
-            </p>
-        </div>
-        <div ng-switch-when="true" class="stickle-actions">
-            <button class="action icon reject ion-trash-b" ng-click="rejectStickle(contact)"></button>
-            <button ng-if="contact.stickleStatus=='accepted'" class="action unaccept" ng-click="unAcceptStickle(contact)">
-                Not now
-            </button>
-            <button ng-if="contact.stickleStatus=='open' || contact.stickleStatus=='un-accepted'" class="accept action" ng-click="acceptStickle(contact)">
-                Call me
-            </button>
-        </div>
-        <div ng-switch-default ng-switch="contact.stickler" class="contact-actions">
-            <label ng-switch-when="true" class="toggle regular-action">
-                <input type="checkbox" ng-disabled="!contact.stickler" ng-change="onToggle(contact)"
-                       ng-model="contact.stickled">
-
-                <div class="track">
-                    <div class="handle"></div>
-                </div>
-            </label>
-            <button ng-if="contact.stickled && (contact.stickleStatus=='accepted')" class="call icon ion-ios-telephone" ng-click="call(contact)"></button>
-
-            <div ng-switch-default class="action icon ion-ios-personadd-outline regular-action"></div>
-        </div>
-    </div>
-</script>
-
-<script id="feedback.html" type="text/ng-template">
-
-    <div class="modal">
-
-        <!-- Modal header bar -->
-        <ion-header-bar class="bar-secondary">
-            <h1 class="title">Feedback</h1>
-            <button class="button button-clear button-positive" ng-click="feedbackClose()">Cancel</button>
-        </ion-header-bar>
-
-        <!-- Modal content area -->
-        <ion-content>
-
-            <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
-                <label class="item item-input">
-                    <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
-                </label>
-                <label class="item item-input">
-                        <textarea placeholder="Your feedback here.
-
-Say what you like and don't like.
-
-To report an error, say what were you doing, what you expected to happen and what did happened."
-                                  ng-model="feedback.content" name="feedbackBody" required></textarea>
-                </label>
-
-                <div class="padding">
-                    <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
-                         class="validationMsg">Enter your feedback
-                    </div>
-                </div>
-                <div class="padding">
-                    <ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>
-                </div>
-
-                <button type="submit" class="button button-block button-positive">Send feedback</button>
-
-
-            </form>
-        </ion-content>
-
-    </div>
-
-</script>
-
-<script id="popover.html" type="text/ng-template">
-    <ion-popover-view>
-        <ion-header-bar class="bar-dark ">
-            <h1 class="title feedbackPopover">{{popoverMsg}}</h1>
-        </ion-header-bar>
-    </ion-popover-view>
-</script>
 
 <ion-side-menus>
     <ion-side-menu-content>
@@ -119,12 +33,13 @@ To report an error, say what were you doing, what you expected to happen and wha
                 <button class="icon ion-close-round button button-clear" ng-click="toggleFilter()"></button>
             </div>
             <div id="errors" class="hidden"></div>
+
             <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
 
             <ion-list class="stickle-list">
                 <ion-item ng-repeat="contact in stickles" ng-class="[{'inbound':contact.inbound}, contact.stickleStatus]">
 
-                    <ng-include src="'/row.html'"></ng-include>
+                    <ng-include src="'row.html'"></ng-include>
 
                 </ion-item>
             </ion-list>
@@ -132,75 +47,32 @@ To report an error, say what were you doing, what you expected to happen and wha
             <ion-list class="contact-list">
                 <ion-item collection-repeat="contact in contacts | filter:{displayName: contactFilter.value} | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
 
-                    <ng-include src="'/row.html'"></ng-include>
+                    <ng-include src="'row.html'"></ng-include>
 
                 </ion-item>
             </ion-list>
+
+
         </ion-content>
 
     </ion-side-menu-content>
     <ion-side-menu side="left">
-        <ion-header-bar class="bar-dark">
-            <h1 class="title">Settings</h1>
-        </ion-header-bar>
-        <ion-content scroll="false">
-            <div class="padding">
-                <form ng-submit="validateAndRegister(detailsForm)" class="css-form" novalidate name="detailsForm">
-                    <div class="list">
-                        <label class="item item-input">
-                            <input type="text" placeholder="Your display name" ng-model="details.displayName"
-                                   name="displayName" required>
-                        </label>
 
-                        <div ng-show="(detailsForm.$submitted || detailsForm.displayName.$touched) && detailsForm.displayName.$error.required"
-                             class="validationMsg">Enter your name.
-                        </div>
+        <ng-include src="'/templates/registrationAndSettings.html'"></ng-include>
 
-                        <label class="item item-input">
-                            <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber"
-                                   name="phoneNumber" required minlength="4">
-                        </label>
-
-                        <div ng-show="(detailsForm.$submitted || detailsForm.phoneNumber.$touched) && (detailsForm.phoneNumber.$error.required || detailsForm.phoneNumber.$error.minlength)"
-                             class="validationMsg">Enter a valid phone number
-                        </div>
-
-                        <div ng-show="generalError" class="validationMsg">{{generalError}}</div>
-
-                    </div>
-                    <button type="submit" class="button button-block button-positive">Register</button>
-                </form>
-            </div>
-
-            <div class="padding">
-                <ion-checkbox ng-model="sounds.off" ng-change="turnSoundsOff(sounds.off)" menu-close>Turn sounds off?
-                </ion-checkbox>
-            </div>
-
-            <div class="padding">
-                <ion-checkbox ng-model="debugOn" ng-change="showLog(debugOn)" menu-close>Show log</ion-checkbox>
-            </div>
-
-            <div class="padding">
-                <button class="button button-outline button-block button-stable" ng-click="feedbackOpen()" menu-close>
-                    Send feedback >
-                </button>
-            </div>
-
-        </ion-content>
     </ion-side-menu>
 </ion-side-menus>
 
-
-<script type="text/javascript" src="js/log4javascript.js"></script>
+<script type="text/javascript" src="js/lib/log4javascript.js"></script>
 <script type="text/javascript">
     var log = log4javascript.getDefaultLogger();
     log.setLevel(log4javascript.Level.DEBUG);
 </script>
-<script src="js/jquery-1.9.0.min.js"></script>
-<script src="js/ionic.bundle.js"></script>
+<script src="js/lib/jquery-1.9.0.min.js"></script>
+<script src="js/lib/ionic.bundle.js"></script>
 <script src="js/angular/angular-resource.js"></script>
 <script src="node_modules/angular-animate/angular-animate.js"></script>
+<script type="text/javascript" src="js/setup.js"></script>
 <script type="text/javascript" src="js/contacts.js"></script>
 <script type="text/javascript" src="js/context.js"></script>
 <script type="text/javascript" src="js/sockets.js"></script>

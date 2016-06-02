@@ -1,0 +1,48 @@
+<ion-header-bar class="bar-dark">
+    <h1 class="title">Settings</h1>
+</ion-header-bar>
+<ion-content scroll="false">
+    <div class="padding">
+        <form ng-submit="validateAndRegister(detailsForm)" class="css-form" novalidate name="detailsForm">
+            <div class="list">
+                <label class="item item-input">
+                    <input type="text" placeholder="Your display name" ng-model="details.displayName"
+                           name="displayName" required>
+                </label>
+
+                <div ng-show="(detailsForm.$submitted || detailsForm.displayName.$touched) && detailsForm.displayName.$error.required"
+                     class="validationMsg">Enter your name.
+                </div>
+
+                <label class="item item-input">
+                    <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber"
+                           name="phoneNumber" required minlength="4">
+                </label>
+
+                <div ng-show="(detailsForm.$submitted || detailsForm.phoneNumber.$touched) && (detailsForm.phoneNumber.$error.required || detailsForm.phoneNumber.$error.minlength)"
+                     class="validationMsg">Enter a valid phone number
+                </div>
+
+                <div ng-show="generalError" class="validationMsg">{{generalError}}</div>
+
+            </div>
+            <button type="submit" class="button button-block button-positive">Register</button>
+        </form>
+    </div>
+
+    <div class="padding">
+        <ion-checkbox ng-model="sounds.off" ng-change="turnSoundsOff(sounds.off)" menu-close>Turn sounds off?
+        </ion-checkbox>
+    </div>
+
+    <div class="padding">
+        <ion-checkbox ng-model="debug.on" ng-change="showLog(debug.on)" menu-close>Show log</ion-checkbox>
+    </div>
+
+    <div class="padding">
+        <button class="button button-outline button-block button-stable" ng-click="feedbackOpen()" menu-close>
+            Send feedback >
+        </button>
+    </div>
+
+</ion-content>
