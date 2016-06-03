@@ -1,6 +1,6 @@
 function initLog() {
     log.removeAllAppenders();
-    var appender = new log4javascript.InPageAppender("errors",true);
+    var appender = new log4javascript.InPageAppender("errors", true);
     appender.setHeight("100px");
     appender.setShowCommandLine(false);
     log.addAppender(appender);
@@ -50,5 +50,14 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
         } catch (err) {
             log.error("Error", err);
         }
+    }).directive('stkincluder', function () {
+        return {
+            transclude: true,
+            templateUrl: function (tE, eA) {
+                return eA.src;
+            },
+            link: function() {
+                setupHandler.toggleLog(window.localStorage.getItem("debug") == "true");
+            }
+        }
     });
-

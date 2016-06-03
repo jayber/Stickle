@@ -80,7 +80,7 @@ var setupHandler = {
         $scope.feedbackClose = function () {
             $scope.feedbackModal.hide();
         };
-        $ionicModal.fromTemplateUrl('/templates/feedback.html', function (modal) {
+        $ionicModal.fromTemplateUrl('templates/feedback.html', function (modal) {
             $scope.feedbackModal = modal;
         }, {
             scope: $scope,
@@ -89,7 +89,7 @@ var setupHandler = {
     },
 
     setUpPopover: function ($scope, $ionicPopover) {
-        $ionicPopover.fromTemplateUrl('/templates/popover.html', {
+        $ionicPopover.fromTemplateUrl('templates/popover.html', {
             scope: $scope
         }).then(function (popover) {
             $scope.popover = popover;
@@ -107,14 +107,15 @@ var setupHandler = {
         });
     },
 
+    toggleLog: function (debug) {
+        $("#errors").toggleClass('hidden', !debug);
+        window.localStorage.setItem("debug", debug);
+    },
+
     setUpShowDebug: function ($scope) {
-        var toggleLog = function (debug) {
-            $("#errors").toggleClass('hidden', !debug);
-            window.localStorage.setItem("debug", debug);
-        };
         $scope.debug = {on: window.localStorage.getItem("debug") == "true"};
-        toggleLog($scope.debug.on);
-        $scope.showLog = toggleLog;
+        setupHandler.toggleLog($scope.debug.on);
+        $scope.showLog = setupHandler.toggleLog;
     },
 
     setUpActions: function ($scope) {
