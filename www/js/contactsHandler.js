@@ -85,22 +85,3 @@ var contactsHandler = {
     }
 };
 
-var userHandler = {
-
-    displayNameKey: "displayName",
-    userIdKey: "userId",
-    phoneNumberKey: "phonenumber",
-
-    registerOnServer: function ($resource, phoneNumber, displayName) {
-        var User = $resource('http://:server/api/user/:phoneNum', {
-            server: context.serverUrl,
-            phoneNum: "@phoneNum"
-        });
-        log.debug("attempting to register");
-        return User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
-            window.localStorage.setItem(userHandler.userIdKey, res.userId);
-            window.localStorage.setItem(userHandler.phoneNumberKey, phoneNumber);
-            log.debug("registered!");
-        }, context.errorReportFunc).$promise;
-    }
-};

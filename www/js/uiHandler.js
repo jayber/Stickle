@@ -36,41 +36,15 @@ var uIHandler = {
             log.debug("sendFeedback");
             if (feedbackForm.$valid) {
                 log.debug("valid");
-                var Feedback = $resource('http://:server/api/feedback/', {
-                    server: context.serverUrl
-                });
-                log.debug("sending feedback");
-                var output = "";
-                //if ($scope.feedback.attachLog) {
-                $("#log", iframeDoc).find("span").each(function () {
-                    output = output + $(this).text();
-                });
-                //}
-                Feedback.save({
-                    title: $scope.feedback.fields.title == undefined ? "" : $scope.feedback.fields.title + "",
-                    content: $scope.feedback.fields.content + "",
-                    displayName: $scope.details.displayName + "",
-                    phoneNumber: $scope.details.phoneNumber + "",
-                    userId: window.localStorage.getItem(userHandler.userIdKey) + "",
-                    log: output,
-                    browserInfo: {
-                        websockets: typeof WebSocket === "function",
-                        browserEngine: navigator.product,
-                        userAgent: navigator.userAgent,
-                        browserLanguage: navigator.language,
-                        browserOnline: navigator.onLine,
-                        browserPlatform: navigator.platform,
-                        sizeScreenW: screen.width,
-                        sizeScreenH: screen.height
-                    }
-                }, function (res) {
-                    $scope.feedback.modal.hide().then(uIHandler.showPopover($scope, "Feedback successfully sent."));
-                    feedbackForm.$setPristine();
-                    feedbackForm.$setUntouched();
-                    log.debug("feedback saved!");
-                }, context.errorReportFunc);
+                userHandler.sendFeedback($scope, $resource, feedbackForm);
             }
         };
+    },
+
+    resetFeedbackDisplay: function($scope, feedbackForm) {
+        $scope.feedback.modal.hide().then(uIHandler.showPopover($scope, "Feedback successfully sent."));
+        feedbackForm.$setPristine();
+        feedbackForm.$setUntouched();
     },
 
     createPopover: function ($scope, $ionicPopover) {

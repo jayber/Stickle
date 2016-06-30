@@ -1,5 +1,3 @@
-
-
 var setupHandler = {
 
     setUpTurnSoundsOff: function (model) {
