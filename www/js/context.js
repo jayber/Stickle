@@ -1,13 +1,29 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "192.168.0.3",
 
-    completeStickle: function(contact, model) {
+    toggleSoundsAction: function (off) {
+        if (off) {
+            log.debug("turning sounds off");
+            window.localStorage.setItem("soundsOff", true);
+            setTimeout(function () {
+                uIHandler.showPopover(model, "Sounds off.");
+            }, 100);
+        } else {
+            log.debug("turning sounds on");
+            window.localStorage.setItem("soundsOff", false);
+            setTimeout(function () {
+                uIHandler.showPopover(model, "Sounds on.");
+            }, 100);
+        }
+    },
+
+    completeStickle: function (contact, model) {
         var status = "completed";
         socketHandler.ws.emit("stickle", {
             to: contact.phoneNumbers[0].value,
             status: status
         });
-        context.setStatusAndDisplay(contact, status, model, false);
+        context.setContactStatusAndDisplay(contact, status, model, false);
     },
 
     addEventListeners: function (model, $interval, $ionicSideMenuDelegate) {
@@ -47,21 +63,21 @@ var context = {
         }
     },
 
-    moveToTop: function (contact, model, key) {
+    moveContactToTop: function (contact, model, key) {
         if (model.stickles[key] == null) {
             model.stickles[key] = contact;
             contact.hidden = true;
         }
     },
 
-    removeFromTop: function (contact, model, key) {
+    removeContactFromTop: function (contact, model, key) {
         if (model.stickles[key] != null) {
             delete model.stickles[key];
             contact.hidden = false;
         }
     },
 
-    setStatusAndDisplay: function (contact, status, model, inbound) {
+    setContactStatusAndDisplay: function (contact, status, model, inbound) {
         var key = (inbound ? "in" : "out") + contact.phoneNumbers[0].value;
 
         if (inbound) {
@@ -75,11 +91,11 @@ var context = {
             contact.stickleStatus = null;
             contact.inbound = false;
             contact.stickled = false;
-            context.removeFromTop(contact, model, key);
+            context.removeContactFromTop(contact, model, key);
         } else {
             contact.inbound = inbound;
             contact.stickleStatus = status;
-            context.moveToTop(contact, model, key);
+            context.moveContactToTop(contact, model, key);
         }
 
     },
@@ -92,10 +108,10 @@ var context = {
                     origin: contact.phoneNumbers[0].value,
                     status: status
                 });
-                setupHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
-                context.setStatusAndDisplay(contact, status, model, true);
+                uIHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
+                context.setContactStatusAndDisplay(contact, status, model, true);
             } catch (err) {
-                setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
             }
         }
     },
@@ -109,12 +125,12 @@ var context = {
                     to: contact.phoneNumbers[0].value,
                     status: status
                 });
-                setupHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
+                uIHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
             } catch (err) {
-                setupHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
                 status = contact.stickled ? "closed" : "open";
             }
-            context.setStatusAndDisplay(contact, status, model, false);
+            context.setContactStatusAndDisplay(contact, status, model, false);
         }
     },
 

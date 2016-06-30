@@ -74,7 +74,7 @@ var contactsHandler = {
 
     makeCall: function (model) {
         return function (contact) {
-            setupHandler.showPopover(model, "calling...");
+            uIHandler.showPopover(model, "calling...");
             window.plugins.CallNumber.callNumber(function () {
                 log.debug('successfully called ' + contact.phoneNumbers[0].value);
                 context.completeStickle(contact, model);

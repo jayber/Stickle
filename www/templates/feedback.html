@@ -3,15 +3,15 @@
     <!-- Modal header bar -->
     <ion-header-bar class="bar-secondary">
         <h1 class="title">Feedback</h1>
-        <button class="button button-clear button-positive" ng-click="feedbackClose()">Cancel</button>
+        <button class="button button-clear button-positive" ng-click="feedback.closeAction()">Cancel</button>
     </ion-header-bar>
 
     <!-- Modal content area -->
     <ion-content>
 
-        <form ng-submit="sendFeedback(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
+        <form ng-submit="feedback.sendAction(feedbackForm)" class="css-form" name="feedbackForm" novalidate>
             <label class="item item-input">
-                <input type="text" placeholder="Title (optional)" ng-model="feedback.title">
+                <input type="text" placeholder="Title (optional)" ng-model="feedback.fields.title">
             </label>
             <label class="item item-input">
                         <textarea placeholder="Your feedback here.
@@ -19,7 +19,7 @@
 Say what you like and don't like.
 
 To report an error, say what were you doing, what you expected to happen and what did happened."
-                                  ng-model="feedback.content" name="feedbackBody" required></textarea>
+                                  ng-model="feedback.fields.content" name="feedbackBody" required></textarea>
             </label>
             <!--<ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>-->
 
