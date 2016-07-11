@@ -1,5 +1,31 @@
 var uIHandler = {
 
+    registrationAction: function ($scope, $ionicSideMenuDelegate, $resource, $interval) {
+        return function (form) {
+            log.debug("validateAndRegister");
+            $scope.generalError = null;
+            if (form.$valid) {
+                log.debug("valid");
+                window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
+                window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
+
+                var canonTel = telephone.canonicalize($scope.details.phoneNumber);
+                userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
+                    .then(function () {
+                        $ionicSideMenuDelegate.toggleLeft(false);
+                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                        uIHandler.showPopover($scope, "Successfully registered.");
+                    }, function (result) {
+                        $scope.generalError = result.data;
+                    });
+            }
+            if (form.$invalid) {
+                log.debug("invalid");
+                $ionicSideMenuDelegate.toggleLeft(true);
+            }
+        }
+    },
+
     toggleFilterAction: function ($scope) {
         return function () {
             $scope.contactFilter.show = !$scope.contactFilter.show;
@@ -41,7 +67,7 @@ var uIHandler = {
         };
     },
 
-    resetFeedbackDisplay: function($scope, feedbackForm) {
+    resetFeedbackDisplay: function ($scope, feedbackForm) {
         $scope.feedback.modal.hide().then(uIHandler.showPopover($scope, "Feedback successfully sent."));
         feedbackForm.$setPristine();
         feedbackForm.$setUntouched();

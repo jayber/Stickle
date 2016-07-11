@@ -1,8 +1,8 @@
 function polyFillMobileAPIs() {
-    
+
     ContactFindOptions = function () {
     };
-    
+
     if (navigator.contacts === undefined) {
         navigator.contacts = {
             fieldType: {displayName: "displayName", name: "name", phoneNumbers: "phoneNumbers"},
@@ -29,8 +29,26 @@ function polyFillMobileAPIs() {
     }
 
     if (window.plugins === undefined) {
-        window.plugins = { CallNumber: {callNumber: function(success, failure, number) {
-            success();
-        }}}
+        window.plugins = {
+            CallNumber: {
+                callNumber: function (success, failure, number) {
+                    success();
+                }
+            }
+        }
+    }
+
+    if (typeof PushNotification === 'undefined') {
+        PushNotification = {
+            init: function (data) {
+                return {
+                    on: function (name, funct) {
+                        funct({
+                            registrationId: "test-push-regid"
+                        });
+                    }
+                }
+            }
+        };
     }
 }

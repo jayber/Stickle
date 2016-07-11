@@ -1,27 +1,25 @@
 var socketHandler = {
+
     getUrl: function () {
         return 'ws://' + context.serverUrl + "/api/ws";
     },
 
     logAndApply: function (msg, func, model, data) {
         log.trace(msg + ": " + JSON.stringify(data));
-        model.$apply(function () {
-            try {
-                func();
-            } catch (err) {
-                log.error("Error", err.stack);
-            }
-        });
+        model.$apply(func);
     },
 
     authenticate: function () {
         log.debug("authenticating");
-        socketHandler.ws.emit("authenticate", {userId: window.localStorage.getItem(userHandler.userIdKey)});
+        socketHandler.ws.emit("authenticate", {
+            userId: window.localStorage.getItem(userHandler.userIdKey),
+            pushRegistrationId: window.localStorage.getItem(userHandler.pushRegistrationIdKey)
+        });
     },
 
-    checkStatuses: function (model) {
+    checkContactStatuses: function (model) {
         model.contacts.forEach(function (contact, index) {
-            socketHandler.ws.emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].value});
+            socketHandler.ws.emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].canonical});
         });
     },
 
@@ -30,7 +28,7 @@ var socketHandler = {
         for (var key in model.stickles) {
             log.debug("check-state: " + JSON.stringify(model.stickles[key]));
             socketHandler.ws.emit("check-state", {
-                phoneNum: model.stickles[key].phoneNumbers[0].value,
+                phoneNum: model.stickles[key].phoneNumbers[0].canonical,
                 inbound: model.stickles[key].inbound
             });
         }
@@ -46,11 +44,23 @@ var socketHandler = {
     StickleWebSocket: function (url, model, $ionicSideMenuDelegate, $interval) {
         this.url = url;
         this.ws = new WebSocket(url);
+        this.messageBuffer = [];
+
+        this.purgeBufferedMessages = function() {
+            log.debug("ws purging");
+            while (message = this.messageBuffer.pop()) {
+                this.ws.send(message);
+            }
+        };
 
         this.emit = function (event, data) {
             var output = JSON.stringify({"event": event, "data": data});
             log.trace("ws emitting! " + output);
-            this.ws.send(output);
+            if (this.ws.readyState !== 1) {
+                this.messageBuffer.push(output);
+            } else {
+                this.ws.send(output);
+            }
         };
 
         this.close = function () {
@@ -64,7 +74,7 @@ var socketHandler = {
         this.ws.onopen = function () {
             log.debug("ws open!");
             context.checkStatusPromise = $interval(function () {
-                socketHandler.checkStatuses(model)
+                socketHandler.checkContactStatuses(model)
             }, 60 * 60 * 1000);
 
             socketHandler.authenticate();
@@ -92,15 +102,15 @@ var socketHandler = {
             switch (msg.event) { //first 3, or 4, events really just the same thing?
                 case "stickled":
                     socketHandler.logAndApply("stickled", function () {
-                        var contact = context.getOrCreateContact(model, data.from, data.displayName);
-                        context.setContactStatusAndDisplay(contact, data.status, model, true);
+                        var contact = contactsHandler.getOrCreateContact(model, data.from, data.displayName);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, true);
                         context.playSound(model);
                     }, model, data);
                     break;
                 case "stickle-responded":
                     socketHandler.logAndApply("stickle-responded", function () {
                         var contact = model.contactsMap[data.from];
-                        context.setContactStatusAndDisplay(contact, data.status, model, false);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, false);
                     }, model, data);
                     context.playSound(model);
                     break;
@@ -109,12 +119,12 @@ var socketHandler = {
                         var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
                         var contact;
                         if (inbound) {
-                            contact = context.getOrCreateContact(model, data.originator, data.originatorDisplayName);
+                            contact = contactsHandler.getOrCreateContact(model, data.originator, data.originatorDisplayName);
                         } else {
                             contact = model.contactsMap[data.recipient];
                             contact.stickled = true;
                         }
-                        context.setContactStatusAndDisplay(contact, data.state, model, inbound);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound);
                         if (inbound || data.state == "accepted") {
                             context.playSound(model);
                         }
@@ -130,9 +140,11 @@ var socketHandler = {
                 case "authenticated":
                     log.debug("authenticated");
 
-                    socketHandler.checkStatuses(model);
+                    socketHandler.checkContactStatuses(model);
 
                     socketHandler.checkStickleStates(model);
+
+                    socketHandler.ws.purgeBufferedMessages();
                     break;
                 case "authentication-failed":
                     log.debug("authentication-failed");

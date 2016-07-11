@@ -1,5 +1,15 @@
 var setupHandler = {
 
+    initModel: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover) {
+        setupHandler.setUpTurnSoundsOff($scope);
+        setupHandler.setUpDetailsAndRegistration($scope, $ionicSideMenuDelegate, $resource, $interval);
+        setupHandler.setUpActions($scope);
+        setupHandler.setUpShowDebug($scope);
+        setupHandler.setUpFeedback($scope, $ionicModal, $resource);
+        setupHandler.setUpPopover($scope, $ionicPopover);
+        setupHandler.setUpFilter($scope);
+    },
+
     setUpTurnSoundsOff: function (model) {
         model.sounds = {off: window.localStorage.getItem("soundsOff") == "true"};
         model.sounds.toggleSoundsAction = context.toggleSoundsAction;
@@ -27,11 +37,11 @@ var setupHandler = {
     },
 
     setUpActions: function ($scope) {
-        $scope.acceptStickle = context.stickleResponseHandler("accepted", $scope);
-        $scope.unAcceptStickle = context.stickleResponseHandler("un-accepted", $scope);
-        $scope.rejectStickle = context.stickleResponseHandler("rejected", $scope);
+        $scope.acceptStickle = contactsHandler.stickleResponseHandler("accepted", $scope);
+        $scope.unAcceptStickle = contactsHandler.stickleResponseHandler("un-accepted", $scope);
+        $scope.rejectStickle = contactsHandler.stickleResponseHandler("rejected", $scope);
         $scope.call = contactsHandler.makeCall($scope);
-        $scope.onToggle = context.stickleHandler($scope);
+        $scope.onToggle = contactsHandler.stickleHandler($scope);
     },
 
     setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval) {
@@ -40,31 +50,6 @@ var setupHandler = {
             phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
         };
 
-        $scope.details.validateAndRegisterAction = function (form) {
-            log.debug("validateAndRegister");
-            $scope.generalError = null;
-            if (form.$valid) {
-                log.debug("valid");
-                window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
-                window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
-
-                userHandler.registerOnServer($resource, $scope.details.phoneNumber, $scope.details.displayName)
-                    .then(function () {
-                        try {
-                            $ionicSideMenuDelegate.toggleLeft(false);
-                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                            uIHandler.showPopover($scope, "Successfully registered.");
-                        } catch (err) {
-                            log.error("Error - ", err, err.stack);
-                        }
-                    }, function (result) {
-                        $scope.generalError = result.data;
-                    });
-            }
-            if (form.$invalid) {
-                log.debug("invalid");
-                $ionicSideMenuDelegate.toggleLeft(true);
-            }
-        }
+        $scope.details.validateAndRegisterAction = uIHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval);
     }
 };

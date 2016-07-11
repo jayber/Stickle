@@ -23,11 +23,11 @@ To report an error, say what were you doing, what you expected to happen and wha
             </label>
             <!--<ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>-->
 
-            <div class="padding">
-                <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
-                     class="validationMsg">Enter your feedback
-                </div>
+            <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
+                 class="validationMsg padding">Enter your feedback
             </div>
+
+            <div class="padding-horizontal calm">Your log data will automatically be attached to your feedback.</div>
 
             <button type="submit" class="button button-block button-positive">Send feedback</button>
 

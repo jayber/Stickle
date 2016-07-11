@@ -3,6 +3,7 @@ var userHandler = {
     displayNameKey: "displayName",
     userIdKey: "userId",
     phoneNumberKey: "phonenumber",
+    pushRegistrationIdKey: "pushRegId",
 
     sendFeedback: function($scope, $resource, feedbackForm) {
         var Feedback = $resource('http://:server/api/feedback/', {
@@ -35,7 +36,15 @@ var userHandler = {
         }, function (res) {
             uIHandler.resetFeedbackDisplay($scope, feedbackForm);
             log.debug("feedback saved!");
-        }, context.errorReportFunc);
+        });
+    },
+
+    checkDetails: function ($scope, $ionicSideMenuDelegate) {
+        const userId = window.localStorage.getItem(userHandler.userIdKey);
+        if ((userId === null) || userId === "") {
+            $scope.generalError = "Enter your name and telephone number to get started";
+            $ionicSideMenuDelegate.toggleLeft(true);
+        }
     },
 
     registerOnServer: function ($resource, phoneNumber, displayName) {
@@ -46,8 +55,7 @@ var userHandler = {
         log.debug("attempting to register");
         return User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
             window.localStorage.setItem(userHandler.userIdKey, res.userId);
-            window.localStorage.setItem(userHandler.phoneNumberKey, phoneNumber);
             log.debug("registered!");
-        }, context.errorReportFunc).$promise;
+        }).$promise;
     }
 };

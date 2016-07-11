@@ -53,23 +53,23 @@ var contactsHandler = {
     },
 
     dedupePhoneNumbers: function (contact) {
-        if (contact.phoneNumbers.length > 1) {
             var newNumbers = [];
             contact.phoneNumbers.forEach(function (pnum) {
                 if (!newNumbers.some(function (currentValue) {
                         return pnum.value == currentValue.value && pnum.type == currentValue.type;
                     })) {
+                    pnum.canonical = telephone.canonicalize(pnum.value);
                     newNumbers.push(pnum);
                 }
             });
             contact.phoneNumbers = newNumbers;
-        }
+
         return contact;
     },
 
     storeAndDisplayIfNew: function (contact, model) {
         model.contacts.push(contact);
-        model.contactsMap[contact.phoneNumbers[0].value] = contact;
+        model.contactsMap[contact.phoneNumbers[0].canonical] = contact;
     },
 
     makeCall: function (model) {
@@ -77,11 +77,102 @@ var contactsHandler = {
             uIHandler.showPopover(model, "calling...");
             window.plugins.CallNumber.callNumber(function () {
                 log.debug('successfully called ' + contact.phoneNumbers[0].value);
-                context.completeStickle(contact, model);
+                contactsHandler.completeStickle(contact, model);
             }, function () {
                 log.error('error calling ' + contact.phoneNumbers[0].value);
             }, contact.phoneNumbers[0].value);
         }
+    },
+
+    completeStickle: function (contact, model) {
+        var status = "completed";
+        socketHandler.ws.emit("stickle", {
+            to: contact.phoneNumbers[0].canonical,
+            status: status
+        });
+        contactsHandler.setContactStatusAndDisplay(contact, status, model, false);
+    },
+
+    moveContactToTop: function (contact, model, key) {
+        if (model.stickles[key] == null) {
+            model.stickles[key] = contact;
+            contact.hidden = true;
+        }
+    },
+
+    removeContactFromTop: function (contact, model, key) {
+        if (model.stickles[key] != null) {
+            delete model.stickles[key];
+            contact.hidden = false;
+        }
+    },
+
+    setContactStatusAndDisplay: function (contact, status, model, inbound) {
+        var key = (inbound ? "in" : "out") + contact.phoneNumbers[0].canonical;
+
+        if (inbound) {
+            var existingContact = model.stickles[key];
+            if (existingContact != null) {
+                contact = existingContact;
+            }
+        }
+
+        if (status === "rejected" || status === "closed" || status === "completed") {
+            contact.stickleStatus = null;
+            contact.inbound = false;
+            contact.stickled = false;
+            contactsHandler.removeContactFromTop(contact, model, key);
+        } else {
+            contact.inbound = inbound;
+            contact.stickleStatus = status;
+            contactsHandler.moveContactToTop(contact, model, key);
+        }
+
+    },
+
+    stickleResponseHandler: function (status, model) {
+        return function (contact) {
+            log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
+            try {
+                socketHandler.ws.emit("stickle-response", {
+                    origin: contact.phoneNumbers[0].canonical,
+                    status: status
+                });
+                uIHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
+                contactsHandler.setContactStatusAndDisplay(contact, status, model, true);
+            } catch (err) {
+                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
+            }
+        }
+    },
+
+    stickleHandler: function (model) {
+        return function (contact) {
+            log.debug("stickling: " + contact.displayName + "; stickled: " + contact.stickled);
+            var status = contact.stickled ? "open" : "closed";
+            try {
+                socketHandler.ws.emit("stickle", {
+                    to: contact.phoneNumbers[0].canonical,
+                    status: status
+                });
+                uIHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
+            } catch (err) {
+                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                status = contact.stickled ? "closed" : "open";
+            }
+            contactsHandler.setContactStatusAndDisplay(contact, status, model, false);
+        }
+    },
+
+    getOrCreateContact: function (model, key, displayName) {
+        var contact = model.contactsMap[key];
+        if (contact == null) {
+            contact = {
+                phoneNumbers: [{type: "mobile", value: key}],
+                displayName: displayName
+            }
+        }
+        return contact;
     }
 };
 
