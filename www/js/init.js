@@ -1,12 +1,15 @@
 log.removeAllAppenders();
-BufferedAppender = function() {
+BufferedAppender = function () {
     this.logBuffer = [];
     this.doAppend = function (logEvent) {
         bufferedAppender.logBuffer.push(logEvent);
     };
-    this.append = function(val){};
-    this.setLayout = function(val){};
-    this.setThreshold = function(val){};
+    this.append = function (val) {
+    };
+    this.setLayout = function (val) {
+    };
+    this.setThreshold = function (val) {
+    };
 };
 BufferedAppender.prototype = new log4javascript.Appender();
 bufferedAppender = new BufferedAppender();
@@ -26,20 +29,21 @@ function initLog() {
                 if (iframes[i].id.indexOf("_InPageAppender_") > -1) {
                     iframeDoc = iframes[i].contentDocument || iframes[i].contentWindow.document;
                     var switches = iframeDoc.getElementById("switchesContainer");
-                    if (switches!=null) {
+                    if (switches != null) {
                         switches.style.display = "none";
                     }
                     var commandLine = iframeDoc.getElementById("commandLine");
-                    if (commandLine!=null) {
+                    if (commandLine != null) {
                         commandLine.style.display = "none";
                     }
                 }
             }
-            if (bufferedAppender.logBuffer.length>0){
-                log.debug("buffered log items: "+bufferedAppender.logBuffer.length);
-            }
-            for (i=0; i<bufferedAppender.logBuffer.length; i++) {
-                appender.doAppend(bufferedAppender.logBuffer[i]);
+            if (bufferedAppender.logBuffer.length > 0) {
+                log.debug("buffered log items: " + bufferedAppender.logBuffer.length + " {");
+                for (i = 0; i < bufferedAppender.logBuffer.length; i++) {
+                    appender.doAppend(bufferedAppender.logBuffer[i]);
+                }
+                log.debug("}");
             }
         });
     }
@@ -48,15 +52,15 @@ function initLog() {
 angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal, $ionicPopover) {
         ionic.Platform.ready(function () {
-                context.addEventListeners($scope, $interval, $ionicSideMenuDelegate);
-                polyFillMobileAPIs();
-                setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover);
-                userHandler.checkDetails($scope, $ionicSideMenuDelegate);
-                contactsHandler.populateContacts($scope, $resource)
-                    .done(function () {
-                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                        pushNotificationHandler.init();
-                    });
+            context.addEventListeners($scope, $interval, $ionicSideMenuDelegate);
+            polyFillMobileAPIs();
+            setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover);
+            userHandler.checkDetails($scope, $ionicSideMenuDelegate);
+            contactsHandler.populateContacts($scope, $resource)
+                .done(function () {
+                    socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                    pushNotificationHandler.init();
+                });
 
         });
     }).directive('stkincluder', function () {
