@@ -10,10 +10,13 @@ var pushNotificationHandler = {
         push.on('registration', function (data) {
             log.debug("Push registered: " + data.registrationId);
             window.localStorage.setItem(userHandler.pushRegistrationIdKey, data.registrationId);
+            socketHandler.authenticate();
         });
 
+        /*
         push.on('notification', function(data) {
          log.debug("push: "+JSON.stringify(data));
         });
+        */
     }
 };
