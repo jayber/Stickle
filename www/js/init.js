@@ -53,7 +53,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             contactsHandler.populateContacts($scope, $resource)
                 .done(function () {
                     socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                    pushNotificationHandler.init();
+                    //pushNotificationHandler.init();
                 });
 
         });
