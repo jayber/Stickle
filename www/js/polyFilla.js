@@ -22,7 +22,7 @@ function polyFillMobileAPIs() {
                 }, {
                     displayName: "(mobile) Test App",
                     stickler: true,
-                    phoneNumbers: [{type: "mobile", value: "6666"}]
+                    phoneNumbers: [{type: "mobile", value: "3333"}]
                 }])
             }
         };

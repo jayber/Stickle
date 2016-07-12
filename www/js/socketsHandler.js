@@ -121,6 +121,7 @@ var socketHandler = {
                         var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
                         var contact;
                         if (inbound) {
+                            log.debug("trying to update state for: "+data.originator);
                             contact = contactsHandler.getOrCreateContact(model, data.originator, data.originatorDisplayName);
                         } else {
                             contact = model.contactsMap[data.recipient];
