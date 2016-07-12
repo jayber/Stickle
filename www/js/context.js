@@ -1,19 +1,21 @@
 var context = {
     serverUrl: "192.168.0.3",
 
-    toggleSoundsAction: function (off) {
-        if (off) {
-            log.debug("turning sounds off");
-            window.localStorage.setItem("soundsOff", true);
-            setTimeout(function () {
-                userInterfaceHandler.showPopover(model, "Sounds off.");
-            }, 100);
-        } else {
-            log.debug("turning sounds on");
-            window.localStorage.setItem("soundsOff", false);
-            setTimeout(function () {
-                userInterfaceHandler.showPopover(model, "Sounds on.");
-            }, 100);
+    toggleSoundsAction: function (model) {
+        return function (off) {
+            if (off) {
+                log.debug("turning sounds off");
+                window.localStorage.setItem("soundsOff", true);
+                setTimeout(function () {
+                    userInterfaceHandler.showPopover(model, "Sounds off.");
+                }, 100);
+            } else {
+                log.debug("turning sounds on");
+                window.localStorage.setItem("soundsOff", false);
+                setTimeout(function () {
+                    userInterfaceHandler.showPopover(model, "Sounds on.");
+                }, 100);
+            }
         }
     },
 
