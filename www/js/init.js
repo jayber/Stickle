@@ -4,21 +4,15 @@ BufferedAppender = function () {
     this.doAppend = function (logEvent) {
         bufferedAppender.logBuffer.push(logEvent);
     };
-    this.append = function (val) {
-    };
-    this.setLayout = function (val) {
-    };
-    this.setThreshold = function (val) {
-    };
 };
 BufferedAppender.prototype = new log4javascript.Appender();
 bufferedAppender = new BufferedAppender();
-log.addAppender(bufferedAppender);
+//log.addAppender(bufferedAppender);
 
 function initLog() {
     if (typeof appender == 'undefined') {
         log.removeAppender(bufferedAppender);
-        appender = new log4javascript.InPageAppender("errors", true, false, false);
+        appender = new log4javascript.InPageAppender("errors", true, false);
         appender.setHeight("100px");
         appender.setShowCommandLine(false);
         log.addAppender(appender);
