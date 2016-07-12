@@ -12,7 +12,7 @@ bufferedAppender = new BufferedAppender();
 function initLog() {
     if (typeof appender == 'undefined') {
         log.removeAppender(bufferedAppender);
-        appender = new log4javascript.InPageAppender("errors", true, false);
+        appender = new log4javascript.InPageAppender("errors", true);
         appender.setHeight("100px");
         appender.setShowCommandLine(false);
         log.addAppender(appender);
@@ -52,10 +52,9 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);
             contactsHandler.populateContacts($scope, $resource)
                 .done(function () {
-                    socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                    //pushNotificationHandler.init();
+                    /*socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                    pushNotificationHandler.init();*/
                 });
-
         });
     }).directive('stkincluder', function () {
         return {
