@@ -28,7 +28,9 @@ var setupHandler = {
         $scope.feedback.closeAction = uIHandler.closeFeedbackAction($scope);
     },
 
-    setUpPopover: uIHandler.createPopover,
+    setUpPopover: function ($scope, $ionicPopover) {
+        uIHandler.createPopover($scope,$ionicPopover);
+    },
 
     setUpShowDebug: function ($scope) {
         $scope.debug = {on: window.localStorage.getItem("debug") == "true"};
