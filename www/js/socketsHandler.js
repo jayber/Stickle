@@ -46,10 +46,12 @@ var socketHandler = {
         this.ws = new WebSocket(url);
         this.messageBuffer = [];
 
-        this.purgeBufferedMessages = function() {
-            log.debug("ws purging");
-            while (message = this.messageBuffer.pop()) {
-                this.ws.send(message);
+        this.purgeBufferedMessages = function () {
+            if (this.messageBuffer.length > 0) {
+                log.debug("ws purging: "+this.messageBuffer.length+" messages");
+                while (message = this.messageBuffer.pop()) {
+                    this.ws.send(message);
+                }
             }
         };
 
@@ -99,7 +101,7 @@ var socketHandler = {
             var msg = JSON.parse(event.data);
             var data = msg.data;
 
-            switch (msg.event) { //first 3, or 4, events really just the same thing?
+            switch (msg.event) { //first 2, or 3, cases really just the same thing?
                 case "stickled":
                     socketHandler.logAndApply("stickled", function () {
                         var contact = contactsHandler.getOrCreateContact(model, data.from, data.displayName);
@@ -141,9 +143,7 @@ var socketHandler = {
                     log.debug("authenticated");
 
                     socketHandler.checkContactStatuses(model);
-
                     socketHandler.checkStickleStates(model);
-
                     socketHandler.ws.purgeBufferedMessages();
                     break;
                 case "authentication-failed":

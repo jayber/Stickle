@@ -11,5 +11,9 @@ var pushNotificationHandler = {
             log.debug("Push registered: " + data.registrationId);
             window.localStorage.setItem(userHandler.pushRegistrationIdKey, data.registrationId);
         });
+
+        push.on('notification', function(data) {
+         log.debug("push: "+JSON.stringify(data));
+        });
     }
 };
