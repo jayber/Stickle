@@ -5,7 +5,9 @@ var socketHandler = {
     },
 
     logAndApply: function (msg, func, model, data) {
-        log.trace(msg + ": " + JSON.stringify(data));
+        if (noLog.indexOf(msg)===-1) {
+            log.trace(msg + ": " + JSON.stringify(data));
+        }
         model.$apply(func);
     },
 
@@ -118,7 +120,7 @@ var socketHandler = {
                     break;
                 case "state":
                     socketHandler.logAndApply("state", function () {
-                        var inbound = (data.recipient === window.localStorage.getItem(userHandler.phoneNumberKey));
+                        var inbound = (data.recipient === telephone.canonicalize(window.localStorage.getItem(userHandler.phoneNumberKey)));
                         var contact;
                         if (inbound) {
                             log.debug("trying to update state for: "+data.originator);
