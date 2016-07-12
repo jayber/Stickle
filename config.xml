@@ -64,7 +64,11 @@
   <gap:splash src="www/res/screen/windows-phone/screen-portrait.jpg" gap:platform="winphone"/>
   <access origin="*"/>
   <plugin name="cordova-plugin-whitelist" version="1"/>
-  <plugin name="phonegap-plugin-push"/>
+  <plugin name="phonegap-plugin-push">
+      <params>
+      <param name="SENDER_ID" value="1080115958403" />
+  </params>
+  </plugin>
   <plugin name="call-number" source="npm" version="0.0.2"/>
   <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
   <allow-intent href="http://*/*"/>
