@@ -37,7 +37,7 @@ var context = {
             if (stack) {
                 message += '\n' + stack;
             }
-            alert(message);
+            log.error(message);
         });
     },
 
