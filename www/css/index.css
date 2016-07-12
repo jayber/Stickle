@@ -4,17 +4,17 @@
 }
 
 .bar.deep {
-    background-color: #c65018;
+    background-color: #ff661e;
     background-image: none;
     border-bottom: 0;
 }
 
 html {
-    color: ghostwhite;
+    color: #666666;
 }
 
 .main {
-    background-color: #555555;
+    background-color: #ffffff;
 }
 
 .loading {
@@ -36,7 +36,8 @@ html {
 
 .stickle-list .list {
     z-index: 100;
-    background-color: rgb(236, 95, 29);
+    background-color: rgb(255, 102, 30);
+    /*background-color: rgb(236, 95, 29);*/
 }
 
 .list {
@@ -46,30 +47,22 @@ html {
 
 .list .item {
     padding: 4px;
-    background-color: transparent;
-    border-color: #888888;
+    background-color: #ffeeeb;
+    border-color: #ffeee6;
 }
 
 .list .item, .list .item span {
-    color: ghostwhite;
+    color: #444444;
 }
 
 .item.inbound, .item.inbound span {
     color: #777777;
 }
 
-.item .track {
-    background-color: #888888;
-}
-
-.item .handle {
-    background-color: #aaaaaa;
-}
-
 .list .item.disable, .list .item.disable span {
-    background-color: #888888;
-    color: #bbbbbb;
-    border-color: #666666;
+    background-color: #fdfdfd;
+    color: #aaaaaa;
+    border-color: #ffeee6;
 }
 
 .list .item.first {
@@ -83,7 +76,7 @@ html {
 }
 
 .contact-actions .action.regular-action {
-    color: #e3e3e3;
+    color: #999999;
     padding: 5px 20px 0 0;
 }
 
@@ -168,16 +161,16 @@ html {
     -webkit-animation-duration: 750ms;
     animation-duration: 750ms;
 
-    background-color: #555555;
-    border-top: 1px solid #888888;
+    background-color: #ffeee6;
+    border-top: 1px solid #ffeee6;
 }
 
 .inbound.open, .inbound.un-accepted, .inbound.accepted {
-    background-color: #ffffff;
+    /*background-color: #ffffff;
     border-width: 3px;
     border-top-width: 7px;
     border-bottom-width: 7px;
-    border-color: #ffffff;
+    border-color: #ffffff;*/
 }
 
 .inbound.open, .inbound.un-accepted {
