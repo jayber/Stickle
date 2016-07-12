@@ -47,13 +47,13 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal, $ionicPopover) {
         ionic.Platform.ready(function () {
             context.addEventListeners($scope, $interval, $ionicSideMenuDelegate);
-            polyFillMobileAPIs();
+            //polyFillMobileAPIs();
             setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover);
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);
             contactsHandler.populateContacts($scope, $resource)
                 .done(function () {
-                    /*socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                    pushNotificationHandler.init();*/
+                    socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                    pushNotificationHandler.init();
                 });
         });
     }).directive('stkincluder', function () {
