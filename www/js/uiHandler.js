@@ -23,7 +23,8 @@ var uIHandler = {
                 log.debug("invalid");
                 $ionicSideMenuDelegate.toggleLeft(true);
             }
-        }
+            // i need to add this 'cos ????????
+        };
     },
 
     toggleFilterAction: function ($scope) {
@@ -31,7 +32,7 @@ var uIHandler = {
             $scope.contactFilter.show = !$scope.contactFilter.show;
             $scope.contactFilter.value = "";
             $scope.$broadcast('scroll.refreshComplete');
-        }
+        };
     },
 
     createFeedbackModal: function ($scope, $ionicModal) {
