@@ -6,13 +6,13 @@ var context = {
             log.debug("turning sounds off");
             window.localStorage.setItem("soundsOff", true);
             setTimeout(function () {
-                uIHandler.showPopover(model, "Sounds off.");
+                userInterfaceHandler.showPopover(model, "Sounds off.");
             }, 100);
         } else {
             log.debug("turning sounds on");
             window.localStorage.setItem("soundsOff", false);
             setTimeout(function () {
-                uIHandler.showPopover(model, "Sounds on.");
+                userInterfaceHandler.showPopover(model, "Sounds on.");
             }, 100);
         }
     },

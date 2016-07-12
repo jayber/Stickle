@@ -17,25 +17,25 @@ var setupHandler = {
 
     setUpFilter: function ($scope) {
         $scope.contactFilter = {value: ""};
-        $scope.contactFilter.toggleFilterAction = uIHandler.toggleFilterAction($scope);
+        $scope.contactFilter.toggleFilterAction = userInterfaceHandler.toggleFilterAction($scope);
     },
 
     setUpFeedback: function ($scope, $ionicModal, $resource) {
         $scope.feedback = {};
-        uIHandler.createFeedbackModal($scope, $ionicModal);
-        $scope.feedback.openAction = uIHandler.openFeedbackAction($scope);
-        $scope.feedback.sendAction = uIHandler.sendFeedbackAction($scope, $resource);
-        $scope.feedback.closeAction = uIHandler.closeFeedbackAction($scope);
+        userInterfaceHandler.createFeedbackModal($scope, $ionicModal);
+        $scope.feedback.openAction = userInterfaceHandler.openFeedbackAction($scope);
+        $scope.feedback.sendAction = userInterfaceHandler.sendFeedbackAction($scope, $resource);
+        $scope.feedback.closeAction = userInterfaceHandler.closeFeedbackAction($scope);
     },
 
     setUpPopover: function ($scope, $ionicPopover) {
-        uIHandler.createPopover($scope,$ionicPopover);
+        userInterfaceHandler.createPopover($scope,$ionicPopover);
     },
 
     setUpShowDebug: function ($scope) {
         $scope.debug = {on: window.localStorage.getItem("debug") == "true"};
-        uIHandler.toggleLog($scope.debug.on);
-        $scope.debug.showLogAction = uIHandler.toggleLog;
+        userInterfaceHandler.toggleLog($scope.debug.on);
+        $scope.debug.showLogAction = userInterfaceHandler.toggleLog;
     },
 
     setUpActions: function ($scope) {
@@ -52,6 +52,6 @@ var setupHandler = {
             phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
         };
 
-        $scope.details.validateAndRegisterAction = uIHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval);
+        $scope.details.validateAndRegisterAction = userInterfaceHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval);
     }
 };

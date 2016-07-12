@@ -74,7 +74,7 @@ var contactsHandler = {
 
     makeCall: function (model) {
         return function (contact) {
-            uIHandler.showPopover(model, "calling...");
+            userInterfaceHandler.showPopover(model, "calling...");
             window.plugins.CallNumber.callNumber(function () {
                 log.debug('successfully called ' + contact.phoneNumbers[0].value);
                 contactsHandler.completeStickle(contact, model);
@@ -138,10 +138,10 @@ var contactsHandler = {
                     origin: contact.phoneNumbers[0].canonical,
                     status: status
                 });
-                uIHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
+                userInterfaceHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
                 contactsHandler.setContactStatusAndDisplay(contact, status, model, true);
             } catch (err) {
-                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                userInterfaceHandler.showPopover(model, "Oops, there was an error. Please try again.");
             }
         }
     },
@@ -155,9 +155,9 @@ var contactsHandler = {
                     to: contact.phoneNumbers[0].canonical,
                     status: status
                 });
-                uIHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
+                userInterfaceHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
             } catch (err) {
-                uIHandler.showPopover(model, "Oops, there was an error. Please try again.");
+                userInterfaceHandler.showPopover(model, "Oops, there was an error. Please try again.");
                 status = contact.stickled ? "closed" : "open";
             }
             contactsHandler.setContactStatusAndDisplay(contact, status, model, false);

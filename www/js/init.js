@@ -64,7 +64,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
             },
             link: function () {
                 initLog();
-                uIHandler.toggleLog(window.localStorage.getItem("debug") == "true");
+                userInterfaceHandler.toggleLog(window.localStorage.getItem("debug") == "true");
             }
         }
     });

@@ -34,7 +34,7 @@ var userHandler = {
                 sizeScreenH: screen.height
             }
         }, function (res) {
-            uIHandler.resetFeedbackDisplay($scope, feedbackForm);
+            userInterfaceHandler.resetFeedbackDisplay($scope, feedbackForm);
             log.debug("feedback saved!");
         });
     },

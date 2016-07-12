@@ -1,4 +1,4 @@
-var uIHandler = {
+var userInterfaceHandler = {
 
     registrationAction: function ($scope, $ionicSideMenuDelegate, $resource, $interval) {
         return function (form) {
@@ -14,7 +14,7 @@ var uIHandler = {
                     .then(function () {
                         $ionicSideMenuDelegate.toggleLeft(false);
                         socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                        uIHandler.showPopover($scope, "Successfully registered.");
+                        userInterfaceHandler.showPopover($scope, "Successfully registered.");
                     }, function (result) {
                         $scope.generalError = result.data;
                     });
@@ -23,7 +23,6 @@ var uIHandler = {
                 log.debug("invalid");
                 $ionicSideMenuDelegate.toggleLeft(true);
             }
-            // i need to add this 'cos ???????? really
         };
     },
 
@@ -69,7 +68,7 @@ var uIHandler = {
     },
 
     resetFeedbackDisplay: function ($scope, feedbackForm) {
-        $scope.feedback.modal.hide().then(uIHandler.showPopover($scope, "Feedback successfully sent."));
+        $scope.feedback.modal.hide().then(userInterfaceHandler.showPopover($scope, "Feedback successfully sent."));
         feedbackForm.$setPristine();
         feedbackForm.$setUntouched();
     },
