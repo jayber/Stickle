@@ -131,7 +131,8 @@ var socketHandler = {
                         }
                         contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound);
                         if (inbound || data.state == "accepted") {
-                            context.playSound(model);
+                            //might always be a bad idea, if needed, done by push-notification?
+                            //context.playSound(model);
                         }
                     }, model, data);
                     break;

@@ -21,9 +21,13 @@
 <ion-side-menus>
     <ion-side-menu-content>
 
-        <ion-header-bar class="bar-dark deep">
-            <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-            <h1 class="title">Stickle</h1>
+        <ion-header-bar class="bar stickle">
+            <div class="filter">
+                <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+            <input type="text" placeholder="Name filter" ng-model="contactFilter.value">
+            <button class="icon ion-close-round button" ng-click="contactFilter.toggleFilterAction()"></button>
+            </div>
         </ion-header-bar>
 
         <stkincluder src="templates/mainContent.html"></stkincluder>

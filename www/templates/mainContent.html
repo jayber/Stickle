@@ -1,11 +1,6 @@
 
 <ion-content class="main" overflow-scroll="true">
-    <ion-refresher on-refresh="contactFilter.toggleFilterAction()">
-    </ion-refresher>
-    <div class="filter" ng-class="{'hidden':!contactFilter.show}">
-        <input type="text" placeholder="Name to filter on" ng-model="contactFilter.value">
-        <button class="icon ion-close-round button button-clear" ng-click="contactFilter.toggleFilterAction()"></button>
-    </div>
+
     <div id="errors" class="hidden"></div>
 
     <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>

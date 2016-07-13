@@ -12,7 +12,7 @@ var setupHandler = {
 
     setUpTurnSoundsOff: function (model) {
         model.sounds = {off: window.localStorage.getItem("soundsOff") == "true"};
-        model.sounds.toggleSoundsAction = context.toggleSoundsAction;
+        model.sounds.toggleSoundsAction = context.toggleSoundsAction(model);
     },
 
     setUpFilter: function ($scope) {

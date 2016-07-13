@@ -3,23 +3,80 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
-.bar.deep {
-    background-color: #ff661e;
-    /*background-color: #e45c1c;*/
-    background-image: none;
-    border-bottom: 0;
-}
-
 html {
     color: #666666;
 }
 
 .main {
+    background-color: #fdfdfd;
+}
+
+.bar {
+    height: 48px;
+}
+
+.has-header {
+    top: 48px;
+}
+
+.bar h1 {
+    padding-top: 1px;
+}
+
+.bar.stickle {
+    background-color: #ff661e;
+    /*background-color: #c55419;*/
+    background-image: none;
+    border-bottom: 0;
+}
+
+.filter {
+    width: 100%;
+    text-decoration: none;
+    background-color: #fdfdfd;
+    border-radius: 3px;
+    padding-top: 1px;
+}
+
+.filter input {
+    padding-left: 5px;
+    width: calc(100% - 100px);
+    color: #555555;
+    text-decoration: none;
+    float: left;
+}
+
+.filter button.ion-navicon {
+    float: left;
+}
+
+.filter button.ion-close-round {
+    float: right;
+}
+
+.filter button:hover {
+    color: #ff661e;
+    background: none;
+    background-color: #ffffff;
+}
+.filter button {
+    width: 50px;
+    color: #ff661e;
+    background: none;
     background-color: #ffffff;
 }
 
+.filter button, .filter input {
+    display: block;
+    font-size: 18px;
+}
+
+.filter input:focus {
+    text-decoration: none;
+}
+
 .loading {
-    color: ghostwhite;
+    color: #444444;
     font-size: 20px;
     text-align: center;
     min-height: 120px;
@@ -48,15 +105,14 @@ html {
 
 .list .item {
     padding: 4px;
+}
+
+.contact-list .item {
     background-color: #ffeeeb;
 }
 
 .list .item, .list .item span {
     color: #444444;
-}
-
-.item.inbound, .item.inbound span {
-    color: #777777;
 }
 
 .list .item.disable, .list .item.disable span {
@@ -174,7 +230,7 @@ html {
 }
 
 .inbound.open, .inbound.un-accepted {
-    background-color: #f8e896;
+    background-color: #fff5aa;
 }
 
 .inbound.accepted {
@@ -225,27 +281,4 @@ textarea {
     text-align: center;
     font-size: 14px;
     color: #dedee4;
-}
-
-.filter {
-    width: 100%;
-    padding: 10px;
-    text-decoration: none;
-}
-
-.filter input {
-    background-color: transparent;
-    border-bottom: 1px solid #cccccc;
-    width: 80%;
-    color: #555555;
-    text-decoration: none;
-}
-
-.filter button, .filter input {
-    display: inline;
-    font-size: 18px;
-}
-
-.filter input:focus {
-    text-decoration: none;
 }
