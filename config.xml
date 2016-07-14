@@ -73,7 +73,7 @@
     </plugin>
     <plugin name="call-number" source="npm" version="0.0.2"/>
     <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
-    <plugin name="cordova-plugin-splashscreen"/>
+    <plugin name="cordova-plugin-splashscreen" version="2"/>
     <preference name="SplashMaintainAspectRatio" value="true"/>
     <preference name="SplashShowOnlyFirstTime" value="false"/>
     <preference name="SplashScreen" value="screen"/>
