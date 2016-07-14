@@ -72,6 +72,7 @@
   </plugin>
   <plugin name="call-number" source="npm" version="0.0.2"/>
   <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
+  <plugin name="cordova-plugin-splashscreen"/>
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
   <allow-intent href="tel:*"/>
@@ -79,6 +80,7 @@
   <allow-intent href="mailto:*"/>
   <allow-intent href="geo:*"/>
     <platform name="android">
+        <splash src="www/img/splashscreen.png" />
     <preference name="android-minSdkVersion" value="15"/>
 </platform>
   <platform name="android">
