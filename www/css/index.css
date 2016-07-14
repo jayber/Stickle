@@ -59,7 +59,7 @@ html {
 .filter button:hover {
     color: #ff661e;
     background: none;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 .filter button.button {
@@ -67,7 +67,7 @@ html {
     color: #ff661e;
 }
 
-.filter button, .filter input {
+.filter button.button, .filter input {
     display: block;
     font-size: 18px;
     background: none;
