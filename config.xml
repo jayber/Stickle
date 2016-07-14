@@ -76,21 +76,21 @@
     <plugin name="cordova-plugin-splashscreen"/>
     <preference name="SplashMaintainAspectRatio" value="true"/>
     <preference name="SplashShowOnlyFirstTime" value="false"/>
-    <preference name="SplashScreen" value="screen"/>
+    <preference name="SplashScreen" value="splash"/>
     <preference name="SplashScreenDelay" value="2000"/>
+    <platform name="android">
+        <splash density="port-xhdpi" src="www/img/splash"/>
+        <splash density="port-hdpi" src="www/img/splash"/>
+        <splash density="port-ldpi" src="www/img/splash"/>
+        <splash density="port-mdpi" src="www/img/splash"/>
+        <preference name="android-minSdkVersion" value="15"/>
+    </platform>
     <allow-intent href="http://*/*"/>
     <allow-intent href="https://*/*"/>
     <allow-intent href="tel:*"/>
     <allow-intent href="sms:*"/>
     <allow-intent href="mailto:*"/>
     <allow-intent href="geo:*"/>
-    <platform name="android">
-        <splash density="port-xhdpi" src="www/img/splash.png"/>
-        <splash density="port-hdpi" src="www/img/splash.png"/>
-        <splash density="port-ldpi" src="www/img/splash.png"/>
-        <splash density="port-mdpi" src="www/img/splash.png"/>
-        <preference name="android-minSdkVersion" value="15"/>
-    </platform>
     <platform name="android">
         <allow-intent href="market:*"/>
     </platform>
