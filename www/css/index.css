@@ -33,7 +33,7 @@ html {
 .filter {
     width: 100%;
     text-decoration: none;
-    background-color: #fdfdfd;
+    background-color: #fbfbfb;
     border-radius: 3px;
     padding-top: 1px;
 }
@@ -107,8 +107,13 @@ html {
     padding: 4px;
 }
 
+.stickle-list .item {
+    background-color: #fff5f0;
+}
+
 .contact-list .item {
-    background-color: #ffeeeb;
+    background-color: #ffffff;
+    border-color: #efefef;
 }
 
 .list .item, .list .item span {
@@ -116,9 +121,9 @@ html {
 }
 
 .list .item.disable, .list .item.disable span {
-    background-color: #fdfdfd;
+    background-color: #efefef;
     color: #aaaaaa;
-    border-color: #ffeee6;
+    border-color: #ffffff;
 }
 
 .list .item.first {
