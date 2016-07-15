@@ -21,9 +21,12 @@
     <preference name="android-installLocation" value="auto"/>
     <preference name="android-build-tool" value="gradle"/>
 
+    <access origin="*"/>
     <icon src="img/sticon.png"/>
 
-    <access origin="*"/>
+    <gap:plugin name="org.apache.cordova.contacts"/>
+
+
     <plugin name="cordova-plugin-whitelist" version="1"/>
     <plugin name="phonegap-plugin-push">
         <params>
