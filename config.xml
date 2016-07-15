@@ -25,8 +25,6 @@
     <icon src="img/sticon.png"/>
 
     <gap:plugin name="org.apache.cordova.contacts"/>
-
-
     <plugin name="cordova-plugin-whitelist" version="1"/>
     <plugin name="phonegap-plugin-push">
         <params>
@@ -35,6 +33,22 @@
     </plugin>
     <plugin name="call-number" source="npm" version="0.0.2"/>
     <plugin name="cordova-plugin-statusbar" source="npm" version="2.1.2"/>
+
+    <preference name="SplashScreen" value="screen" />
+    <!--<plugin name="cordova-s" version="1"/>-->
+    <preference name="SplashScreenDelay" value="3000" />
+
+    <platform name="android">
+        <splash src="www/img/splash.png" density="land-hdpi"/>
+        <splash src="www/img/splash.png" density="land-ldpi"/>
+        <splash src="www/img/splash.png" density="land-mdpi"/>
+        <splash src="www/img/splash.png" density="land-xhdpi"/>
+
+        <splash src="www/img/splash.png" density="port-hdpi"/>
+        <splash src="www/img/splash.png" density="port-ldpi"/>
+        <splash src="www/img/splash.png" density="port-mdpi"/>
+        <splash src="www/img/splash.png" density="port-xhdpi"/>
+    </platform>
 
     <platform name="android">
         <preference name="android-minSdkVersion" value="15"/>
