@@ -8,6 +8,7 @@ var setupHandler = {
         setupHandler.setUpFeedback($scope, $ionicModal, $resource);
         setupHandler.setUpPopover($scope, $ionicPopover);
         setupHandler.setUpFilter($scope);
+        setupHandler.setUpSplash($scope, $ionicModal);
     },
 
     setUpTurnSoundsOff: function (model) {
@@ -26,6 +27,15 @@ var setupHandler = {
         $scope.feedback.openAction = userInterfaceHandler.openFeedbackAction($scope);
         $scope.feedback.sendAction = userInterfaceHandler.sendFeedbackAction($scope, $resource);
         $scope.feedback.closeAction = userInterfaceHandler.closeFeedbackAction($scope);
+    },
+
+    setUpSplash: function ($scope, $ionicModal) {
+        $scope.splash = {on: window.localStorage.getItem("splash") != "false"};
+        userInterfaceHandler.createSplashModal($scope, $ionicModal);
+        $scope.splash.toggleSplashAction = userInterfaceHandler.toggleSplashAction;
+        $scope.splash.show = function() {
+            $scope.splash.modal.show();
+        }
     },
 
     setUpPopover: function ($scope, $ionicPopover) {

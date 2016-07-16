@@ -43,6 +43,22 @@ var userInterfaceHandler = {
         });
     },
 
+    createSplashModal: function ($scope, $ionicModal) {
+        $ionicModal.fromTemplateUrl('templates/splash.html',{
+            scope: $scope,
+            animation: 'slide-in-down'
+        }).then( function (modal) {
+            $scope.splash.modal = modal;
+            if ($scope.splash.on == true) {
+                $scope.splash.modal.show();
+            }
+        });
+    },
+
+    toggleSplashAction: function(on) {
+        window.localStorage.setItem("splash",on);
+    },
+
     openFeedbackAction: function ($scope) {
         return function () {
             $scope.feedback.modal.show().then(function (modal) {
