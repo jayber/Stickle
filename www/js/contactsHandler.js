@@ -131,6 +131,7 @@ var contactsHandler = {
     },
 
     stickleResponseHandler: function (status, model) {
+        var translation = {accepted:"Ready to call", "un-accepted":"Not ready to call"};
         return function (contact) {
             log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
             try {
@@ -138,7 +139,7 @@ var contactsHandler = {
                     origin: contact.phoneNumbers[0].canonical,
                     status: status
                 });
-                userInterfaceHandler.showPopover(model, status.charAt(0).toUpperCase() + status.substring(1).toLowerCase() + " stickle from \"" + contact.displayName + "\".");
+                userInterfaceHandler.showPopover(model, translation[status] + " by \"" + contact.displayName + "\".");
                 contactsHandler.setContactStatusAndDisplay(contact, status, model, true);
             } catch (err) {
                 userInterfaceHandler.showPopover(model, "Oops, there was an error. Please try again.");

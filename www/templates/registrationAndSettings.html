@@ -4,7 +4,7 @@
 <ion-content scroll="false">
     <div class="padding">
         <form ng-submit="details.validateAndRegisterAction(detailsForm)" class="css-form" novalidate name="detailsForm">
-            <div class="list">
+            <div class="field-list">
                 <label class="item item-input">
                     <input type="text" placeholder="Your display name" ng-model="details.displayName"
                            name="displayName" required>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="padding">
-        <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show log</ion-checkbox>
+        <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show debug log</ion-checkbox>
     </div>
 
     <div class="padding">

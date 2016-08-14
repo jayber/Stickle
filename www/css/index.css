@@ -107,30 +107,72 @@ html {
     padding-bottom: 0;
 }
 
-.list .item {
+.list .contact-list-item {
     padding: 4px;
+    border-top: 1px solid;
+    overflow: hidden;
+}
+
+.list .item {
+    padding: 0;
+    border: 0;
 }
 
 .stickle-list .item {
-    background-color: #fff5f0;
+    -webkit-animation: slideUp ease-in 1;
+    animation: slideUp ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 750ms;
+    animation-duration: 750ms;
+
+    border-top: 1px solid #ffffff;
 }
 
-.contact-list .item {
+.stickle-list .contact-list-item {
+    background-color: #ffeeeb;
+    border-top: 0;
+}
+
+.contact-banner {
+    background-color: #6cb0fe;
+    color: #efefef;
+    font-size: 10pt;
+    padding: 4px 16px 4px 16px;
+    white-space: normal;
+}
+
+.contact-banner.inbound:after {
+    font-family: "Ionicons";
+    content: "\f253";
+}
+
+.contact-banner.outbound:after {
+    font-family: "Ionicons";
+    content: "\f4b9";
+}
+
+.contact-list .contact-list-item {
     background-color: #ffffff;
     border-color: #efefef;
 }
 
-.list .item, .list .item span {
+.contact-list-item {
+    overflow: auto;
+    padding: 16px;
+}
+
+.list .contact-list-item, .list .contact-list-item span {
     color: #444444;
 }
 
-.list .item.disable, .list .item.disable span {
+.list .disable .contact-list-item, .list .disable .contact-list-item span {
     background-color: #efefef;
     color: #aaaaaa;
     border-color: #ffffff;
 }
 
-.list .item.first {
+.list .first .contact-list-item, .list .first .contact-banner {
     border-top: 0;
 }
 
@@ -218,31 +260,11 @@ html {
     display: inline-block;
 }
 
-.stickle-list .item {
-    -webkit-animation: slideUp ease-in 1;
-    animation: slideUp ease-in 1;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-duration: 750ms;
-    animation-duration: 750ms;
-
-    background-color: #ffeeeb;
-    border-top: 1px solid #fdfdfd;
-}
-
-.inbound.open, .inbound.un-accepted, .inbound.accepted {
-    /*background-color: #ffffff;
-    border-width: 3px;
-    border-top-width: 7px;
-    border-bottom-width: 7px;
-    border-color: #ffffff;*/
-}
-
-.inbound.open, .inbound.un-accepted {
+.inbound.open .contact-list-item, .inbound.un-accepted .contact-list-item {
     background-color: #fff5aa;
 }
 
-.inbound.accepted {
+.inbound.accepted .contact-list-item {
     background-color: #caeaf0;
 }
 
@@ -259,6 +281,11 @@ html {
 .validationMsg.ng-hide {
     opacity: 0;
     display: block!important;
+}
+
+.greyed {
+    background-color: #efefef;
+    color: #aaaaaa;
 }
 
 @-webkit-keyframes slideUp {
