@@ -131,7 +131,7 @@ var contactsHandler = {
     },
 
     stickleResponseHandler: function (status, model) {
-        var translation = {accepted:"Ready to call", "un-accepted":"Not ready to call"};
+        var translation = {accepted:"Ready to be called", "un-accepted":"Not ready to be called", closed: "Closed"};
         return function (contact) {
             log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
             try {
