@@ -1,7 +1,8 @@
 //has tests
 var telephone = {
     canonicalize: function(telNo) {
-        var result = telNo.replace(/\D*/g,'');
+        log.trace("canonicalizing");
+        var result = telNo.replace(new RegExp("\\D*","g"),'');
 
         if (result.startsWith('00')) {
             result = result.substr(2,result.length);
