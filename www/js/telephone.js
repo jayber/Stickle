@@ -1,11 +1,11 @@
 //has tests
 var telephone = {
+
     startsWith: function(str, target) {
       return str.indexOf(target) == 0;
     },
+
     canonicalize: function(telNo) {
-        log.trace("canonicalizing");
-        try {
         var result = telNo.replace(new RegExp("\\D*","g"),'');
 
         if (telephone.startsWith(result,'00')) {
@@ -21,10 +21,6 @@ var telephone = {
             }
             result = "44".concat(result);
         }
-        } catch (e) {
-            log.debug(e.error.toString());
-        }
-        log.trace("canonicalized");
         return result;
     }
 };
