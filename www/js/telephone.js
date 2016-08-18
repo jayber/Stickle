@@ -17,7 +17,7 @@ var telephone = {
             }
             result = "44".concat(result);
         }
-        log.trace("about to canonicalized");
+        log.trace("canonicalized");
         return result;
     }
 };
