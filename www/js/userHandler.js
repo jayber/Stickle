@@ -48,6 +48,7 @@ var userHandler = {
     },
 
     registerOnServer: function ($resource, phoneNumber, displayName) {
+        log.debug("getting resource");
         var User = $resource('http://:server/api/user/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
