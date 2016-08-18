@@ -2,6 +2,7 @@
 var telephone = {
     canonicalize: function(telNo) {
         log.trace("canonicalizing");
+        try {
         var result = telNo.replace(new RegExp("\\D*","g"),'');
 
         if (result.startsWith('00')) {
@@ -16,6 +17,9 @@ var telephone = {
                 result = result.substr(1, result.length);
             }
             result = "44".concat(result);
+        }
+        } catch (e) {
+            log.debug(e.error.toString());
         }
         log.trace("canonicalized");
         return result;
