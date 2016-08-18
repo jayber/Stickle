@@ -9,9 +9,9 @@ var userInterfaceHandler = {
                 window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
                 window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
 
-                var canonTel = telephone.canonicalize($scope.details.phoneNumber);
                 try {
                     log.trace("about to register");
+                    var canonTel = telephone.canonicalize($scope.details.phoneNumber);
                     userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
                         .then(function () {
                             $ionicSideMenuDelegate.toggleLeft(false);
