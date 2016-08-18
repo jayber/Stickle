@@ -10,14 +10,18 @@ var userInterfaceHandler = {
                 window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
 
                 var canonTel = telephone.canonicalize($scope.details.phoneNumber);
-                userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
-                    .then(function () {
-                        $ionicSideMenuDelegate.toggleLeft(false);
-                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
-                        userInterfaceHandler.showPopover($scope, "Successfully registered.");
-                    }, function (result) {
-                        $scope.generalError = result.data;
-                    });
+                try {
+                    userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
+                        .then(function () {
+                            $ionicSideMenuDelegate.toggleLeft(false);
+                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                            userInterfaceHandler.showPopover($scope, "Successfully registered.");
+                        }, function (result) {
+                            $scope.generalError = result.data;
+                        });
+                } catch (e) {
+                    log.debug(e.error.toString());
+                }
             }
             if (form.$invalid) {
                 log.debug("invalid");
