@@ -36,14 +36,14 @@ var socketHandler = {
         }
     },
 
-    startSockets: function (model, $interval, $ionicSideMenuDelegate) {
+    startSockets: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate) {
         if (socketHandler.ws != undefined) {
             socketHandler.ws.close();
         }
-        socketHandler.ws = new socketHandler.StickleWebSocket(socketHandler.getUrl(), model, $ionicSideMenuDelegate, $interval);
+        socketHandler.ws = new socketHandler.StickleWebSocket(socketHandler.getUrl(), model, $ionicSideMenuDelegate, $interval, $ionicScrollDelegate);
     },
 
-    StickleWebSocket: function (url, model, $ionicSideMenuDelegate, $interval) {
+    StickleWebSocket: function (url, model, $ionicSideMenuDelegate, $interval, $ionicScrollDelegate) {
         this.url = url;
         this.ws = new WebSocket(url);
         this.messageBuffer = [];
@@ -88,7 +88,7 @@ var socketHandler = {
             log.debug("ws closed! - trying to reopen");
             setTimeout(function () {
                 try {
-                    socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate)
+                    socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate)
                 } catch (err) {
                     log.error("Error - ", err, err.stack);
                 }
@@ -107,14 +107,14 @@ var socketHandler = {
                 case "stickled":
                     socketHandler.logAndApply("stickled", function () {
                         var contact = contactsHandler.getOrCreateContact(model, data.from, data.displayName);
-                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, true);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, true, $ionicScrollDelegate);
                         context.playSound(model);
                     }, model, data);
                     break;
                 case "stickle-responded":
                     socketHandler.logAndApply("stickle-responded", function () {
                         var contact = model.contactsMap[data.from];
-                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, false);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.status, model, false, $ionicScrollDelegate);
                     }, model, data);
                     context.playSound(model);
                     break;
@@ -129,7 +129,7 @@ var socketHandler = {
                             contact = model.contactsMap[data.recipient];
                             contact.stickled = true;
                         }
-                        contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound);
+                        contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound, $ionicScrollDelegate);
                         if (inbound || data.state == "accepted") {
                             //might always be a bad idea, if needed, done by push-notification?
                             //context.playSound(model);

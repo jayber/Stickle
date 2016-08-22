@@ -1,9 +1,9 @@
 var setupHandler = {
 
-    initModel: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover) {
+    initModel: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover, $ionicScrollDelegate) {
         setupHandler.setUpTurnSoundsOff($scope);
-        setupHandler.setUpDetailsAndRegistration($scope, $ionicSideMenuDelegate, $resource, $interval);
-        setupHandler.setUpActions($scope);
+        setupHandler.setUpDetailsAndRegistration($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate);
+        setupHandler.setUpActions($scope, $ionicScrollDelegate);
         setupHandler.setUpShowDebug($scope);
         setupHandler.setUpFeedback($scope, $ionicModal, $resource);
         setupHandler.setUpPopover($scope, $ionicPopover);
@@ -48,20 +48,20 @@ var setupHandler = {
         $scope.debug.showLogAction = userInterfaceHandler.toggleLog;
     },
 
-    setUpActions: function ($scope) {
+    setUpActions: function ($scope, $ionicScrollDelegate) {
         $scope.acceptStickle = contactsHandler.stickleResponseHandler("accepted", $scope);
         $scope.unAcceptStickle = contactsHandler.stickleResponseHandler("un-accepted", $scope);
         $scope.rejectStickle = contactsHandler.stickleResponseHandler("rejected", $scope);
-        $scope.call = contactsHandler.makeCall($scope);
-        $scope.onToggle = contactsHandler.stickleHandler($scope);
+        $scope.call = contactsHandler.makeCall($scope, $ionicScrollDelegate);
+        $scope.onToggle = contactsHandler.stickleHandler($scope, $ionicScrollDelegate);
     },
 
-    setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval) {
+    setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {
         $scope.details = {
             displayName: window.localStorage.getItem(userHandler.displayNameKey),
             phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
         };
 
-        $scope.details.validateAndRegisterAction = userInterfaceHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval);
+        $scope.details.validateAndRegisterAction = userInterfaceHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate);
     }
 };

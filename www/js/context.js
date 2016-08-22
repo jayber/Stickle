@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "192.168.0.4",
 
     toggleSoundsAction: function (model) {
         return function (off) {
@@ -19,13 +19,13 @@ var context = {
         }
     },
 
-    addEventListeners: function (model, $interval, $ionicSideMenuDelegate) {
+    addEventListeners: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate) {
         document.addEventListener("touchstart", function () {
         }, true);
 
         document.addEventListener("resume", function () {
             log.debug("resuming");
-            socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate);
+            socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
         }, false);
 
         document.addEventListener("pause", function () {

@@ -1,6 +1,6 @@
 var userInterfaceHandler = {
 
-    registrationAction: function ($scope, $ionicSideMenuDelegate, $resource, $interval) {
+    registrationAction: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {
         return function (form) {
             log.debug("validateAndRegister");
             $scope.generalError = null;
@@ -16,7 +16,7 @@ var userInterfaceHandler = {
                     userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
                         .then(function () {
                             $ionicSideMenuDelegate.toggleLeft(false);
-                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate);
+                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
                             userInterfaceHandler.showPopover($scope, "Successfully registered.");
                         }, function (result) {
                             $scope.generalError = result.data;
