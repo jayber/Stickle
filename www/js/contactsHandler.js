@@ -37,9 +37,9 @@ var contactsHandler = {
         return contacts.filter(function (contact) {
             return contact.phoneNumbers != null
         }).sort(function (a, b) {
-            if (a.displayName.toLowerCase() < b.displayName.toLowerCase())
+            if ((a.displayName || "").toLowerCase() < (b.displayName || "").toLowerCase())
                 return -1;
-            else if (a.displayName.toLowerCase() > b.displayName.toLowerCase())
+            else if ((a.displayName || "").toLowerCase() > (b.displayName || "").toLowerCase())
                 return 1;
             else
                 return 0;
