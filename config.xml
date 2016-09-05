@@ -22,9 +22,9 @@
     <access origin="*"/>
     <icon src="img/sticon.png"/>
 
-    <plugin name="cordova-plugin-customurlscheme" source="npm">
+    <gap:plugin name="cordova-plugin-customurlscheme" source="npm">
         <param name="URL_SCHEME" value="stickle" />
-    </plugin>
+    </gap:plugin>
 
     <gap:plugin name="org.apache.cordova.contacts"/>
     <plugin name="cordova-plugin-whitelist" version="1"/>
