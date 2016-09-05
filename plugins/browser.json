@@ -12,6 +12,10 @@
         },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "co.stickle"
+        },
+        "cordova-plugin-customurlscheme": {
+            "URL_SCHEME": "stickle",
+            "PACKAGE_NAME": "co.stickle"
         }
     },
     "dependent_plugins": {}
