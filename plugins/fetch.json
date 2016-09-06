@@ -41,8 +41,9 @@
     },
     "cordova-plugin-customurlscheme": {
         "source": {
-            "type": "registry",
-            "id": "cordova-plugin-customurlscheme"
+            "type": "git",
+            "url": "https://github.com/EddyVerbruggen/Custom-URL-scheme.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {
