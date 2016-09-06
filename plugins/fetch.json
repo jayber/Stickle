@@ -39,11 +39,10 @@
         "is_top_level": true,
         "variables": {}
     },
-    "nl.x-services.plugins.launchmyapp": {
+    "cordova-plugin-customurlscheme": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/Telerik-Verified-Plugins/Custom-URL-scheme",
-            "subdir": "."
+            "type": "registry",
+            "id": "cordova-plugin-customurlscheme"
         },
         "is_top_level": true,
         "variables": {

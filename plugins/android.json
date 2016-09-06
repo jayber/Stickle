@@ -22,8 +22,11 @@
         "mx.ferreyra.callnumber": {
             "PACKAGE_NAME": "co.stickle"
         },
-        "nl.x-services.plugins.launchmyapp": {
+        "cordova-plugin-customurlscheme": {
             "URL_SCHEME": "stickle",
+            "ANDROID_SCHEME": " ",
+            "ANDROID_HOST": " ",
+            "ANDROID_PATHPREFIX": "/",
             "PACKAGE_NAME": "co.stickle"
         }
     },
