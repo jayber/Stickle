@@ -23,7 +23,7 @@
     <icon src="img/sticon.png"/>
 
     <gap:plugin name="cordova-plugin-customurlscheme" source="npm">
-        <param name="URL_SCHEME" value="stickle" />
+        <variable name="URL_SCHEME" value="stickle" />
     </gap:plugin>
 
     <gap:plugin name="org.apache.cordova.contacts"/>
