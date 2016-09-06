@@ -1,0 +1,24 @@
+
+<ion-content class="main" overflow-scroll="true">
+
+    <div id="errors" class="hidden"></div>
+
+    <div ng-class="{hidden: contacts.length>0}" class="loading">loading contacts...</div>
+
+    <ion-list class="stickle-list">
+        <ion-item ng-repeat="contact in stickles" ng-class="[{'inbound':contact.inbound}, contact.stickleStatus]">
+
+            <stkincluder src="templates/row.html"></stkincluder>
+
+        </ion-item>
+    </ion-list>
+
+    <ion-list class="contact-list">
+        <ion-item collection-repeat="contact in contacts | filter:{displayName: contactFilter.value} | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
+
+            <stkincluder src="templates/row.html"></stkincluder>
+
+        </ion-item>
+    </ion-list>
+
+</ion-content>
