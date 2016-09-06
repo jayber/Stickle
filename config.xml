@@ -28,6 +28,10 @@
         <variable name="URL_SCHEME" value="stickle" /><!-- change as appropriate -->
     </feature>
 
+    <gap:plugin name="cordova-plugin-customurlscheme" source="npm">
+        <variable name="URL_SCHEME" value="stickle" />
+    </gap:plugin>
+
     <gap:plugin name="org.apache.cordova.contacts"/>
     <plugin name="cordova-plugin-whitelist" version="1"/>
     <plugin name="phonegap-plugin-push">
