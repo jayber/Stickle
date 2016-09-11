@@ -3,20 +3,20 @@
 </ion-header-bar>
 <ion-content scroll="false">
     <div class="padding">
-        <form ng-submit="details.validateAndRegisterAction(detailsForm)" class="css-form" novalidate name="detailsForm">
-            <div class="field-list">
-                <label class="item item-input">
+        <div class="field-list">
+            <form ng-submit="details.registrationAction(detailsForm)" class="css-form" novalidate name="detailsForm">
+                <label id="displayNameLabel" class="item item-input" ng-class="{disable:details.status!='unregistered'}">
                     <input type="text" placeholder="Your display name" ng-model="details.displayName"
-                           name="displayName" required>
+                           name="displayName" id="displayName" required >
                 </label>
 
                 <div ng-show="(detailsForm.$submitted || detailsForm.displayName.$touched) && detailsForm.displayName.$error.required"
                      class="validationMsg">Enter your name.
                 </div>
 
-                <label class="item item-input">
+                <label id="phoneNumberLabel" class="item item-input" ng-class="{disable:details.status!='unregistered'}">
                     <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber"
-                           name="phoneNumber" required minlength="4">
+                           name="phoneNumber" id="phoneNumber" required minlength="4" >
                 </label>
 
                 <div ng-show="(detailsForm.$submitted || detailsForm.phoneNumber.$touched) && (detailsForm.phoneNumber.$error.required || detailsForm.phoneNumber.$error.minlength)"
@@ -25,27 +25,44 @@
 
                 <div ng-show="generalError" class="validationMsg">{{generalError}}</div>
 
-            </div>
-            <button type="submit" class="button button-block button-positive">Register</button>
-        </form>
+                <button type="submit" id="register" class="button button-block button-positive" ng-class="{disable:details.status!='unregistered'}">Register
+                </button>
+                <button type="button" ng-click="details.logout()" id="logout" class="button button-block button-outline" ng-class="{disable:details.status!='loggedIn'}">Log out
+                </button>
+            </form>
+        </div>
+
+        <div class="field-list">
+            <form ng-submit="verify.verificationAction(verifyForm)" class="css-form" novalidate name="verifyForm">
+
+                <label id="verificationCodeLabel" class="item item-input" ng-class="{disable:details.status!='registered'}">
+                    <input type="text" placeholder="Enter SMS code" ng-model="verify.verificationCode"
+                           name="verificationCode" id="verificationCode" minlength="6" maxlength="6">
+                </label>
+
+                <div ng-show="(verifyForm.$submitted || verifyForm.verificationCode.$touched) && (verifyForm.verificationCode.$error.maxlength || verifyForm.verificationCode.$error.minlength)"
+                     class="validationMsg">Enter a correct verification code
+                </div>
+                <button type="submit" id="verify" class="button button-block button-positive" ng-class="{disable:details.status!='registered'}">Verify</button>
+
+                <button class="button button-block button-clear disable text-button"  ng-class="{disable:details.status!='registered'}" type="button" id="resend" ng-click="verify.resend()">
+                    Send new code >
+                </button>
+            </form>
+        </div>
     </div>
 
     <div class="padding">
         <ion-checkbox ng-model="sounds.off" ng-change="sounds.toggleSoundsAction(sounds.off)" menu-close>Sounds off
         </ion-checkbox>
-    </div>
+        <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show debug log
+        </ion-checkbox>
 
-    <div class="padding">
-        <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show debug log</ion-checkbox>
-    </div>
-
-    <div class="padding">
         <button class="button button-outline button-block button-stable" ng-click="feedback.openAction()" menu-close>
-            Send feedback >
+            Send feedback
         </button>
-
-        <button class="button button-block button-clear" ng-click="splash.show()" menu-close>
-            Show splashscreen
+        <button class="button button-block button-clear text-button" ng-click="splash.show()" menu-close>
+            Show splashscreen >
         </button>
     </div>
 

@@ -278,14 +278,43 @@ html {
     opacity: 1;
 }
 
-.validationMsg.ng-hide {
+/*.validationMsg.ng-hide {
     opacity: 0;
     display: block!important;
-}
+}*/
 
 .greyed {
     background-color: #efefef;
     color: #aaaaaa;
+}
+
+.item-input.disable {
+    border: none;
+    /*padding: 0;*/
+    background-color: #efefef;
+    color: #aaaaaa;
+    margin-bottom: 10px;
+}
+
+.item-input.disable input {
+    /*padding-left: 6px;*/
+    background-color: #efefef;
+}
+
+#verificationCodeLabel.disable {
+    display: none;
+}
+
+.button.disable {
+    display: none;
+}
+
+.button-block.text-button {
+    margin-top: 0;
+    height: 30px;
+    max-height: 30px;
+    min-height: 30px;
+    color: #ff661e;
 }
 
 @-webkit-keyframes slideUp {

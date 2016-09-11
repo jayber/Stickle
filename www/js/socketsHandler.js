@@ -14,7 +14,7 @@ var socketHandler = {
     authenticate: function () {
         log.debug("authenticating");
         socketHandler.ws.emit("authenticate", {
-            userId: window.localStorage.getItem(userHandler.userIdKey),
+            authId: window.localStorage.getItem(userHandler.authIdKey),
             pushRegistrationId: window.localStorage.getItem(userHandler.pushRegistrationIdKey)
         });
     },
@@ -154,6 +154,7 @@ var socketHandler = {
                     log.debug("authentication-failed");
 
                     model.generalError = "Authentication failed, please register again.";
+                    userInterfaceHandler.logoutAction(model,$ionicSideMenuDelegate)();
                     $ionicSideMenuDelegate.toggleLeft(true);
                     break;
             }

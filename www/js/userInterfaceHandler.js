@@ -1,6 +1,13 @@
 var userInterfaceHandler = {
 
-    registrationAction: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {
+    logoutAction: function ($scope, $ionicSideMenuDelegate) {
+        return function () {
+            window.localStorage.removeItem(userHandler.authIdKey);
+            userHandler.checkDetails($scope, $ionicSideMenuDelegate);
+        }
+    },
+
+    registrationAction: function ($scope, $ionicSideMenuDelegate, $resource) {
         return function (form) {
             log.debug("validateAndRegister");
             $scope.generalError = null;
@@ -9,27 +16,58 @@ var userInterfaceHandler = {
                 window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
                 window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
 
-                try {
-                    log.trace("about to canonicalize");
-                    var canonTel = telephone.canonicalize($scope.details.phoneNumber);
-                    log.trace("about to register");
-                    userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
-                        .then(function () {
-                            $ionicSideMenuDelegate.toggleLeft(false);
-                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
-                            userInterfaceHandler.showPopover($scope, "Successfully registered.");
-                        }, function (result) {
-                            $scope.generalError = result.data;
-                        });
-                } catch (e) {
-                    log.debug(e.error.toString());
-                }
+                log.trace("about to canonicalize");
+                var canonTel = telephone.canonicalize($scope.details.phoneNumber);
+                log.trace("about to register");
+                userHandler.registerOnServer($resource, canonTel, $scope.details.displayName)
+                    .then(function () {
+                        $("#phoneNumber,#displayName").prop("disabled", true);
+                        $scope.details.status = "registered";
+                    }, function (result) {
+                        $scope.generalError = result.data;
+                    });
             }
             if (form.$invalid) {
                 log.debug("invalid");
                 $ionicSideMenuDelegate.toggleLeft(true);
             }
         };
+    },
+
+    verifyAction: function ($scope, $resource, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate) {
+        return function (verifyForm) {
+            if (verifyForm.$valid) {
+                var canonTel = telephone.canonicalize($scope.details.phoneNumber);
+                var verificationCode = $scope.verify.verificationCode;
+                log.trace("about to verify: " + verificationCode);
+                userHandler.verifyRegistration($resource, canonTel, verificationCode)
+                    .then(function () {
+                        $scope.details.status = "loggedIn";
+                        $scope.verify.verificationCode = "";
+                        $scope.generalError = "";
+                        $ionicSideMenuDelegate.toggleLeft(false);
+                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
+                        userInterfaceHandler.showPopover($scope, "Successfully registered and verified.");
+                    }, function (result) {
+                        $scope.generalError = result.data;
+                    });
+            }
+        }
+    },
+
+    resendVerificationAction: function ($scope, $resource) {
+        return function () {
+            var canonTel = telephone.canonicalize($scope.details.phoneNumber);
+            log.trace("about to resend: " + canonTel);
+            userHandler.resendVerification($resource, canonTel)
+                .then(function () {
+                    $scope.verify.verificationCode = "";
+                    $scope.generalError = "";
+                    userInterfaceHandler.showPopover($scope, "Code resent.");
+                }, function (result) {
+                    $scope.generalError = result.data;
+                });
+        }
     },
 
     toggleFilterAction: function ($scope) {
@@ -50,10 +88,10 @@ var userInterfaceHandler = {
     },
 
     createSplashModal: function ($scope, $ionicModal) {
-        $ionicModal.fromTemplateUrl('templates/splash.html',{
+        $ionicModal.fromTemplateUrl('templates/splash.html', {
             scope: $scope,
             animation: 'slide-in-down'
-        }).then( function (modal) {
+        }).then(function (modal) {
             $scope.splash.modal = modal;
             if ($scope.splash.on == true) {
                 $scope.splash.modal.show();
@@ -61,8 +99,8 @@ var userInterfaceHandler = {
         });
     },
 
-    toggleSplashAction: function(on) {
-        window.localStorage.setItem("splash",on);
+    toggleSplashAction: function (on) {
+        window.localStorage.setItem("splash", on);
     },
 
     openFeedbackAction: function ($scope) {

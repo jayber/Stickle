@@ -62,6 +62,9 @@ var setupHandler = {
             phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
         };
 
-        $scope.details.validateAndRegisterAction = userInterfaceHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate);
+        $scope.details.logout = userInterfaceHandler.logoutAction($scope, $ionicSideMenuDelegate);
+        $scope.details.registrationAction = userInterfaceHandler.registrationAction($scope, $ionicSideMenuDelegate, $resource);
+        $scope.verify = {verificationAction: userInterfaceHandler.verifyAction($scope, $resource, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate)};
+        $scope.verify.resend = userInterfaceHandler.resendVerificationAction($scope,$resource);
     }
 };

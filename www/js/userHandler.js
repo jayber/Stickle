@@ -1,7 +1,7 @@
 var userHandler = {
 
     displayNameKey: "displayName",
-    userIdKey: "userId",
+    authIdKey: "authId",
     phoneNumberKey: "phonenumber",
     pushRegistrationIdKey: "pushRegId",
 
@@ -21,7 +21,7 @@ var userHandler = {
             content: $scope.feedback.fields.content + "",
             displayName: $scope.details.displayName + "",
             phoneNumber: $scope.details.phoneNumber + "",
-            userId: window.localStorage.getItem(userHandler.userIdKey) + "",
+            userId: window.localStorage.getItem(userHandler.authIdKey) + "",
             log: output,
             browserInfo: {
                 websockets: typeof WebSocket === "function",
@@ -40,10 +40,14 @@ var userHandler = {
     },
 
     checkDetails: function ($scope, $ionicSideMenuDelegate) {
-        const userId = window.localStorage.getItem(userHandler.userIdKey);
-        if ((userId === null) || userId === "") {
-            $scope.generalError = "Enter your name and telephone number to get started";
+        const authId = window.localStorage.getItem(userHandler.authIdKey);
+        if ((authId === null) || authId === "") {
+            $scope.details.status = "unregistered";
+            $("#phoneNumber,#displayName").prop("disabled", false);
+            $scope.generalError = "Enter your name and mobile phone number to get started";
             $ionicSideMenuDelegate.toggleLeft(true);
+        } else {
+            $scope.details.status = "loggedIn";
         }
     },
 
@@ -54,9 +58,32 @@ var userHandler = {
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to register");
-        return User.save({phoneNum: phoneNumber}, {displayName: displayName},function (res) {
-            window.localStorage.setItem(userHandler.userIdKey, res.userId);
-            log.debug("registered!");
+        return User.save({phoneNum: phoneNumber}, {displayName: displayName}).$promise;
+    },
+
+    verifyRegistration: function($resource, phoneNumber, verificationCode) {
+        log.trace("getting verification resource");
+        var Verification = $resource('http://:server/api/verification/:phoneNum', {
+            server: context.serverUrl,
+            phoneNum: "@phoneNum"
+        });
+        log.debug("attempting to verify: "+verificationCode);
+        return Verification.save({phoneNum: phoneNumber}, {verificationCode: verificationCode||""}, function (res) {
+            window.localStorage.setItem(userHandler.authIdKey, res.authId);
+            log.debug("verified!");
         }).$promise;
+    },
+
+    resendVerification: function($resource, phoneNumber) {
+        log.trace("getting resend resource");
+        var Resend = $resource('http://:server/api/resend/:phoneNum', {
+            server: context.serverUrl,
+            phoneNum: "@phoneNum"
+        });
+        log.debug("attempting to resend");
+        return Resend.save({phoneNum: phoneNumber}, {}, function (res) {
+            log.debug("resent!");
+        }).$promise;
+
     }
 };
