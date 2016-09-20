@@ -33,18 +33,13 @@ var contactsHandler = {
         });
     },
 
-    inviteSms: function(model) {
+    inviteSms: function (model) {
         return function (contact) {
-            alert(contact.phoneNumbers[0].value);
-            try {
-                SMS.sendSMS(contact.phoneNumbers[0].value, "Please use Stickle", function() {
-                    userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
-                }, function() {
-                    userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
-                });
-            } catch (e) {
-                alert(e);
-            }
+            SMS.sendSMS(contact.phoneNumbers[0].value, "Hi there, I'm using Stickle and think you might like it:\n ", function () {
+                userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
+            }, function () {
+                userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
+            });
         }
     },
 
@@ -68,16 +63,16 @@ var contactsHandler = {
     },
 
     dedupePhoneNumbers: function (contact) {
-            var newNumbers = [];
-            contact.phoneNumbers.forEach(function (pnum) {
-                if (!newNumbers.some(function (currentValue) {
-                        return pnum.value == currentValue.value && pnum.type == currentValue.type;
-                    })) {
-                    pnum.canonical = telephone.canonicalize(pnum.value);
-                    newNumbers.push(pnum);
-                }
-            });
-            contact.phoneNumbers = newNumbers;
+        var newNumbers = [];
+        contact.phoneNumbers.forEach(function (pnum) {
+            if (!newNumbers.some(function (currentValue) {
+                    return pnum.value == currentValue.value && pnum.type == currentValue.type;
+                })) {
+                pnum.canonical = telephone.canonicalize(pnum.value);
+                newNumbers.push(pnum);
+            }
+        });
+        contact.phoneNumbers = newNumbers;
 
         return contact;
     },
@@ -147,7 +142,11 @@ var contactsHandler = {
     },
 
     stickleResponseHandler: function (status, model, $ionicScrollDelegate) {
-        var translation = {accepted:"Ready to be called by", "un-accepted":"Not ready to be called by", rejected: "Declined from"};
+        var translation = {
+            accepted: "Ready to be called by",
+            "un-accepted": "Not ready to be called by",
+            rejected: "Declined from"
+        };
         return function (contact) {
             log.debug(status + ": " + contact.displayName + " - " + contact.phoneNumbers[0].value);
             try {
