@@ -27,7 +27,7 @@
     </gap:plugin>
 
     <gap:plugin name="org.apache.cordova.contacts"/>
-    <plugin name="com.cordova.plugins.sms" version="0.1.1" />
+    <gap:plugin name="cordova-plugin-sms" source="npm" />
     <plugin name="cordova-plugin-whitelist" version="1"/>
     <plugin name="phonegap-plugin-push">
         <params>

@@ -60,7 +60,7 @@ var setupHandler = {
         $scope.rejectStickle = contactsHandler.stickleResponseHandler("rejected", $scope);
         $scope.call = contactsHandler.makeCall($scope, $ionicScrollDelegate);
         $scope.onToggle = contactsHandler.stickleHandler($scope, $ionicScrollDelegate);
-        $scope.sms = contactsHandler.inviteSms;
+        $scope.invite = contactsHandler.inviteSms($scope);
     },
 
     setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {

@@ -33,9 +33,20 @@ var contactsHandler = {
         });
     },
 
-    inviteSms: function(contact) {
-        alert(contact.phoneNumber[0].value);
-        sms.send(contact.phoneNumber[0].value, "Please use Stickle");
+    inviteSms: function(model) {
+        return function (contact) {
+            alert(contact.phoneNumbers[0].value);
+            try {
+                SMS.smsSend(contact.phoneNumbers[0].value, "Please use Stickle", function() {
+                    userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
+                }, function() {
+                    userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
+                });
+            } catch (e) {
+                var message = e.error.toString();
+                log.error(message);
+            }
+        }
     },
 
     filterOnPhoneAndSortByNameAlphabet: function (contacts) {
