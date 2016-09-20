@@ -33,6 +33,11 @@ var contactsHandler = {
         });
     },
 
+    inviteSms: function(contact) {
+        alert(contact.phoneNumber[0].value);
+        sms.send(contact.phoneNumber[0].value, "Please use Stickle");
+    },
+
     filterOnPhoneAndSortByNameAlphabet: function (contacts) {
         return contacts.filter(function (contact) {
             return contact.phoneNumbers != null

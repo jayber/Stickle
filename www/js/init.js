@@ -46,7 +46,7 @@ function initLog() {
 angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicScrollDelegate) {
         ionic.Platform.ready(function () {
-            context.addEventListeners($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
+            context.addEventListeners($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate, $ionicModal);
             polyFillMobileAPIs();
             setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover, $ionicScrollDelegate);
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);

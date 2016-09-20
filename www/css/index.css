@@ -309,6 +309,10 @@ html {
     display: none;
 }
 
+.settings .button-outline {
+  color: #555555
+}
+
 .button-block.text-button {
     margin-top: 0;
     height: 30px;
@@ -346,6 +350,20 @@ textarea {
     text-align: center;
     font-size: 14px;
     color: #dedee4;
+}
+
+.connectionWarn {
+    margin: 200px auto;
+    width: 100px;
+    color: #6cb0fe;
+    text-align: center;
+    font-size: 12pt;
+}
+
+.connectionWarn:before {
+    font-family: "Ionicons";
+    font-size: 96pt;
+    content: "\f305";
 }
 
 .splash {

@@ -21,16 +21,17 @@ Say what you like and don't like.
 To report an error, say what were you doing, what you expected to happen and what did happened."
                                   ng-model="feedback.fields.content" name="feedbackBody" required></textarea>
             </label>
-            <!--<ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>-->
 
             <div ng-show="(feedbackForm.$submitted || feedbackForm.feedbackBody.$touched) && feedbackForm.feedbackBody.$error.required"
                  class="validationMsg padding">Enter your feedback
             </div>
 
-            <div class="padding-horizontal calm">Your log data will automatically be attached to your feedback.</div>
+            <div class="padding calm">Your log data will be attached to your feedback automatically.</div>
+            <!--<ion-checkbox ng-model="feedback.attachLog">Attach log to feedback?</ion-checkbox>-->
 
-            <button type="submit" class="button button-block button-positive">Send feedback</button>
-
+            <div class="padding-horizontal">
+                <button type="submit" class="button button-block button-positive">Send feedback</button>
+            </div>
 
         </form>
     </ion-content>

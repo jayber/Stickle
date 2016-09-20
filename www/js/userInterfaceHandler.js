@@ -99,6 +99,20 @@ var userInterfaceHandler = {
         });
     },
 
+    createConnectionWarnModal: function ($scope, $ionicModal) {
+        $ionicModal.fromTemplateUrl('templates/connectionWarn.html', {
+            scope: $scope,
+            animation: 'slide-in-down'
+        }).then(function (modal) {
+            $scope.connectionWarn.modal = modal;
+            if ($scope.connectionWarn.on == true) {
+                $scope.connectionWarn.modal.show();
+            } else {
+                $scope.connectionWarn.modal.hide();
+            }
+        });
+    },
+
     toggleSplashAction: function (on) {
         window.localStorage.setItem("splash", on);
     },

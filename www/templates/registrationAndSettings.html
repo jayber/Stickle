@@ -1,7 +1,7 @@
 <ion-header-bar class="bar bar-dark">
     <h1 class="title">Settings</h1>
 </ion-header-bar>
-<ion-content scroll="false">
+<ion-content scroll="false" class="settings">
     <div class="padding">
         <div class="field-list">
             <form ng-submit="details.registrationAction(detailsForm)" class="css-form" novalidate name="detailsForm">
@@ -58,7 +58,7 @@
         <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show debug log
         </ion-checkbox>
 
-        <button class="button button-outline button-block button-stable" ng-click="feedback.openAction()" menu-close>
+        <button class="button  button-block button-outline" ng-click="feedback.openAction()" menu-close>
             Send feedback
         </button>
         <button class="button button-block button-clear text-button" ng-click="splash.show()" menu-close>

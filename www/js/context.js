@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "192.168.0.4",
 
     toggleSoundsAction: function (model) {
         return function (off) {
@@ -19,13 +19,22 @@ var context = {
         }
     },
 
-    addEventListeners: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate) {
+    addEventListeners: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate, $ionicModal) {
         document.addEventListener("touchstart", function () {
         }, true);
+
+        document.addEventListener("offline", function() {
+            model.connectionWarn.modal.show();
+        }, false);
+
+        document.addEventListener("online", function() {
+            model.connectionWarn.modal.hide();
+        }, false);
 
         document.addEventListener("resume", function () {
             log.debug("resuming");
             socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
+            setupHandler.setUpConnectionWarn(model,$ionicModal);
         }, false);
 
         document.addEventListener("pause", function () {

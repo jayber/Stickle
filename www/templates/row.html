@@ -29,6 +29,6 @@
         </label>
         <button ng-if="contact.stickled && (contact.stickleStatus=='accepted')" class="call icon ion-ios-telephone" ng-click="call(contact)"></button>
 
-        <div ng-switch-default class="action icon ion-ios-personadd-outline regular-action"></div>
+        <div ng-switch-default class="action icon ion-ios-personadd-outline regular-action" ng-click="sms(contact)"></div>
     </div>
 </div>

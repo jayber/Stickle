@@ -9,6 +9,7 @@ var setupHandler = {
         setupHandler.setUpPopover($scope, $ionicPopover);
         setupHandler.setUpFilter($scope);
         setupHandler.setUpSplash($scope, $ionicModal);
+        setupHandler.setUpConnectionWarn($scope, $ionicModal);
     },
 
     setUpTurnSoundsOff: function (model) {
@@ -38,6 +39,11 @@ var setupHandler = {
         }
     },
 
+    setUpConnectionWarn: function($scope, $ionicModal) {
+        $scope.connectionWarn = {on: navigator.connection.type == Connection.NONE};
+        userInterfaceHandler.createConnectionWarnModal($scope, $ionicModal);
+    },
+
     setUpPopover: function ($scope, $ionicPopover) {
         userInterfaceHandler.createPopover($scope,$ionicPopover);
     },
@@ -54,6 +60,7 @@ var setupHandler = {
         $scope.rejectStickle = contactsHandler.stickleResponseHandler("rejected", $scope);
         $scope.call = contactsHandler.makeCall($scope, $ionicScrollDelegate);
         $scope.onToggle = contactsHandler.stickleHandler($scope, $ionicScrollDelegate);
+        $scope.sms = contactsHandler.inviteSms;
     },
 
     setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {
