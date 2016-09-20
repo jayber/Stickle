@@ -35,7 +35,8 @@ var contactsHandler = {
 
     inviteSms: function (model) {
         return function (contact) {
-            SMS.sendSMS(contact.phoneNumbers[0].value, "Hi there, I'm using Stickle and think you might like it:\n ", function () {
+            SMS.sendSMS(contact.phoneNumbers[0].value, "Hi there, I'm using Stickle and think you might like it. Check it out:\n" +
+            "http://play.google.com/store/apps/details?id=stickle.co", function () {
                 userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
             }, function () {
                 userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
