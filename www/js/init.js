@@ -48,7 +48,7 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
         ionic.Platform.ready(function () {
             context.addEventListeners($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate, $ionicModal);
             polyFillMobileAPIs();
-            setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover, $ionicScrollDelegate);
+            setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover, $ionicScrollDelegate, $ionicPopup);
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);
             contactsHandler.populateContacts($scope, $resource)
                 .done(function () {

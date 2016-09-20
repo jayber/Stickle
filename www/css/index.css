@@ -26,7 +26,7 @@ html {
 
 .bar.stickle {
     background-color: #ff661e;
-    /*background-color: #ffa80a;*/
+    /*background-color: #f96018;*/
     background-image: none;
     border-bottom: 0;
 }
@@ -350,6 +350,12 @@ textarea {
     text-align: center;
     font-size: 14px;
     color: #dedee4;
+}
+
+.sms-prompt textarea {
+    min-height: 100px;
+    margin: 1px;
+    padding: 2px;
 }
 
 .connectionWarn {

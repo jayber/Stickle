@@ -33,13 +33,37 @@ var contactsHandler = {
         });
     },
 
-    inviteSms: function (model) {
+    inviteSms: function (model, popup) {
         return function (contact) {
-            SMS.sendSMS(contact.phoneNumbers[0].value, "Hi there, I'm using Stickle and think you might like it. Check it out:\n" +
-            "http://play.google.com/store/apps/details?id=co.stickle", function () {
-                userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
-            }, function () {
-                userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
+            model.smsprompt = {};
+            model.smsprompt.message = "Hi there, I'm using Stickle. Check it out:\n" +
+                "http://play.google.com/store/apps/details?id=co.stickle";
+            var smsPopup = popup.show({
+                cssClass: "sms-prompt",
+                title: 'Invite via SMS',
+                template: 'Send the following SMS to \"'+contact.displayName + "\" <textarea ng-model='smsprompt.message'></textarea>",
+                scope: model,
+                buttons: [
+                    { text: 'Cancel',
+                        type: 'button-default' },
+                    {
+                        text: 'Send',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            return model.smsprompt.message;
+                        }
+                    }
+                ]
+            });
+
+            smsPopup.then(function(res) {
+                if (res) {
+                    SMS.sendSMS(contact.phoneNumbers[0].value, res, function () {
+                        userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
+                    }, function () {
+                        userInterfaceHandler.showPopover(model, "Error inviting \"" + contact.displayName + "\".");
+                    });
+                }
             });
         }
     },
