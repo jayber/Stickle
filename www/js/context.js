@@ -1,5 +1,5 @@
 var context = {
-    serverUrl: "stickle.co", //this
+    serverUrl: "stickle.co",
 
     toggleSoundsAction: function (model) {
         return function (off) {
