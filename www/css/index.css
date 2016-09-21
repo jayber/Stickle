@@ -352,10 +352,21 @@ textarea {
     color: #dedee4;
 }
 
+.sms-prompt p {
+    margin-bottom: 2px;
+}
+
+.sms-prompt textarea p {
+    padding: 2px;
+}
+
 .sms-prompt textarea {
     min-height: 100px;
-    margin: 1px;
-    padding: 2px;
+    margin: 1px 1px 0 1px;
+}
+
+.sms-prompt .small {
+    font-size: 8pt;
 }
 
 .connectionWarn {

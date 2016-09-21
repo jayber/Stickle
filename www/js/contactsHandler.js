@@ -41,7 +41,8 @@ var contactsHandler = {
             var smsPopup = popup.show({
                 cssClass: "sms-prompt",
                 title: 'Invite via SMS',
-                template: 'Send the following SMS to \"'+contact.displayName + "\" <textarea ng-model='smsprompt.message'></textarea>",
+                template: '<p>Send the following SMS to \"'+contact.displayName + "\" </p><textarea ng-model='smsprompt.message'></textarea>" +
+                "<span class='small'>Tap to edit</span>",
                 scope: model,
                 buttons: [
                     { text: 'Cancel',
