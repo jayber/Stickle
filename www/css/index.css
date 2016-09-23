@@ -356,17 +356,18 @@ textarea {
     margin-bottom: 2px;
 }
 
-.sms-prompt textarea p {
-    padding: 2px;
+.sms-prompt textarea, .sms-prompt p, .sms-prompt span {
+    padding-left: 2px;
 }
 
 .sms-prompt textarea {
-    min-height: 100px;
+    min-height: 75px;
     margin: 1px 1px 0 1px;
 }
 
 .sms-prompt .small {
     font-size: 8pt;
+    color: #555555;
 }
 
 .connectionWarn {
