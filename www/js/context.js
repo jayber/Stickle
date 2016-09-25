@@ -1,5 +1,11 @@
 var context = {
-    serverUrl: "stickle.co",
+    serverUrl: "api.stickle.co",
+    resourceLocation: 'https://:server/api',
+    webSocketPrefix: 'wss://',
+
+    webSocketLocation: function() {
+        return context.webSocketPrefix + context.serverUrl + "/api";
+    },
 
     toggleSoundsAction: function (model) {
         return function (off) {

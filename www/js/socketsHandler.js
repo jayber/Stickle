@@ -1,7 +1,7 @@
 var socketHandler = {
 
     getUrl: function () {
-        return 'ws://' + context.serverUrl + "/api/ws";
+        return context.webSocketLocation() +"/ws";
     },
 
     logAndApply: function (msg, func, model, data) {

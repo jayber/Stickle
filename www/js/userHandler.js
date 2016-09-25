@@ -6,7 +6,7 @@ var userHandler = {
     pushRegistrationIdKey: "pushRegId",
 
     sendFeedback: function($scope, $resource, feedbackForm) {
-        var Feedback = $resource('http://:server/api/feedback/', {
+        var Feedback = $resource(context.resourceLocation+'/feedback/', {
             server: context.serverUrl
         });
         log.debug("sending feedback");
@@ -53,7 +53,7 @@ var userHandler = {
 
     registerOnServer: function ($resource, phoneNumber, displayName) {
         log.trace("getting registration resource");
-        var User = $resource('http://:server/api/user/:phoneNum', {
+        var User = $resource(context.resourceLocation+'/user/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
         });
@@ -63,7 +63,7 @@ var userHandler = {
 
     verifyRegistration: function($resource, phoneNumber, verificationCode) {
         log.trace("getting verification resource");
-        var Verification = $resource('http://:server/api/verification/:phoneNum', {
+        var Verification = $resource(context.resourceLocation+'/verification/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
         });
@@ -76,7 +76,7 @@ var userHandler = {
 
     resendVerification: function($resource, phoneNumber) {
         log.trace("getting resend resource");
-        var Resend = $resource('http://:server/api/resend/:phoneNum', {
+        var Resend = $resource(context.resourceLocation+'/resend/:phoneNum', {
             server: context.serverUrl,
             phoneNum: "@phoneNum"
         });
