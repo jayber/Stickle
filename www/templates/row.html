@@ -1,4 +1,4 @@
-<div class="contact-banner inbound" ng-if="contact.inbound && contact.stickleStatus=='open'">{{contact.displayName}} wants to call you. Tap "Ready" when you want them to call, or hit </div>
+<div class="contact-banner inbound" ng-if="contact.inbound && contact.stickleStatus=='open'">{{contact.displayName}} wants to call you. Tap "Ready" when you want them to call, or hit <i></i> to decline.</div>
 <div class="contact-banner outbound" ng-if="contact.stickled && (contact.stickleStatus=='accepted')">{{contact.displayName}} is ready to talk. To call them now hit </div>
 <div class="contact-list-item" ng-switch="contact.inbound==true">
     <div class="contact-details">

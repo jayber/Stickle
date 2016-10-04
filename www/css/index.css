@@ -142,7 +142,7 @@ html {
     white-space: normal;
 }
 
-.contact-banner.inbound:after {
+.contact-banner.inbound i:after {
     font-family: "Ionicons";
     content: "\f253";
 }
