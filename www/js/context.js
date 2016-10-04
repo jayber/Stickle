@@ -44,6 +44,7 @@ var context = {
 
         document.addEventListener("resume", function () {
             log.debug("resuming");
+            pushNotificationHandler.init();
             socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
             setupHandler.setUpConnectionWarn(model,$ionicModal);
         }, false);
