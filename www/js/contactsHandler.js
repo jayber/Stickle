@@ -182,7 +182,8 @@ var contactsHandler = {
                 });
                 userInterfaceHandler.showPopover(model, translation[status] + " \"" + contact.displayName + "\".");
                 contactsHandler.setContactStatusAndDisplay(contact, status, model, true, $ionicScrollDelegate);
-            } catch (err) {
+            } catch (e) {
+                log.error(e.message);
                 userInterfaceHandler.showPopover(model, "Oops, there was an error. Please try again.");
             }
         }
@@ -198,7 +199,8 @@ var contactsHandler = {
                     status: status
                 });
                 userInterfaceHandler.showPopover(model, "\"" + contact.displayName + "\" " + (contact.stickled ? "stickled" : "un-stickled") + ".");
-            } catch (err) {
+            } catch (e) {
+                log.error(e.message);
                 userInterfaceHandler.showPopover(model, "Oops, there was an error. Please try again.");
                 status = contact.stickled ? "closed" : "open";
             }

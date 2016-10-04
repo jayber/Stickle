@@ -65,12 +65,14 @@ var context = {
     },
 
     playSound: function (model) {
-        if (!(model.sounds.off || model.sounds.timeout)) {
+        //do nothing - sound in app may be unnecessary, but isn't working anyway
+
+        /*if (!(model.sounds.off || model.sounds.timeout)) {
             model.sounds.timeout = true;
             setTimeout(function () {
                 model.sounds.timeout = false;
             }, 5000);
             navigator.notification.beep(1);
-        }
+        }*/
     }
 };

@@ -55,8 +55,8 @@ var setupHandler = {
     },
 
     setUpActions: function ($scope, $ionicScrollDelegate, $ionicPopup) {
-        $scope.acceptStickle = contactsHandler.stickleResponseHandler("accepted", $scope);
-        $scope.unAcceptStickle = contactsHandler.stickleResponseHandler("un-accepted", $scope);
+        $scope.acceptStickle = contactsHandler.stickleResponseHandler("accepted", $scope,$ionicScrollDelegate);
+        $scope.unAcceptStickle = contactsHandler.stickleResponseHandler("un-accepted", $scope,$ionicScrollDelegate);
         $scope.rejectStickle = contactsHandler.stickleResponseHandler("rejected", $scope);
         $scope.call = contactsHandler.makeCall($scope, $ionicScrollDelegate);
         $scope.onToggle = contactsHandler.stickleHandler($scope, $ionicScrollDelegate);

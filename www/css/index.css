@@ -288,6 +288,10 @@ html {
     color: #aaaaaa;
 }
 
+.warn {
+    color: #ff661e;
+}
+
 .item-input.disable {
     border: none;
     /*padding: 0;*/
