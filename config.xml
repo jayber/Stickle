@@ -31,6 +31,7 @@
     <gap:plugin name="org.apache.cordova.contacts"/>
     <gap:plugin name="cordova-plugin-sms" source="npm" />
     <plugin name="cordova-plugin-whitelist" version="1"/>
+    <plugin name="cordova-plugin-network-information"/>
     <plugin name="phonegap-plugin-push">
         <params>
             <param name="SENDER_ID" value="1080115958403"/>
