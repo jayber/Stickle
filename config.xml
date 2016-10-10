@@ -1,6 +1,6 @@
 <!--<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="dev.co.stickle" version="1.0.0" android-versionCode="176">-->
 <!--<name>Stickle Dev</name>-->
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="co.stickle" version="1.0.0" android-versionCode="180">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="co.stickle" version="1.0.0" android-versionCode="181">
     <name>Stickle</name>
     <description>The consensual calling app.</description>
     <!--<author href="http://phonegap.com" email="support@phonegap.com">PhoneGap Team</author>-->
