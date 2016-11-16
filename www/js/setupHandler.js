@@ -10,6 +10,11 @@ var setupHandler = {
         setupHandler.setUpFilter($scope);
         setupHandler.setUpSplash($scope, $ionicModal);
         setupHandler.setUpConnectionWarn($scope, $ionicModal);
+        setupHandler.setUpCountries($scope);
+    },
+
+    setUpCountries: function(model) {
+        model.countries = countries.list;
     },
 
     setUpTurnSoundsOff: function (model) {
@@ -66,7 +71,9 @@ var setupHandler = {
     setUpDetailsAndRegistration: function ($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicScrollDelegate) {
         $scope.details = {
             displayName: window.localStorage.getItem(userHandler.displayNameKey),
-            phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey)
+            phoneNumber: window.localStorage.getItem(userHandler.phoneNumberKey),
+            countryCode: window.localStorage.getItem(userHandler.countryCodeKey),
+            countryName: countries.findName(window.localStorage.getItem(userHandler.countryCodeKey))
         };
 
         $scope.details.logout = userInterfaceHandler.logoutAction($scope, $ionicSideMenuDelegate);

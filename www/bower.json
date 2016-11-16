@@ -1,0 +1,8 @@
+{
+  "name": "stickle",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular-route": "1.4.3",
+    "ionic-select-control": "~1.8.0"
+  }
+}

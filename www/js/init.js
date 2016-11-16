@@ -43,14 +43,14 @@ function initLog() {
     }
 }
 
-angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate'])
+angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate', '$selectBox'])
     .controller('stickleCtrl', function ($scope, $ionicPopup, $resource, $interval, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicScrollDelegate) {
         ionic.Platform.ready(function () {
             context.addEventListeners($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate, $ionicModal);
             polyFillMobileAPIs();
             setupHandler.initModel($scope, $ionicSideMenuDelegate, $resource, $interval, $ionicModal, $ionicPopover, $ionicScrollDelegate, $ionicPopup);
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);
-            contactsHandler.populateContacts($scope, $resource)
+            contactsHandler.populateContacts($scope, true)
                 .done(function () {
                     socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
                     pushNotificationHandler.init();

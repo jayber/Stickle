@@ -1,13 +1,13 @@
 var context = {
-/*
-    serverUrl: "192.168.0.4",
     resourceLocation: 'http://:server/api',
-    webSocketPrefix: 'ws://',
-*/
 
+    serverUrl: "192.168.0.4",
+    webSocketPrefix: 'ws://',
+
+/*
     serverUrl: "api.stickle.co",
-    resourceLocation: 'https://:server/api',
     webSocketPrefix: 'wss://',
+*/
 
     webSocketLocation: function() {
         return context.webSocketPrefix + context.serverUrl + "/api";

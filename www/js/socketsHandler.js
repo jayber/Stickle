@@ -1,5 +1,7 @@
 var socketHandler = {
 
+    messageBuffer: [],
+
     getUrl: function () {
         return context.webSocketLocation() +"/ws";
     },
@@ -13,7 +15,7 @@ var socketHandler = {
 
     authenticate: function () {
         log.debug("authenticating");
-        socketHandler.ws.emit("authenticate", {
+        socketHandler.ws.emitNoBuffer("authenticate", {
             authId: window.localStorage.getItem(userHandler.authIdKey),
             pushRegistrationId: window.localStorage.getItem(userHandler.pushRegistrationIdKey)
         });
@@ -21,7 +23,7 @@ var socketHandler = {
 
     checkContactStatuses: function (model) {
         model.contacts.forEach(function (contact, index) {
-            socketHandler.ws.emit("checkContactStatus", {phoneNum: contact.phoneNumbers[0].canonical});
+            socketHandler.ws.emitNoBuffer("checkContactStatus", {phoneNum: contact.phoneNumbers[0].canonical});
         });
     },
 
@@ -37,6 +39,7 @@ var socketHandler = {
     },
 
     startSockets: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate) {
+        log.debug("starting sockets");
         if (socketHandler.ws != undefined) {
             socketHandler.ws.close();
         }
@@ -46,24 +49,42 @@ var socketHandler = {
     StickleWebSocket: function (url, model, $ionicSideMenuDelegate, $interval, $ionicScrollDelegate) {
         this.url = url;
         this.ws = new WebSocket(url);
-        this.messageBuffer = [];
 
         this.purgeBufferedMessages = function () {
-            if (this.messageBuffer.length > 0) {
-                log.debug("ws purging: "+this.messageBuffer.length+" messages");
-                while (message = this.messageBuffer.pop()) {
-                    this.ws.send(message);
+            log.debug("ws purging: "+socketHandler.messageBuffer.length+" messages");
+            if (socketHandler.messageBuffer.length > 0) {
+                while (message = socketHandler.messageBuffer.pop()) {
+                    log.debug("purging message: "+ message);
+                    this.emitNoBufferSimple(message);
                 }
             }
         };
 
-        this.emit = function (event, data) {
-            var output = JSON.stringify({"event": event, "data": data});
+        this.packageToEmit= function (event, data) {
+            return JSON.stringify({"event": event, "data": data});
+        };
+
+        this.emitNoBuffer = function(event, data) {
+            var output = this.packageToEmit(event, data);
+            this.emitNoBufferSimple(output);
+        };
+
+        this.emitNoBufferSimple = function (output) {
             log.trace("ws emitting! " + output);
+            this.ws.send(output);
+        };
+
+        this.emit = function (event, data) {
+            var output = this.packageToEmit(event, data);
             if (this.ws.readyState !== 1) {
-                this.messageBuffer.push(output);
+                if (socketHandler.messageBuffer.length < 40) {
+                    log.debug("ws not ready. buffering: " + output);
+                    socketHandler.messageBuffer.unshift(output);
+                } else {
+                    log.error("WebService message-buffer full, cannot store more messages");
+                }
             } else {
-                this.ws.send(output);
+                this.emitNoBufferSimple(output);
             }
         };
 
@@ -127,12 +148,16 @@ var socketHandler = {
                             contact = contactsHandler.getOrCreateContact(model, data.originator, data.originatorDisplayName);
                         } else {
                             contact = model.contactsMap[data.recipient];
-                            contact.stickled = true;
+                            if (contact) {
+                                contact.stickled = true;
+                            }
                         }
-                        contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound, $ionicScrollDelegate);
-                        if (inbound || data.state == "accepted") {
-                            //might always be a bad idea, if needed, done by push-notification?
-                            //context.playSound(model);
+                        if (contact) {
+                            contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound, $ionicScrollDelegate);
+                            if (inbound || data.state == "accepted") {
+                                //might always be a bad idea, if needed, done by push-notification?
+                                //context.playSound(model);
+                            }
                         }
                     }, model, data);
                     break;
@@ -146,9 +171,9 @@ var socketHandler = {
                 case "authenticated":
                     log.debug("authenticated");
 
-                    socketHandler.checkContactStatuses(model);
-                    socketHandler.checkStickleStates(model);
                     socketHandler.ws.purgeBufferedMessages();
+                    socketHandler.checkStickleStates(model);
+                    socketHandler.checkContactStatuses(model);
                     break;
                 case "authentication-failed":
                     log.debug("authentication-failed");

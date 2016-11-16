@@ -14,6 +14,24 @@
                      class="validationMsg">Enter your name.
                 </div>
 
+                <div ng-switch="details.status">
+
+                    <select-box ng-switch-when="unregistered"
+                                ng-Selected-Value="details.countryCode"
+                                ng-Item-Name="label"
+                                ng-Item-Id="id"
+                                ng-title="select a country"
+                                ng-data="countries"
+                                ng-placeholder="select country"
+                                ng-select-box-class="select-country"
+                            >
+
+                    </select-box>
+
+                    <div ng-switch-default class="disable-country-code">{{details.countryName}}</div>
+                </div>
+
+
                 <label id="phoneNumberLabel" class="item item-input" ng-class="{disable:details.status!='unregistered'}">
                     <input type="tel" placeholder="Your telephone number" ng-model="details.phoneNumber"
                            name="phoneNumber" id="phoneNumber" required minlength="4" >

@@ -3,6 +3,7 @@ var userHandler = {
     displayNameKey: "displayName",
     authIdKey: "authId",
     phoneNumberKey: "phonenumber",
+    countryCodeKey: "countryCode",
     pushRegistrationIdKey: "pushRegId",
 
     sendFeedback: function($scope, $resource, feedbackForm) {
@@ -49,6 +50,7 @@ var userHandler = {
         } else {
             $scope.details.status = "loggedIn";
         }
+        userHandler.countryCode = window.localStorage.getItem(userHandler.countryCodeKey);
     },
 
     registerOnServer: function ($resource, phoneNumber, displayName) {

@@ -15,6 +15,10 @@ var userInterfaceHandler = {
                 log.debug("valid");
                 window.localStorage.setItem(userHandler.displayNameKey, $scope.details.displayName);
                 window.localStorage.setItem(userHandler.phoneNumberKey, $scope.details.phoneNumber);
+                window.localStorage.setItem(userHandler.countryCodeKey, $scope.details.countryCode);
+
+                $scope.details.countryName = countries.findName($scope.details.countryCode);
+                userHandler.countryCode = $scope.details.countryCode;
 
                 log.trace("about to canonicalize");
                 var canonTel = telephone.canonicalize($scope.details.phoneNumber);
@@ -46,7 +50,9 @@ var userInterfaceHandler = {
                         $scope.verify.verificationCode = "";
                         $scope.generalError = "";
                         $ionicSideMenuDelegate.toggleLeft(false);
-                        socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
+                        contactsHandler.populateContacts($scope, false).done(function () {
+                            socketHandler.startSockets($scope, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
+                        });
                         userInterfaceHandler.showPopover($scope, "Successfully registered and verified.");
                     }, function (result) {
                         $scope.generalError = result.data;

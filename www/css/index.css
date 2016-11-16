@@ -1,4 +1,10 @@
-@font-face { font-family: "Ionicons"; src: url("../fonts/ionicons.eot"); src: url("../fonts/ionicons.eot") format("embedded-opentype"), url("../fonts/ionicons.ttf") format("truetype"), url("../fonts/ionicons.woff?v=2.0.1") format("woff"), url("../fonts/ionicons.svg") format("svg"); font-weight: normal; font-style: normal; }
+@font-face {
+    font-family: "Ionicons";
+    src: url("../fonts/ionicons.eot");
+    src: url("../fonts/ionicons.eot") format("embedded-opentype"), url("../fonts/ionicons.ttf") format("truetype"), url("../fonts/ionicons.woff?v=2.0.1") format("woff"), url("../fonts/ionicons.svg") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
 
 * {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
@@ -178,75 +184,120 @@ html {
 
 .contact-details {
     float: left;
-    width: calc(100% - 164px);
+    width: calc(100% - 202px);
     padding: 12px 0 12px 12px;
 }
 
-.contact-actions .action.regular-action {
-    color: #999999;
-    padding: 5px 20px 0 0;
+.contact-list-item button {
+    border-radius: 3px;
+}
+
+.contact-list-item .icon {
+    font-size: 30px;
+    width: 70px;
+    height: 62px;
 }
 
 .stickle-actions, .contact-actions {
-    width: 164px;
+    width: 202px;
     float: right;
 }
 
-.regular-action {
+.contact-actions .icon {
+    color: #999999;
+}
+
+.contact-actions .toggle {
     float: right;
     margin: 10px 3px 0 0;
 }
 
-.contact-actions .icon, .stickle-actions .action {
-    font-size: 14pt;
-    text-align: center;
-}
-
-.stickle-actions .action, .call {
-    background-color: transparent;
-    border-radius: 3px;
+.stickle-actions .acceptance-switch {
     display: block;
     float: right;
-    border: 2px solid;
-    width: 86px;
-    height: 62px;
-}
-
-.call {
-    color: #4CD964;
-}
-
-.stickle-actions .accept, .call {
-    border-color: #4CD964;
+    background-color: #ffffff;
+    padding: 4px;
     margin-right: 4px;
+    margin-left: 4px;
+    border-radius: 3px;
+}
+
+.contact-actions .icon, .stickle-actions button {
+    text-align: center;
+    display: block;
+    float: right;
+}
+
+.stickle-actions button {
+    font-weight: 500;
+    line-height: 1.1;
+    width: 62px;
+    height: 54px;
+    background: #f0f0f0;
+    color: #888888;
+    font-size: 14pt;
+    border: 1px solid #fcfcfc;
+    border-top-color: #ececec ;
+    border-left-color: #ececec ;
+    border-radius: 4px;
 }
 
 .stickle-actions .accept {
-    background-color: #4CD964;
-    color: #ffffff;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    margin-right: 0;
 }
 
 .stickle-actions .unaccept {
-    border-color: #ff661e;
-    background-color: #ff661e;
-    color: #ffffff;
-    margin-right: 4px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin-left: 0;
 }
 
-.contact-actions .icon, .stickle-actions .icon {
-    font-size: 30px;
+.stickle-actions button.on {
+    color: #ffffff;
+    border-width: 2px;
+}
+
+.stickle-actions .accept.on {
+    background-color: #4ee867;
+    border-color: #51ff6a;
+    border-bottom-color: #49c664;
+    border-right-color: #49C664;
+    border-right-width: 1px;
+}
+
+.stickle-actions .unaccept.on {
+    background-color: #ff8228;
+    border-color: #ffbe5a;
+    border-bottom-color: #e47a22;
+    border-right-color: #e47a22;
+    border-left-width: 1px;
 }
 
 .stickle-actions .reject {
-    border-color: #6c9add;
+    background-color: transparent;
+    border: 2px solid #6c9add;
     color: #6c9add;
     width: 62px;
 }
 
-.stickle-actions :active, .call:active, .stickle-actions :focus {
+.contact-actions .call {
+    background-color: transparent;
+    color: #4CD964;
+    margin-right: 4px;
+    border: 2px solid #4CD964;
+    padding-top: 4px; /*needed on mobile, but looks wrong on desktop*/
+}
+
+.call:active {
     border-color: #777777;
     color: #777777;
     background-color: #cccccc;
+}
+
+.contact-actions .invite {
+    padding-top: 16px;
 }
 
 .type {
@@ -261,11 +312,13 @@ html {
 }
 
 .inbound.open .contact-list-item, .inbound.un-accepted .contact-list-item {
-    background-color: #fff5aa;
+    /*background-color: #fff5aa;*/
+    background-color: #ffdc6e;
 }
 
 .inbound.accepted .contact-list-item {
-    background-color: #caeaf0;
+    /*background-color: #caeaf0;*/
+    background-color: #c8f0c8;
 }
 
 .validationMsg {
@@ -276,6 +329,40 @@ html {
     -webkit-transition: all linear 0.5s;
     transition: all linear 0.5s;
     opacity: 1;
+}
+
+#select .list .item{
+    padding: 10px 7px  5px 7px;
+}
+
+.selectBox {
+    padding: 10px 0 5px 0;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+select-box .select-country span.selected, .disable-country-code{
+    width: calc(100% - 30px);
+    border-radius: 0;
+    text-indent: 15px;
+}
+
+select-box .select-country span.selectArrow, select-box .select-country span.selected, .disable-country-code {
+    border-color: #ddd;
+    height: auto;
+    padding: 8px 0 7px 0;
+    color: #444;
+}
+
+select-box .select-country span.selectArrow {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.disable-country-code {
+    width: 100%;
+    margin-left: -1px;
+    margin-right: -1px;
 }
 
 /*.validationMsg.ng-hide {
@@ -292,11 +379,10 @@ html {
     color: #ff661e;
 }
 
-.item-input.disable {
+.item-input.disable, .disable-country-code {
     border: none;
     /*padding: 0;*/
     background-color: #efefef;
-    color: #aaaaaa;
     margin-bottom: 10px;
 }
 
@@ -314,7 +400,7 @@ html {
 }
 
 .settings .button-outline {
-  color: #555555
+    color: #555555
 }
 
 .button-block.text-button {
@@ -341,7 +427,7 @@ textarea {
 .popover .bar-header {
     border-radius: 20px;
     top: -3px;
-  }
+}
 
 .popover {
     border-radius: 20px;

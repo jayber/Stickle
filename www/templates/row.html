@@ -5,21 +5,23 @@
         <div class="name">{{contact.displayName}}</div>
         <p>
                 <span ng-repeat="num in contact.phoneNumbers">
-                <span class="type">{{num.type}}:</span> {{num.value}}
+                {{num.value}}
                 </span>
         </p>
     </div>
-    <div ng-switch-when="true" class="stickle-actions">
-        <button class="action icon reject ion-trash-b" ng-click="rejectStickle(contact)"></button>
-        <button ng-if="contact.stickleStatus=='accepted'" class="action unaccept" ng-click="unAcceptStickle(contact)">
-            Not now
-        </button>
-        <button ng-if="contact.stickleStatus=='open' || contact.stickleStatus=='un-accepted'" class="accept action" ng-click="acceptStickle(contact)">
-            Ready
-        </button>
+    <div ng-switch-when="true" ng-class="['stickle-actions',{accepted:contact.stickleStatus=='accepted'}]">
+        <button class="icon reject ion-trash-b" ng-click="rejectStickle(contact)"></button>
+        <div class="acceptance-switch">
+            <button ng-disabled="contact.stickleStatus!='accepted'" ng-class="['unaccept',{on:contact.stickleStatus=='accepted'}]" ng-click="unAcceptStickle(contact)">
+                Not<br>ready
+            </button>
+            <button ng-disabled="contact.stickleStatus=='accepted'" ng-class="['accept ',{on:contact.stickleStatus=='open' || contact.stickleStatus=='un-accepted'}]" class="" ng-click="acceptStickle(contact)">
+                Ready
+            </button>
+        </div>
     </div>
     <div ng-switch-default ng-switch="contact.stickler" class="contact-actions">
-        <label ng-switch-when="true" class="toggle regular-action">
+        <label ng-switch-when="true" class="toggle">
             <input type="checkbox" ng-disabled="!contact.stickler" ng-change="onToggle(contact)"
                    ng-model="contact.stickled">
 
@@ -29,6 +31,6 @@
         </label>
         <button ng-if="contact.stickled && (contact.stickleStatus=='accepted')" class="call icon ion-ios-telephone" ng-click="call(contact)"></button>
 
-        <div ng-switch-default class="action icon ion-ios-personadd-outline regular-action" ng-click="invite(contact)"></div>
+        <div ng-switch-default class="icon invite ion-ios-personadd-outline" ng-click="invite(contact)"></div>
     </div>
 </div>

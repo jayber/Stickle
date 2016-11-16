@@ -1,6 +1,6 @@
 var contactsHandler = {
 
-    populateContacts: function (model, $resource) {
+    populateContacts: function (model, requireApply) {
         var contactsDeferred = jQuery.Deferred();
         model.contacts = [];
         model.contactsMap = {};
@@ -14,7 +14,7 @@ var contactsHandler = {
             navigator.contacts.fieldType.phoneNumbers];
         navigator.contacts.find(fields,
             function (contacts) {
-                contactsHandler.processContacts(contacts, model, $resource);
+                contactsHandler.processContacts(contacts, model, requireApply);
                 contactsDeferred.resolve();
             },
             function (err) {
@@ -23,14 +23,20 @@ var contactsHandler = {
         return contactsDeferred;
     },
 
-    processContacts: function (contacts, model, $resource) {
+    processContacts: function (contacts, model, requireApply) {
         var cleanContacts = contactsHandler.filterOnPhoneAndSortByNameAlphabet(contacts);
 
-        model.$apply(function () {
+        var contactf = function () {
             cleanContacts.forEach(function (contact) {
                 contactsHandler.processContact(contact, model);
             });
-        });
+        };
+
+        if (requireApply) {
+            model.$apply(contactf);
+        } else {
+            contactf();
+        }
     },
 
     inviteSms: function (model, popup) {
@@ -212,7 +218,7 @@ var contactsHandler = {
         var contact = model.contactsMap[key];
         if (contact == null) {
             contact = {
-                phoneNumbers: [{type: "mobile", value: key}],
+                phoneNumbers: [{type: "mobile", value: key, canonical: telephone.canonicalize(key)}],
                 displayName: displayName
             }
         }
