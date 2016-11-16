@@ -24,7 +24,6 @@
     <access origin="*"/>
     <icon src="img/sticon.png"/>
 
-
     <plugin name="cordova-plugin-contacts"/>
     <plugin name="cordova-plugin-sms" source="npm" />
     <plugin name="cordova-plugin-whitelist" version="1"/>
