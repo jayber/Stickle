@@ -28,7 +28,7 @@
     <plugin name="cordova-plugin-sms" source="npm" />
     <plugin name="cordova-plugin-whitelist" version="1"/>
     <plugin name="cordova-plugin-network-information"/>
-    <plugin name="phonegap-plugin-push" source="npm">
+    <plugin name="phonegap-plugin-push" source="npm" version="1.8.0">
         <params>
             <param name="SENDER_ID" value="1080115958403"/>
         </params>
