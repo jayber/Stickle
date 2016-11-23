@@ -331,14 +331,25 @@ html {
     opacity: 1;
 }
 
+.selectBoxDiv {
+    padding: 7px 0 8px 0;
+}
+
+select-box {
+    display: flex;
+}
+
 #select .list .item{
     padding: 10px 7px  5px 7px;
 }
 
 .selectBox {
-    padding: 10px 0 5px 0;
     margin-left: -1px;
     margin-right: -1px;
+}
+
+.select-placeholder {
+    color: #a8a8a8 !important;
 }
 
 select-box .select-country span.selected, .disable-country-code{
@@ -347,7 +358,7 @@ select-box .select-country span.selected, .disable-country-code{
     text-indent: 15px;
 }
 
-select-box .select-country span.selectArrow, select-box .select-country span.selected, .disable-country-code {
+select-box .select-country span.selectArrow, select-box .select-country span.selected {
     border-color: #ddd;
     height: auto;
     padding: 8px 0 7px 0;
@@ -360,15 +371,12 @@ select-box .select-country span.selectArrow {
 }
 
 .disable-country-code {
+    height: 100%;
     width: 100%;
     margin-left: -1px;
     margin-right: -1px;
+    padding: 13px 0 13px 0;
 }
-
-/*.validationMsg.ng-hide {
-    opacity: 0;
-    display: block!important;
-}*/
 
 .greyed {
     background-color: #efefef;
@@ -381,13 +389,10 @@ select-box .select-country span.selectArrow {
 
 .item-input.disable, .disable-country-code {
     border: none;
-    /*padding: 0;*/
     background-color: #efefef;
-    margin-bottom: 10px;
 }
 
 .item-input.disable input {
-    /*padding-left: 6px;*/
     background-color: #efefef;
 }
 

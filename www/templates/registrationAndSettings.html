@@ -14,7 +14,7 @@
                      class="validationMsg">Enter your name.
                 </div>
 
-                <div ng-switch="details.status">
+                <div ng-switch="details.status" class="selectBoxDiv">
 
                     <select-box ng-switch-when="unregistered"
                                 ng-Selected-Value="details.countryCode"
@@ -24,9 +24,16 @@
                                 ng-data="countries"
                                 ng-placeholder="select country"
                                 ng-select-box-class="select-country"
+                                ng-placeholder-class="select-placeholder"
                             >
 
                     </select-box>
+
+                    <div ng-show="(detailsForm.$submitted || detailsForm.countryCode.$touched) && (detailsForm.countryCode.$error.required)"
+                         class="validationMsg">Select a country
+                    </div>
+
+                    <input type="hidden" ng-model="details.countryCode" name="countryCode" id="countryCode" required>
 
                     <div ng-switch-default class="disable-country-code">{{details.countryName}}</div>
                 </div>
