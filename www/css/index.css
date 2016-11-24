@@ -352,6 +352,11 @@ select-box {
     color: #a8a8a8 !important;
 }
 
+input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #a8a8a8;
+    opacity: 1;
+}
+
 select-box .select-country span.selected, .disable-country-code{
     width: calc(100% - 30px);
     border-radius: 0;
@@ -394,6 +399,10 @@ select-box .select-country span.selectArrow {
 
 .item-input.disable input {
     background-color: #efefef;
+}
+
+#verificationCodeLabel {
+    margin-top: 10px;
 }
 
 #verificationCodeLabel.disable {
@@ -490,6 +499,7 @@ textarea {
 .splash button {
     float: right;
     color: #555555;
+    width: 80px;
 }
 
 .splash input[type=checkbox] {
@@ -519,6 +529,7 @@ textarea {
     font-family: "-apple-system", "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
     font-size: 17px;
     line-height: 32px;
+    width: calc(100% - 80px);
 }
 
 .splash .header {

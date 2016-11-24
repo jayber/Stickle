@@ -97,10 +97,10 @@ var contactsHandler = {
     dedupePhoneNumbers: function (contact) {
         var newNumbers = [];
         contact.phoneNumbers.forEach(function (pnum) {
+            pnum.canonical = telephone.canonicalize(pnum.value);
             if (!newNumbers.some(function (currentValue) {
-                    return pnum.value == currentValue.value && pnum.type == currentValue.type;
+                    return pnum.canonical == currentValue.canonical && pnum.type == currentValue.type;
                 })) {
-                pnum.canonical = telephone.canonicalize(pnum.value);
                 newNumbers.push(pnum);
             }
         });
@@ -110,8 +110,12 @@ var contactsHandler = {
     },
 
     storeAndDisplayIfNew: function (contact, model) {
-        model.contacts.push(contact);
-        model.contactsMap[contact.phoneNumbers[0].canonical] = contact;
+        var nums = contact.phoneNumbers;
+        for (var i=0; i<nums.length; i++) {
+            var contactPerNum = contactsHandler.createContact(nums[i].value, contact.displayName);
+            model.contacts.push(contactPerNum);
+            model.contactsMap[contactPerNum.phoneNumbers[0].canonical] = contactPerNum;
+        }
     },
 
     makeCall: function (model, $ionicScrollDelegate) {
@@ -214,13 +218,17 @@ var contactsHandler = {
         }
     },
 
+    createContact: function (number, displayName) {
+        return {
+            phoneNumbers: [{type: "mobile", value: number, canonical: telephone.canonicalize(number)}],
+            displayName: displayName
+        }
+    },
+
     getOrCreateContact: function (model, key, displayName) {
         var contact = model.contactsMap[key];
         if (contact == null) {
-            contact = {
-                phoneNumbers: [{type: "mobile", value: key, canonical: telephone.canonicalize(key)}],
-                displayName: displayName
-            }
+            contact = contactsHandler.createContact(key, displayName);
         }
         return contact;
     }
