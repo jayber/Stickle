@@ -538,11 +538,14 @@ textarea {
     padding-right: 7px;
 }
 
+.splash h1, .splash h2, .splash p, .splash ul {
+    margin: 10px 7% 0 7%;
+}
+
 .splash h1 {
     background: url("../img/splashheader.png") no-repeat;
     background-size: contain;
     height: 80px;
-    margin: 10px 50px 0 50px;
 }
 
 .splash h2 {
@@ -550,7 +553,40 @@ textarea {
 }
 
 .splash h2, .splash p, .splash ul {
-    margin: 15px 50px 0 50px;
+    margin-top: 15px;
+}
+
+.splash li i.invite:after {
+    font-size: 20px;
+    /*top: -10px;*/
+    font-family: "Ionicons";
+    content: "\f47f";
+}
+
+.splash li i.invitation-illustration {
+    background-image: url("../img/inviteInstruction.png");
+}
+
+.splash li i.stickle-illustration {
+    background-image: url("../img/stickleInstruction.png");
+}
+
+.splash li i.call-illustration {
+    background-image: url("../img/callInstruction.png");
+}
+
+.splash li i.respond-illustration {
+    background-image: url("../img/respondInstruction.png");
+    height: 110px;
+}
+
+.splash li .illustration {
+    display: block;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 90px;
+    margin-top: 7px;
 }
 
 .splash li {

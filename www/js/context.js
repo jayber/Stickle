@@ -1,6 +1,6 @@
 var context = {
 
-    /*serverUrl: "192.168.0.4",
+/*    serverUrl: "192.168.0.4",
     resourceLocation: 'http://:server/api',
     webSocketPrefix: 'ws://',*/
 
