@@ -68,27 +68,31 @@
                 <div ng-show="(verifyForm.$submitted || verifyForm.verificationCode.$touched) && (verifyForm.verificationCode.$error.maxlength || verifyForm.verificationCode.$error.minlength)"
                      class="validationMsg">Enter a correct verification code
                 </div>
+
                 <button type="submit" id="verify" class="button button-block button-positive" ng-class="{disable:details.status!='registered'}">Verify</button>
 
                 <button class="button button-block button-clear disable text-button"  ng-class="{disable:details.status!='registered'}" type="button" id="resend" ng-click="verify.resend()">
                     Send new code >
                 </button>
+
             </form>
+
+            <button class="button  button-block button-outline" ng-click="feedback.openAction()" menu-close>
+                Send feedback
+            </button>
+
+            <button class="button button-block button-clear text-button" ng-click="splash.show()" menu-close>
+                Show help page >
+            </button>
         </div>
     </div>
-
+    <br>
+    <br>
     <div class="padding">
         <!--<ion-checkbox ng-model="sounds.off" ng-change="sounds.toggleSoundsAction(sounds.off)" menu-close>Sounds off
         </ion-checkbox>-->
         <ion-checkbox ng-model="debug.on" ng-change="debug.showLogAction(debug.on)" menu-close>Show debug log
         </ion-checkbox>
-
-        <button class="button  button-block button-outline" ng-click="feedback.openAction()" menu-close>
-            Send feedback
-        </button>
-        <button class="button button-block button-clear text-button" ng-click="splash.show()" menu-close>
-            Show help >
-        </button>
     </div>
 
 

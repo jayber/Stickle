@@ -8,7 +8,8 @@ var userHandler = {
 
     sendFeedback: function($scope, $resource, feedbackForm) {
         var Feedback = $resource(context.resourceLocation+'/feedback/', {
-            server: context.serverUrl
+            server: context.serverUrl,
+            version: context.apiVersion
         });
         log.debug("sending feedback");
         var output = "";
@@ -57,6 +58,7 @@ var userHandler = {
         log.trace("getting registration resource");
         var User = $resource(context.resourceLocation+'/user/:phoneNum', {
             server: context.serverUrl,
+            version: context.apiVersion,
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to register");
@@ -67,6 +69,7 @@ var userHandler = {
         log.trace("getting verification resource");
         var Verification = $resource(context.resourceLocation+'/verification/:phoneNum', {
             server: context.serverUrl,
+            version: context.apiVersion,
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to verify: "+verificationCode);
@@ -80,6 +83,7 @@ var userHandler = {
         log.trace("getting resend resource");
         var Resend = $resource(context.resourceLocation+'/resend/:phoneNum', {
             server: context.serverUrl,
+            version: context.apiVersion,
             phoneNum: "@phoneNum"
         });
         log.debug("attempting to resend");
