@@ -2,6 +2,7 @@ var userInterfaceHandler = {
 
     logoutAction: function ($scope, $ionicSideMenuDelegate) {
         return function () {
+            socketHandler.ws.emit("logout", {authId: window.localStorage.getItem(userHandler.authIdKey)});
             window.localStorage.removeItem(userHandler.authIdKey);
             userHandler.checkDetails($scope, $ionicSideMenuDelegate);
         }

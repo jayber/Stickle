@@ -159,9 +159,10 @@ html {
 }
 
 .contact-banner.invite i:after {
-    font-size: 15pt;
+    font-size: 18pt;
     font-family: "Ionicons";
     content: "\f47f";
+    vertical-align: middle;
 }
 
 .contact-list .contact-list-item {
