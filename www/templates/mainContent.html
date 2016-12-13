@@ -14,6 +14,8 @@
     </ion-list>
 
     <ion-list class="contact-list">
+        <div class="contact-banner invite" ng-if="contacts.length>0">Invite a contact to Stickle by tapping  <i></i> </div>
+
         <ion-item collection-repeat="contact in contacts | filter:{displayName: contactFilter.value} | filter:{hidden:'!true'}" force-refresh-images="true" ng-class="{'disable':!contact.stickler,'first':$first}">
 
             <stkincluder src="templates/row.html"></stkincluder>

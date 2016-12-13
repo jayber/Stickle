@@ -158,6 +158,12 @@ html {
     content: "\f4b9";
 }
 
+.contact-banner.invite i:after {
+    font-size: 15pt;
+    font-family: "Ionicons";
+    content: "\f47f";
+}
+
 .contact-list .contact-list-item {
     background-color: #ffffff;
     border-color: #efefef;
