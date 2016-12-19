@@ -215,6 +215,10 @@ var contactsHandler = {
                 status = contact.stickled ? "closed" : "open";
             }
             contactsHandler.setContactStatusAndDisplay(contact, status, model, false, $ionicScrollDelegate);
+            if (contact.stickled) {
+                contact.deliveryStatus = "sent";
+                contact.deliveryTime = new Date();
+            }
         }
     },
 

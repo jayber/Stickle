@@ -154,10 +154,6 @@ var socketHandler = {
                         }
                         if (contact) {
                             contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound, $ionicScrollDelegate);
-                            if (inbound || data.state == "accepted") {
-                                //might always be a bad idea, if needed, done by push-notification?
-                                //context.playSound(model);
-                            }
                         }
                     }, model, data);
                     break;
@@ -172,6 +168,7 @@ var socketHandler = {
                     log.debug("authenticated");
 
                     socketHandler.ws.purgeBufferedMessages();
+                    socketHandler.ws.emit("sync");
                     socketHandler.checkStickleStates(model);
                     socketHandler.checkContactStatuses(model);
                     break;
