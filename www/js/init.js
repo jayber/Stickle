@@ -67,4 +67,12 @@ angular.module('stickle', ['ionic', 'ngResource', 'ngAnimate', '$selectBox'])
                 userInterfaceHandler.toggleLog(window.localStorage.getItem("debug") == "true");
             }
         }
+    }).filter("formatDeliveryStatus", function(){
+        return function(input) {
+            if (input == "received") {
+                return "rec'd";
+            } else {
+                return input;
+            }
+        }
     });

@@ -31,7 +31,7 @@
             </div>
         </label>
 
-        <div class="delivery" ng-if="contact.deliveryStatus">{{contact.deliveryStatus}} {{contact.deliveryTime | date : 'HH:mm'}}</div>
+        <div class="delivery" ng-if="contact.deliveryStatus">{{contact.deliveryStatus | formatDeliveryStatus }} {{contact.deliveryTime | date : 'HH:mm'}}</div>
         </div>
 
         <button ng-if="contact.stickled && (contact.stickleStatus=='accepted')" class="call icon ion-ios-telephone" ng-click="call(contact)"></button>

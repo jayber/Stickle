@@ -7,10 +7,10 @@ var context = {
     webSocketPrefix: 'ws://',
 
     /*serverUrl: "api.stickle.co",
-    resourceLocation: 'https://:server/api/v:version',
-    webSocketPrefix: 'wss://',*/
+     resourceLocation: 'https://:server/api/v:version',
+     webSocketPrefix: 'wss://',*/
 
-    webSocketLocation: function() {
+    webSocketLocation: function () {
         return context.webSocketPrefix + context.serverUrl + "/api/v" + context.apiVersion;
     },
 
@@ -32,15 +32,27 @@ var context = {
         }
     },
 
+    reportException: function (e) {
+        if (e.error) {
+            e = e.error;
+        }
+        var stack = e.stack;
+        var message = e.toString();
+        if (stack) {
+            message += '\n' + stack;
+        }
+        log.error(message);
+    },
+
     addEventListeners: function (model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate, $ionicModal) {
         document.addEventListener("touchstart", function () {
         }, true);
 
-        document.addEventListener("offline", function() {
+        document.addEventListener("offline", function () {
             model.connectionWarn.modal.show();
         }, false);
 
-        document.addEventListener("online", function() {
+        document.addEventListener("online", function () {
             model.connectionWarn.modal.hide();
         }, false);
 
@@ -48,7 +60,7 @@ var context = {
             log.debug("resuming");
             pushNotificationHandler.init();
             socketHandler.startSockets(model, $interval, $ionicSideMenuDelegate, $ionicScrollDelegate);
-            setupHandler.setUpConnectionWarn(model,$ionicModal);
+            setupHandler.setUpConnectionWarn(model, $ionicModal);
         }, false);
 
         document.addEventListener("pause", function () {
@@ -57,12 +69,7 @@ var context = {
         }, false);
 
         window.addEventListener('error', function (e) {
-            var stack = e.error.stack;
-            var message = e.error.toString();
-            if (stack) {
-                message += '\n' + stack;
-            }
-            log.error(message);
+            context.reportException(e);
         });
     },
 
@@ -70,11 +77,11 @@ var context = {
         //do nothing - sound in app may be unnecessary, but isn't working anyway
 
         /*if (!(model.sounds.off || model.sounds.timeout)) {
-            model.sounds.timeout = true;
-            setTimeout(function () {
-                model.sounds.timeout = false;
-            }, 5000);
-            navigator.notification.beep(1);
-        }*/
+         model.sounds.timeout = true;
+         setTimeout(function () {
+         model.sounds.timeout = false;
+         }, 5000);
+         navigator.notification.beep(1);
+         }*/
     }
 };

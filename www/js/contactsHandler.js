@@ -43,27 +43,29 @@ var contactsHandler = {
         return function (contact) {
             model.smsprompt = {};
             model.smsprompt.message = "Hi there, I'm using Stickle. Check it out:\n" +
-                "http://play.google.com/store/apps/details?id=co.stickle";
+            "http://play.google.com/store/apps/details?id=co.stickle";
             var smsPopup = popup.show({
                 cssClass: "sms-prompt",
                 title: 'Invite via SMS',
-                template: '<p>Send the following SMS to \"'+contact.displayName + "\"? </p><textarea ng-model='smsprompt.message'></textarea>" +
+                template: '<p>Send the following SMS to \"' + contact.displayName + "\"? </p><textarea ng-model='smsprompt.message'></textarea>" +
                 "<span class='small'>Tap to edit</span>",
                 scope: model,
                 buttons: [
-                    { text: 'Cancel',
-                        type: 'button-default' },
+                    {
+                        text: 'Cancel',
+                        type: 'button-default'
+                    },
                     {
                         text: 'Send',
                         type: 'button-positive',
-                        onTap: function(e) {
+                        onTap: function (e) {
                             return model.smsprompt.message;
                         }
                     }
                 ]
             });
 
-            smsPopup.then(function(res) {
+            smsPopup.then(function (res) {
                 if (res) {
                     SMS.sendSMS(contact.phoneNumbers[0].value, res, function () {
                         userInterfaceHandler.showPopover(model, "Invited \"" + contact.displayName + "\".");
@@ -111,7 +113,7 @@ var contactsHandler = {
 
     storeAndDisplayIfNew: function (contact, model) {
         var nums = contact.phoneNumbers;
-        for (var i=0; i<nums.length; i++) {
+        for (var i = 0; i < nums.length; i++) {
             var contactPerNum = contactsHandler.createContact(nums[i].value, contact.displayName);
             model.contacts.push(contactPerNum);
             model.contactsMap[contactPerNum.phoneNumbers[0].canonical] = contactPerNum;
@@ -168,13 +170,14 @@ var contactsHandler = {
             contact.stickleStatus = null;
             contact.inbound = false;
             contact.stickled = false;
+            contact.deliveryStatus = null;
+            contact.deliveryTime = null;
             contactsHandler.removeContactFromTop(contact, model, key);
         } else {
             contact.inbound = inbound;
             contact.stickleStatus = status;
             contactsHandler.moveContactToTop(contact, model, key, $ionicScrollDelegate);
         }
-
     },
 
     stickleResponseHandler: function (status, model, $ionicScrollDelegate) {
@@ -215,10 +218,6 @@ var contactsHandler = {
                 status = contact.stickled ? "closed" : "open";
             }
             contactsHandler.setContactStatusAndDisplay(contact, status, model, false, $ionicScrollDelegate);
-            if (contact.stickled) {
-                contact.deliveryStatus = "sent";
-                contact.deliveryTime = new Date();
-            }
         }
     },
 

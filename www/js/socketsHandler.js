@@ -3,11 +3,11 @@ var socketHandler = {
     messageBuffer: [],
 
     getUrl: function () {
-        return context.webSocketLocation() +"/ws";
+        return context.webSocketLocation() + "/ws";
     },
 
     logAndApply: function (msg, func, model, data) {
-        if (noLog.indexOf(msg)===-1) {
+        if (noLog.indexOf(msg) === -1) {
             log.trace(msg + ": " + JSON.stringify(data));
         }
         model.$apply(func);
@@ -46,25 +46,42 @@ var socketHandler = {
         socketHandler.ws = new socketHandler.StickleWebSocket(socketHandler.getUrl(), model, $ionicSideMenuDelegate, $interval, $ionicScrollDelegate);
     },
 
+    setDeliveryFields: function (contact, status, deliveryState, deliveryTime) {
+        if (status === null || (status === "rejected" || status === "closed" || status === "completed")) {
+            contact.deliveryStatus = null;
+            contact.deliveryTime = null;
+        } else {
+            contact.deliveryStatus = deliveryState;
+            contact.deliveryTime = deliveryTime;
+        }
+    },
+
+    confirmDelivery: function (contact) {
+        socketHandler.ws.emit("delivery", {
+            origin: contact.phoneNumbers[0].canonical,
+            status: "received"
+        });
+    },
+
     StickleWebSocket: function (url, model, $ionicSideMenuDelegate, $interval, $ionicScrollDelegate) {
         this.url = url;
         this.ws = new WebSocket(url);
 
         this.purgeBufferedMessages = function () {
-            log.debug("ws purging: "+socketHandler.messageBuffer.length+" messages");
+            log.debug("ws purging: " + socketHandler.messageBuffer.length + " messages");
             if (socketHandler.messageBuffer.length > 0) {
                 while (message = socketHandler.messageBuffer.pop()) {
-                    log.debug("purging message: "+ message);
+                    log.debug("purging message: " + message);
                     this.emitNoBufferSimple(message);
                 }
             }
         };
 
-        this.packageToEmit= function (event, data) {
+        this.packageToEmit = function (event, data) {
             return JSON.stringify({"event": event, "data": data});
         };
 
-        this.emitNoBuffer = function(event, data) {
+        this.emitNoBuffer = function (event, data) {
             var output = this.packageToEmit(event, data);
             this.emitNoBufferSimple(output);
         };
@@ -129,7 +146,7 @@ var socketHandler = {
                     socketHandler.logAndApply("stickled", function () {
                         var contact = contactsHandler.getOrCreateContact(model, data.from, data.displayName);
                         contactsHandler.setContactStatusAndDisplay(contact, data.status, model, true, $ionicScrollDelegate);
-                        context.playSound(model);
+                        socketHandler.confirmDelivery(contact);
                     }, model, data);
                     break;
                 case "stickle-responded":
@@ -137,15 +154,17 @@ var socketHandler = {
                         var contact = model.contactsMap[data.from];
                         contactsHandler.setContactStatusAndDisplay(contact, data.status, model, false, $ionicScrollDelegate);
                     }, model, data);
-                    context.playSound(model);
                     break;
                 case "state":
                     socketHandler.logAndApply("state", function () {
                         var inbound = (data.recipient === telephone.canonicalize(window.localStorage.getItem(userHandler.phoneNumberKey)));
                         var contact;
                         if (inbound) {
-                            log.debug("trying to update state for: "+data.originator);
+                            log.debug("trying to update state for: " + data.originator);
                             contact = contactsHandler.getOrCreateContact(model, data.originator, data.originatorDisplayName);
+                            if (data.deliveryState != "received") {
+                                socketHandler.confirmDelivery(contact);
+                            }
                         } else {
                             contact = model.contactsMap[data.recipient];
                             if (contact) {
@@ -153,8 +172,15 @@ var socketHandler = {
                             }
                         }
                         if (contact) {
+                            socketHandler.setDeliveryFields(contact, data.state, data.deliveryState, data.deliveryTime);
                             contactsHandler.setContactStatusAndDisplay(contact, data.state, model, inbound, $ionicScrollDelegate);
                         }
+                    }, model, data);
+                    break;
+                case "delivery":
+                    socketHandler.logAndApply("delivery", function () {
+                        var contact = model.contactsMap[data.recipient];
+                        socketHandler.setDeliveryFields(contact, contact.stickleStatus, data.status, data.time);
                     }, model, data);
                     break;
                 case "contactStatus":
@@ -176,7 +202,7 @@ var socketHandler = {
                     log.debug("authentication-failed");
 
                     model.generalError = "Authentication failed, please register again.";
-                    userInterfaceHandler.logoutAction(model,$ionicSideMenuDelegate)();
+                    userInterfaceHandler.logoutAction(model, $ionicSideMenuDelegate)();
                     $ionicSideMenuDelegate.toggleLeft(true);
                     break;
             }

@@ -220,15 +220,18 @@ html {
 }
 
 .contact-actions .stack {
+    position: relative;
     float: right;
 }
 
 .contact-actions .delivery {
     position: absolute;
-    top: 50px;
+    top: 45px;
     text-align: right;
     color: #cccccc;
     font-size: 9pt;
+    width: inherit;
+    right: 6px;
 }
 
 .stickle-actions .acceptance-switch {
