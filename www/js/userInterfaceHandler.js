@@ -106,6 +106,16 @@ var userInterfaceHandler = {
         });
     },
 
+    createPolicyModal: function ($scope, $ionicModal) {
+        $ionicModal.fromTemplateUrl('templates/privacyPolicy.html', {
+            scope: $scope,
+            animation: 'slide-in-down'
+        }).then(function (modal) {
+            $scope.policy.modal = modal;
+            $scope.policy.modal.show();
+        });
+    },
+
     createConnectionWarnModal: function ($scope, $ionicModal) {
         $ionicModal.fromTemplateUrl('templates/connectionWarn.html', {
             scope: $scope,

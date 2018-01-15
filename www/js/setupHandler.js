@@ -9,6 +9,7 @@ var setupHandler = {
         setupHandler.setUpPopover($scope, $ionicPopover);
         setupHandler.setUpFilter($scope);
         setupHandler.setUpSplash($scope, $ionicModal);
+        setupHandler.setUpPolicy($scope, $ionicModal);
         setupHandler.setUpConnectionWarn($scope, $ionicModal);
         setupHandler.setUpCountries($scope);
     },
@@ -41,6 +42,13 @@ var setupHandler = {
         $scope.splash.toggleSplashAction = userInterfaceHandler.toggleSplashAction;
         $scope.splash.show = function() {
             $scope.splash.modal.show();
+        }
+    },
+
+    setUpPolicy: function ($scope, $ionicModal) {
+        userInterfaceHandler.createPolicyModal($scope, $ionicModal);
+        $scope.policy.show = function() {
+            $scope.policy.modal.show();
         }
     },
 
