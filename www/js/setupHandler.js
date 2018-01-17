@@ -46,7 +46,6 @@ var setupHandler = {
     },
 
     setUpPolicy: function ($scope, $ionicModal) {
-        $scope.policy = {};
         userInterfaceHandler.createPolicyModal($scope, $ionicModal);
         $scope.policy.show = function() {
             $scope.policy.modal.show();
